@@ -1,0 +1,26 @@
+# Node.js modules
+frontend/node_modules
+backend/node_modules
+
+# Logs
+logs
+*.log
+npm-debug.log*
+
+# Environment files
+frontend/.env
+backend/.env
+
+# System files
+.DS_Store
+Thumbs.db
+
+# React Native specific
+# Generated folders
+frontend/ios/Pods/
+frontend/android/.gradle/
+frontend/android/app/build/
+
+# IDE specific
+.vscode/
+.idea/
