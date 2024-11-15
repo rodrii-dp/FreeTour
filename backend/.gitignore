@@ -1,0 +1,67 @@
+# Dependencias de Node.js
+node_modules/
+
+# Archivos de salida de NestJS
+dist/
+build/
+
+# Archivos de configuración
+.env
+.env.*.local
+
+# Archivos de log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Carpetas de editor y sistema
+.idea/
+.vscode/
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# Archivos de cobertura de pruebas
+coverage/
+
+# Carpetas y archivos de configuración de PM2
+.pm2/
+
+# Archivos temporales de procesos y del sistema
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# Archivos de rendimiento
+perf.data
+
+# Caches y archivos temporales de TypeScript
+*.tsbuildinfo
+
+# Archivos de configuraciones y bases de datos locales
+dump.rdb
+*.sqlite3
+
+# Configuración y cachés de Jest
+.jest/
+.jest-cache/
+.jest-test-results.json
+test-results/
+coverage/
+
+# Logs
+logs
+*.log
+logs/**/*.log
+
+# Configuración del depurador de VSCode
+.vscode/launch.json
+.vscode/tasks.json
+
+# Archivos de configuración de Swagger (si los generas automáticamente)
+swagger.json
+swagger.yaml
