@@ -6,6 +6,7 @@ import {RootStackParams} from '../../navigator/Navigator.tsx';
 import {GenericIcon} from '../../icons/Icon.tsx';
 import {PasswordInput} from '../../components/common/PasswordInput.tsx';
 import {Message} from '../../components/common/Message.tsx';
+import {isValidEmail, isValidPassword} from '../../../utils/validations.ts';
 
 export const SignupScreen = () => {
   const [name, setName] = useState('');
@@ -24,6 +25,16 @@ export const SignupScreen = () => {
   const handleRegister = () => {
     if (!name || !email || !password) {
       setError('Rellena todos los campos');
+      return;
+    }
+
+    if (!isValidEmail(email)) {
+      setError('Introduce una dirección de correo electrónico válida');
+      return;
+    }
+
+    if (!isValidPassword(password)) {
+      setError('Contraseña inválida');
       return;
     }
 
