@@ -66,7 +66,7 @@ export const ForgotPasswordScreen = () => {
           position: 'absolute',
           bottom: 50,
         }}
-        onPress={() => navigation.navigate('Register')}>
+        onPress={() => navigation.navigate('Signup')}>
         <Text
           style={{
             ...globalStyles.link,

@@ -7,7 +7,7 @@ import {GenericIcon} from '../../icons/Icon.tsx';
 import {PasswordInput} from '../../components/common/PasswordInput.tsx';
 import {Message} from '../../components/common/Message.tsx';
 
-export const RegisterScreen = () => {
+export const SignupScreen = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
