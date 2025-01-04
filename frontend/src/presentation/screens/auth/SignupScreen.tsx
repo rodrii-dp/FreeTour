@@ -38,7 +38,7 @@ export const SignupScreen = () => {
       return;
     }
 
-    navigation.navigate('Login');
+    navigation.navigate('SignupSuccess');
     setError('');
   };
 
@@ -98,9 +98,7 @@ export const SignupScreen = () => {
         <Text style={globalStyles.link}>términos y condiciones</Text>
       </Text>
 
-      <Pressable
-        style={globalStyles.button}
-        onPress={() => console.log('Pressed')}>
+      <Pressable style={globalStyles.button} onPress={handleRegister}>
         <Text style={globalStyles.buttonText}>Registrarse</Text>
       </Pressable>
 
@@ -121,7 +119,7 @@ export const SignupScreen = () => {
         <Text style={{fontSize: 16, color: '#818181'}}>
           ¿Ya tienes una cuenta?{' '}
         </Text>
-        <Pressable onPress={handleRegister}>
+        <Pressable onPress={() => console.log('Pressed')}>
           <Text style={globalStyles.link}>Inicia sesión aquí</Text>
         </Pressable>
       </View>

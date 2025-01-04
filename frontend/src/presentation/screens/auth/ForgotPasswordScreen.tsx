@@ -38,8 +38,8 @@ export const ForgotPasswordScreen = () => {
           ¿Olvidaste tu contraseña?
         </Text>
         <Text style={{color: '#4c5667', fontSize: 18}}>
-          Introduzca su dirección de correo electrónico para obtener el enlace
-          de restablecimiento de contraseña
+          Introduce tu dirección de correo electrónico para obtener el enlace de
+          restablecimiento de contraseña
         </Text>
       </View>
 
