@@ -5,7 +5,7 @@ import {globalStyles} from '../../../config/theme/theme.ts';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {RootStackParams} from '../../navigator/Navigator.tsx';
 import {Message} from '../../components/common/Message.tsx';
-import {isValidEmail} from '../../../utils/validateEmail.ts';
+import {isValidEmail} from '../../../utils/validations.ts';
 
 export const ForgotPasswordScreen = () => {
   const navigation = useNavigation<NavigationProp<RootStackParams>>();
@@ -38,8 +38,8 @@ export const ForgotPasswordScreen = () => {
           ¿Olvidaste tu contraseña?
         </Text>
         <Text style={{color: '#4c5667', fontSize: 18}}>
-          Introduzca su dirección de correo electrónico para obtener el enlace
-          de restablecimiento de contraseña
+          Introduce tu dirección de correo electrónico para obtener el enlace de
+          restablecimiento de contraseña
         </Text>
       </View>
 
@@ -66,7 +66,7 @@ export const ForgotPasswordScreen = () => {
           position: 'absolute',
           bottom: 50,
         }}
-        onPress={() => navigation.navigate('Register')}>
+        onPress={() => navigation.navigate('Signup')}>
         <Text
           style={{
             ...globalStyles.link,

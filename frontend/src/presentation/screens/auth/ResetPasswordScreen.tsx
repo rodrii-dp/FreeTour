@@ -5,8 +5,9 @@ import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {RootStackParams} from '../../navigator/Navigator.tsx';
 import {globalStyles} from '../../../config/theme/theme.ts';
 import {BackArrowButton} from '../../components/common/BackArrowButton.tsx';
-import {GenericIcon} from '../../icons/Icon.tsx';
 import {PasswordInput} from '../../components/common/PasswordInput.tsx';
+import {Message} from '../../components/common/Message.tsx';
+import {isValidPassword} from '../../../utils/validations.ts';
 
 // interface Props extends StackScreenProps<RootStackParams, 'ResetPassword'> {}
 
@@ -18,13 +19,35 @@ export const ResetPasswordScreen = () =>
 
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
-    const [showPassword, setShowPassword] = useState(false);
+    const [showFirstPassword, setShowFirstPassword] = useState(false);
+    const [showSecondPassword, setShowSecondPassword] = useState(false);
     const [focusedInput, setFocusedInput] = useState<'first' | 'second' | null>(
       null,
     );
+    const [error, setError] = useState('');
 
     const handleFocus = (input: 'first' | 'second') => setFocusedInput(input);
     const handleBlur = () => setFocusedInput(null);
+    const handleResetPassword = () => {
+      if (!password || !confirmPassword) {
+        setError('Rellena todos los campos');
+        return;
+      }
+
+      if (password !== confirmPassword) {
+        setError('Las contraseñas deben coincidir');
+        return;
+      }
+
+      if (!isValidPassword(password)) {
+        setError('Contraseña inválida');
+        return;
+      }
+
+      if (password === confirmPassword) {
+        navigation.navigate('Login');
+      }
+    };
 
     return (
       <View style={globalStyles.container}>
@@ -51,20 +74,11 @@ export const ResetPasswordScreen = () =>
             isFocused={focusedInput === 'first'}
             onFocus={() => handleFocus('first')}
             onBlur={handleBlur}
-            showPassword={showPassword}
-            togglePasswordVisibility={() => setShowPassword(!showPassword)}
+            showPassword={showFirstPassword}
+            togglePasswordVisibility={() =>
+              setShowFirstPassword(!showFirstPassword)
+            }
           />
-          <Pressable
-            style={globalStyles.eyeIcon}
-            onPress={() => setShowPassword(!showPassword)}>
-            <Text style={{color: '#1e88e5', fontWeight: 'bold'}}>
-              {showPassword ? (
-                <GenericIcon name="eye-outline" color="#818181" />
-              ) : (
-                <GenericIcon name="eye-off-outline" color="#818181" />
-              )}
-            </Text>
-          </Pressable>
         </View>
 
         <View style={globalStyles.inputContainer}>
@@ -76,16 +90,18 @@ export const ResetPasswordScreen = () =>
             isFocused={focusedInput === 'second'}
             onFocus={() => handleFocus('second')}
             onBlur={handleBlur}
-            showPassword={showPassword}
-            togglePasswordVisibility={() => setShowPassword(!showPassword)}
+            showPassword={showSecondPassword}
+            togglePasswordVisibility={() =>
+              setShowSecondPassword(!showSecondPassword)
+            }
           />
         </View>
 
-        <Pressable
-          style={globalStyles.button}
-          onPress={() => console.log('Pressed')}>
+        <Pressable style={globalStyles.button} onPress={handleResetPassword}>
           <Text style={globalStyles.buttonText}>Reestablecer contraseña</Text>
         </Pressable>
+
+        {error && <Message error={error} />}
 
         <Pressable
           style={{
@@ -93,7 +109,7 @@ export const ResetPasswordScreen = () =>
             position: 'absolute',
             bottom: 50,
           }}
-          onPress={() => navigation.navigate('Register')}>
+          onPress={() => navigation.navigate('Signup')}>
           <Text
             style={{
               ...globalStyles.link,

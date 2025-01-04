@@ -6,8 +6,9 @@ import {RootStackParams} from '../../navigator/Navigator.tsx';
 import {GenericIcon} from '../../icons/Icon.tsx';
 import {PasswordInput} from '../../components/common/PasswordInput.tsx';
 import {Message} from '../../components/common/Message.tsx';
+import {isValidEmail, isValidPassword} from '../../../utils/validations.ts';
 
-export const RegisterScreen = () => {
+export const SignupScreen = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -27,7 +28,17 @@ export const RegisterScreen = () => {
       return;
     }
 
-    navigation.navigate('Login');
+    if (!isValidEmail(email)) {
+      setError('Introduce una dirección de correo electrónico válida');
+      return;
+    }
+
+    if (!isValidPassword(password)) {
+      setError('Contraseña inválida');
+      return;
+    }
+
+    navigation.navigate('SignupSuccess');
     setError('');
   };
 
@@ -87,9 +98,7 @@ export const RegisterScreen = () => {
         <Text style={globalStyles.link}>términos y condiciones</Text>
       </Text>
 
-      <Pressable
-        style={globalStyles.button}
-        onPress={() => console.log('Pressed')}>
+      <Pressable style={globalStyles.button} onPress={handleRegister}>
         <Text style={globalStyles.buttonText}>Registrarse</Text>
       </Pressable>
 
@@ -110,7 +119,7 @@ export const RegisterScreen = () => {
         <Text style={{fontSize: 16, color: '#818181'}}>
           ¿Ya tienes una cuenta?{' '}
         </Text>
-        <Pressable onPress={handleRegister}>
+        <Pressable onPress={() => console.log('Pressed')}>
           <Text style={globalStyles.link}>Inicia sesión aquí</Text>
         </Pressable>
       </View>
