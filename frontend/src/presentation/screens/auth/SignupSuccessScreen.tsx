@@ -42,7 +42,7 @@ export const SignupSuccessScreen = () => {
           position: 'absolute',
           bottom: 50,
         }}
-        onPress={() => navigation.navigate('Signup')}>
+        onPress={() => navigation.navigate('Login')}>
         <Text
           style={{
             ...globalStyles.link,

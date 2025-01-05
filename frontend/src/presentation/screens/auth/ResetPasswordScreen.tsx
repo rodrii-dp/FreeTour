@@ -5,9 +5,9 @@ import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {RootStackParams} from '../../navigator/Navigator.tsx';
 import {globalStyles} from '../../../config/theme/theme.ts';
 import {BackArrowButton} from '../../components/common/BackArrowButton.tsx';
-import {PasswordInput} from '../../components/common/PasswordInput.tsx';
 import {Message} from '../../components/common/Message.tsx';
 import {isValidPassword} from '../../../utils/validations.ts';
+import {Input} from '../../components/common/Input.tsx';
 
 // interface Props extends StackScreenProps<RootStackParams, 'ResetPassword'> {}
 
@@ -65,37 +65,36 @@ export const ResetPasswordScreen = () =>
           </Text>
         </View>
 
-        <View style={[globalStyles.inputContainer, {marginTop: 50}]}>
-          <PasswordInput
+        <View style={{marginTop: 50}}>
+          <Input
             label="Introduce tu nueva contraseña"
             placeholder="152@@##PAss"
             value={password}
-            onChangeText={setPassword}
+            onChangeText={setConfirmPassword}
             isFocused={focusedInput === 'first'}
             onFocus={() => handleFocus('first')}
             onBlur={handleBlur}
+            isPassword
             showPassword={showFirstPassword}
             togglePasswordVisibility={() =>
               setShowFirstPassword(!showFirstPassword)
             }
           />
         </View>
-
-        <View style={globalStyles.inputContainer}>
-          <PasswordInput
-            label="Vuelve a introducir tu nueva contraseña"
-            placeholder="152@@##PAss"
-            value={confirmPassword}
-            onChangeText={setConfirmPassword}
-            isFocused={focusedInput === 'second'}
-            onFocus={() => handleFocus('second')}
-            onBlur={handleBlur}
-            showPassword={showSecondPassword}
-            togglePasswordVisibility={() =>
-              setShowSecondPassword(!showSecondPassword)
-            }
-          />
-        </View>
+        <Input
+          label="Vuelve a introducir tu nueva contraseña"
+          placeholder="152@@##PAss"
+          value={confirmPassword}
+          onChangeText={setConfirmPassword}
+          isFocused={focusedInput === 'second'}
+          onFocus={() => handleFocus('second')}
+          onBlur={handleBlur}
+          isPassword
+          showPassword={showSecondPassword}
+          togglePasswordVisibility={() =>
+            setShowSecondPassword(!showSecondPassword)
+          }
+        />
 
         <Pressable style={globalStyles.button} onPress={handleResetPassword}>
           <Text style={globalStyles.buttonText}>Reestablecer contraseña</Text>

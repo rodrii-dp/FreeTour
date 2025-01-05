@@ -1,38 +1,40 @@
 import React from 'react';
-import {globalStyles} from '../../../config/theme/theme.ts';
 import {
-  KeyboardTypeOptions,
   Pressable,
   StyleSheet,
   Text,
   TextInput,
   View,
+  TextInputProps,
 } from 'react-native';
 import {GenericIcon} from '../../icons/Icon.tsx';
+import {globalStyles} from '../../../config/theme/theme.ts';
 
-interface Props {
+interface Props extends TextInputProps {
   label: string;
-  placeholder: string;
   value: string;
   onChangeText: (text: string) => void;
   isFocused: boolean;
   onFocus: () => void;
   onBlur: () => void;
-  showPassword: boolean;
-  togglePasswordVisibility: () => void;
-  keyboardType?: KeyboardTypeOptions;
+  isPassword?: boolean;
+  showPassword?: boolean;
+  togglePasswordVisibility?: () => void;
 }
-export const PasswordInput = ({
+
+export const Input = ({
   label,
-  placeholder,
   value,
   onChangeText,
   isFocused,
   onFocus,
   onBlur,
-  showPassword,
+  placeholder,
+  keyboardType = 'default',
+  isPassword = false,
+  showPassword = false,
   togglePasswordVisibility,
-  keyboardType,
+  ...props
 }: Props) => {
   return (
     <View style={globalStyles.inputContainer}>
@@ -45,16 +47,20 @@ export const PasswordInput = ({
         onChangeText={onChangeText}
         onFocus={onFocus}
         onBlur={onBlur}
+        secureTextEntry={isPassword && !showPassword}
         keyboardType={keyboardType}
+        {...props}
       />
-      <Pressable
-        style={globalStyles.eyeIcon}
-        onPress={togglePasswordVisibility}>
-        <GenericIcon
-          name={showPassword ? 'eye-outline' : 'eye-off-outline'}
-          color="#818181"
-        />
-      </Pressable>
+      {isPassword && togglePasswordVisibility && (
+        <Pressable
+          style={globalStyles.eyeIcon}
+          onPress={togglePasswordVisibility}>
+          <GenericIcon
+            name={showPassword ? 'eye-outline' : 'eye-off-outline'}
+            color="#818181"
+          />
+        </Pressable>
+      )}
     </View>
   );
 };
