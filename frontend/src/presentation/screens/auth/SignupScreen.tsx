@@ -3,7 +3,7 @@ import {View, Text, Pressable} from 'react-native';
 import {globalStyles} from '../../../config/theme/theme.ts';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {RootStackParams} from '../../navigator/Navigator.tsx';
-import {GenericIcon} from '../../icons/Icon.tsx';
+import {GenericIcon} from '../../icons/GenericIcon.tsx';
 import {Message} from '../../components/common/Message.tsx';
 import {isValidEmail, isValidPassword} from '../../../utils/validations.ts';
 import {Input} from '../../components/common/Input.tsx';

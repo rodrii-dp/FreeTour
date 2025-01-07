@@ -7,7 +7,7 @@ import {
   View,
   TextInputProps,
 } from 'react-native';
-import {GenericIcon} from '../../icons/Icon.tsx';
+import {GenericIcon} from '../../icons/GenericIcon.tsx';
 import {globalStyles} from '../../../config/theme/theme.ts';
 
 interface Props extends TextInputProps {

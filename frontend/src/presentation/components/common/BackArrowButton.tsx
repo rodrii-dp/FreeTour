@@ -1,6 +1,6 @@
 import React from 'react';
 import {Pressable, StyleProp, View, ViewStyle} from 'react-native';
-import {GenericIcon} from '../../icons/Icon.tsx';
+import {GenericIcon} from '../../icons/GenericIcon.tsx';
 
 interface Props {
   onPress: () => void;

@@ -7,7 +7,7 @@ import {Message} from '../../components/common/Message.tsx';
 import {Input} from '../../components/common/Input.tsx';
 import {Checkbox} from '../../components/common/Checkbox.tsx';
 import {Separator} from '../../components/common/Separator.tsx';
-import {GenericIcon} from '../../icons/Icon.tsx';
+import {GenericIcon} from '../../icons/GenericIcon.tsx';
 import {isValidEmail, isValidPassword} from '../../../utils/validations.ts';
 
 export const LoginScreen = () => {
