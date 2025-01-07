@@ -13,11 +13,6 @@ export const ForgotPasswordScreen = () => {
   const [error, setError] = useState('');
 
   const handleResetPassword = () => {
-    if (!email) {
-      setError('Introduce una dirección de correo electrónico');
-      return;
-    }
-
     if (!isValidEmail(email)) {
       setError('Introduce una dirección de correo electrónico válida');
       return;

@@ -1,6 +1,13 @@
 import React from 'react';
 import {globalStyles} from '../../../config/theme/theme.ts';
-import {Pressable, StyleSheet, Text, TextInput, View} from 'react-native';
+import {
+  KeyboardTypeOptions,
+  Pressable,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+} from 'react-native';
 import {GenericIcon} from '../../icons/Icon.tsx';
 
 interface Props {
@@ -13,6 +20,7 @@ interface Props {
   onBlur: () => void;
   showPassword: boolean;
   togglePasswordVisibility: () => void;
+  keyboardType?: KeyboardTypeOptions;
 }
 export const PasswordInput = ({
   label,
@@ -24,6 +32,7 @@ export const PasswordInput = ({
   onBlur,
   showPassword,
   togglePasswordVisibility,
+  keyboardType,
 }: Props) => {
   return (
     <View style={globalStyles.inputContainer}>
@@ -32,11 +41,11 @@ export const PasswordInput = ({
         style={[globalStyles.input, isFocused && styles.inputFocused]}
         placeholder={placeholder}
         placeholderTextColor="#aaa"
-        secureTextEntry={!showPassword}
         value={value}
         onChangeText={onChangeText}
         onFocus={onFocus}
         onBlur={onBlur}
+        keyboardType={keyboardType}
       />
       <Pressable
         style={globalStyles.eyeIcon}
