@@ -29,11 +29,6 @@ export const ResetPasswordScreen = () =>
     const handleFocus = (input: 'first' | 'second') => setFocusedInput(input);
     const handleBlur = () => setFocusedInput(null);
     const handleResetPassword = () => {
-      if (!password || !confirmPassword) {
-        setError('Rellena todos los campos');
-        return;
-      }
-
       if (password !== confirmPassword) {
         setError('Las contraseñas deben coincidir');
         return;
@@ -70,7 +65,7 @@ export const ResetPasswordScreen = () =>
             label="Introduce tu nueva contraseña"
             placeholder="152@@##PAss"
             value={password}
-            onChangeText={setConfirmPassword}
+            onChangeText={setPassword}
             isFocused={focusedInput === 'first'}
             onFocus={() => handleFocus('first')}
             onBlur={handleBlur}

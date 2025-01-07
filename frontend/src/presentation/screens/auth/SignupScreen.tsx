@@ -7,6 +7,7 @@ import {GenericIcon} from '../../icons/Icon.tsx';
 import {Message} from '../../components/common/Message.tsx';
 import {isValidEmail, isValidPassword} from '../../../utils/validations.ts';
 import {Input} from '../../components/common/Input.tsx';
+import {Separator} from '../../components/common/Separator.tsx';
 
 export const SignupScreen = () => {
   const [name, setName] = useState('');
@@ -87,7 +88,7 @@ export const SignupScreen = () => {
         <Text style={globalStyles.buttonText}>Registrarse</Text>
       </Pressable>
 
-      <Text style={globalStyles.or}>O</Text>
+      <Separator text="o" />
 
       <Pressable
         style={globalStyles.googleButton}

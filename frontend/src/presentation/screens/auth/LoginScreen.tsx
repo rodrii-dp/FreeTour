@@ -5,6 +5,10 @@ import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {RootStackParams} from '../../navigator/Navigator.tsx';
 import {Message} from '../../components/common/Message.tsx';
 import {Input} from '../../components/common/Input.tsx';
+import {Checkbox} from '../../components/common/Checkbox.tsx';
+import {Separator} from '../../components/common/Separator.tsx';
+import {GenericIcon} from '../../icons/Icon.tsx';
+import {isValidEmail, isValidPassword} from '../../../utils/validations.ts';
 
 export const LoginScreen = () => {
   const navigation = useNavigation<NavigationProp<RootStackParams>>();
@@ -15,9 +19,19 @@ export const LoginScreen = () => {
     null,
   );
   const [error, setError] = useState('');
+  const [isCheckedCheckbox, setIsCheckedCheckbox] = useState(false);
 
   const handleFocus = (input: 'email' | 'password') => setFocusedInput(input);
   const handleBlur = () => setFocusedInput(null);
+
+  const handleLogin = () => {
+    if (!isValidEmail(email) || !isValidPassword(password)) {
+      setError('Rellena todos los campos');
+      return;
+    }
+
+    navigation.navigate('Home');
+  };
 
   return (
     <View style={globalStyles.container}>
@@ -25,7 +39,6 @@ export const LoginScreen = () => {
         Iniciar sesión
       </Text>
       <Text style={{color: '#4c5667', fontSize: 18}}>Bienvenido de vuelta</Text>
-
       <View style={{marginTop: 50}}>
         <Input
           label="Correo electrónico"
@@ -40,6 +53,8 @@ export const LoginScreen = () => {
 
       <Input
         label="Contraseña"
+        rightLabel="Olvidaste tu contraseña?"
+        onPressRightLabel={() => navigation.navigate('ForgotPassword')}
         placeholder="Password"
         value={password}
         onChangeText={setPassword}
@@ -51,11 +66,44 @@ export const LoginScreen = () => {
         togglePasswordVisibility={() => setShowPassword(!showPassword)}
       />
 
-      <Pressable
-        style={globalStyles.button}
-        onPress={() => navigation.navigate('Signup')}>
+      <Checkbox
+        title="Mantener mi sesión iniciada"
+        isChecked={isCheckedCheckbox}
+        toggle={() => setIsCheckedCheckbox(!isCheckedCheckbox)}
+      />
+
+      <Pressable style={globalStyles.button} onPress={handleLogin}>
         <Text style={globalStyles.buttonText}>Iniciar sesión</Text>
       </Pressable>
+
+      <Separator text="o iniciar sesión con" />
+
+      <Pressable
+        style={globalStyles.googleButton}
+        onPress={() => console.log('Pressed')}>
+        <View style={globalStyles.googleButtonContent}>
+          <GenericIcon name="logo-google" style={{marginRight: 15}} />
+          <Text style={globalStyles.googleButtonText}>
+            Continuar con Google
+          </Text>
+        </View>
+      </Pressable>
+      <Pressable
+        style={{
+          alignSelf: 'center',
+          position: 'absolute',
+          bottom: 50,
+        }}
+        onPress={() => navigation.navigate('Signup')}>
+        <Text
+          style={{
+            ...globalStyles.link,
+            textAlign: 'center',
+          }}>
+          Crear cuenta
+        </Text>
+      </Pressable>
+
       {error && <Message error={error} />}
     </View>
   );

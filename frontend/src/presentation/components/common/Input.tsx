@@ -12,6 +12,7 @@ import {globalStyles} from '../../../config/theme/theme.ts';
 
 interface Props extends TextInputProps {
   label: string;
+  rightLabel?: string;
   value: string;
   onChangeText: (text: string) => void;
   isFocused: boolean;
@@ -20,10 +21,13 @@ interface Props extends TextInputProps {
   isPassword?: boolean;
   showPassword?: boolean;
   togglePasswordVisibility?: () => void;
+  onPressRightLabel?: () => void;
 }
 
 export const Input = ({
   label,
+  rightLabel,
+  onPressRightLabel,
   value,
   onChangeText,
   isFocused,
@@ -38,7 +42,14 @@ export const Input = ({
 }: Props) => {
   return (
     <View style={globalStyles.inputContainer}>
-      <Text style={globalStyles.label}>{label}</Text>
+      <View style={styles.labelContainer}>
+        <Text style={globalStyles.label}>{label}</Text>
+        {rightLabel && (
+          <Pressable onPress={onPressRightLabel}>
+            <Text style={globalStyles.link}>{rightLabel}</Text>
+          </Pressable>
+        )}
+      </View>
       <TextInput
         style={[globalStyles.input, isFocused && styles.inputFocused]}
         placeholder={placeholder}
@@ -68,5 +79,11 @@ export const Input = ({
 const styles = StyleSheet.create({
   inputFocused: {
     borderColor: 'black',
+  },
+  labelContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 5,
   },
 });
