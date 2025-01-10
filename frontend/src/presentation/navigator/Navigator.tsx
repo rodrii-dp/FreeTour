@@ -2,7 +2,7 @@ import React from 'react';
 import {createStackNavigator} from '@react-navigation/stack';
 import {HomeScreen} from '../screens/home/HomeScreen.tsx';
 import {SignupScreen} from '../screens/auth/SignupScreen.tsx';
-import {LoginScreen} from '../screens/auth/LoginScreen.tsx';
+import {SignInScreen} from '../screens/auth/SignInScreen.tsx';
 import {ForgotPasswordScreen} from '../screens/auth/ForgotPasswordScreen.tsx';
 import {ResetPasswordScreen} from '../screens/auth/ResetPasswordScreen.tsx';
 import {SignupSuccessScreen} from '../screens/auth/SignupSuccessScreen.tsx';
@@ -22,7 +22,7 @@ export const Navigator = () => {
   return (
     <Stack.Navigator screenOptions={{headerShown: false}}>
       <Stack.Screen name="Signup" component={SignupScreen} />
-      <Stack.Screen name="Login" component={LoginScreen} />
+      <Stack.Screen name="Login" component={SignInScreen} />
       <Stack.Screen name="Home" component={HomeScreen} />
       <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
       <Stack.Screen name="ResetPassword" component={ResetPasswordScreen} />

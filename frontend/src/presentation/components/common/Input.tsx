@@ -63,14 +63,14 @@ export const Input = ({
         {...props}
       />
       {isPassword && togglePasswordVisibility && (
-        <Pressable
-          style={globalStyles.eyeIcon}
-          onPress={togglePasswordVisibility}>
-          <GenericIcon
-            name={showPassword ? 'eye-outline' : 'eye-off-outline'}
-            color="#818181"
-          />
-        </Pressable>
+        <View style={globalStyles.eyeIcon}>
+          <Pressable onPress={togglePasswordVisibility}>
+            <GenericIcon
+              name={showPassword ? 'eye-outline' : 'eye-off-outline'}
+              color="#818181"
+            />
+          </Pressable>
+        </View>
       )}
     </View>
   );

@@ -84,14 +84,16 @@ export const SignupScreen = () => {
         <Text style={globalStyles.link}>términos y condiciones</Text>
       </Text>
 
-      <Pressable style={globalStyles.button} onPress={handleRegister}>
+      <Pressable
+        style={[globalStyles.button, {marginBottom: 30}]}
+        onPress={handleRegister}>
         <Text style={globalStyles.buttonText}>Registrarse</Text>
       </Pressable>
 
       <Separator text="o" />
 
       <Pressable
-        style={globalStyles.googleButton}
+        style={[globalStyles.googleButton, {marginTop: 30}]}
         onPress={() => console.log('Pressed')}>
         <View style={globalStyles.googleButtonContent}>
           <GenericIcon name="logo-google" style={{marginRight: 15}} />

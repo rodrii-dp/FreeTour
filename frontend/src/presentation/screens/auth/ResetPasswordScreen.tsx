@@ -52,11 +52,11 @@ export const ResetPasswordScreen = () =>
         />
         <View style={{marginBottom: 30}}>
           <Text style={{...globalStyles.title, marginBottom: 10}}>
-            Reestablecer contraseña
+            Restablecer contraseña
           </Text>
           <Text style={{color: '#4c5667', fontSize: 18}}>
-            Introduce tu dirección de correo electrónico para obtener el enlace
-            de restablecimiento de contraseña
+            Introduzca su nueva contraseña dos veces a continuación para
+            restablecer una nueva contraseña
           </Text>
         </View>
 

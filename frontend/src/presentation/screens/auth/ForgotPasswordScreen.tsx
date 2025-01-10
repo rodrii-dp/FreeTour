@@ -1,16 +1,21 @@
 import React, {useState} from 'react';
-import {View, Text, TextInput, Pressable} from 'react-native';
+import {View, Text, Pressable} from 'react-native';
 import {BackArrowButton} from '../../components/common/BackArrowButton.tsx';
 import {globalStyles} from '../../../config/theme/theme.ts';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {RootStackParams} from '../../navigator/Navigator.tsx';
 import {Message} from '../../components/common/Message.tsx';
 import {isValidEmail} from '../../../utils/validations.ts';
+import {Input} from '../../components/common/Input.tsx';
 
 export const ForgotPasswordScreen = () => {
   const navigation = useNavigation<NavigationProp<RootStackParams>>();
   const [email, setEmail] = useState('');
   const [error, setError] = useState('');
+  const [focusedInput, setFocusedInput] = useState<'email' | null>(null);
+
+  const handleFocus = (input: 'email') => setFocusedInput(input);
+  const handleBlur = () => setFocusedInput(null);
 
   const handleResetPassword = () => {
     if (!isValidEmail(email)) {
@@ -38,22 +43,18 @@ export const ForgotPasswordScreen = () => {
         </Text>
       </View>
 
-      <View style={{marginTop: 50}}>
-        <Text style={{...globalStyles.label, fontWeight: 'bold'}}>
-          Correo electrónico
-        </Text>
-        <TextInput
-          style={{...globalStyles.input, marginBottom: 30}}
-          placeholder="hello@example.com"
-          placeholderTextColor="#aaa"
-          value={email}
-          onChangeText={value => setEmail(value)}
-          keyboardType="email-address"
-        />
-        <Pressable style={globalStyles.button} onPress={handleResetPassword}>
-          <Text style={globalStyles.buttonText}>Reestablecer contraseña</Text>
-        </Pressable>
-      </View>
+      <Input
+        label="Correo electrónico"
+        placeholder="hello@example.com"
+        value={email}
+        onChangeText={setEmail}
+        isFocused={focusedInput === 'email'}
+        onFocus={() => handleFocus('email')}
+        onBlur={handleBlur}
+      />
+      <Pressable style={globalStyles.button} onPress={handleResetPassword}>
+        <Text style={globalStyles.buttonText}>Restablecer contraseña</Text>
+      </Pressable>
 
       <Pressable
         style={{

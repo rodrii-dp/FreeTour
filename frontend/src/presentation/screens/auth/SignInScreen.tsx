@@ -10,7 +10,7 @@ import {Separator} from '../../components/common/Separator.tsx';
 import {GenericIcon} from '../../icons/GenericIcon.tsx';
 import {isValidEmail, isValidPassword} from '../../../utils/validations.ts';
 
-export const LoginScreen = () => {
+export const SignInScreen = () => {
   const navigation = useNavigation<NavigationProp<RootStackParams>>();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -72,14 +72,16 @@ export const LoginScreen = () => {
         toggle={() => setIsCheckedCheckbox(!isCheckedCheckbox)}
       />
 
-      <Pressable style={globalStyles.button} onPress={handleLogin}>
+      <Pressable
+        style={[globalStyles.button, {marginBottom: 30}]}
+        onPress={handleLogin}>
         <Text style={globalStyles.buttonText}>Iniciar sesión</Text>
       </Pressable>
 
       <Separator text="o iniciar sesión con" />
 
       <Pressable
-        style={globalStyles.googleButton}
+        style={[globalStyles.googleButton, {marginTop: 30}]}
         onPress={() => console.log('Pressed')}>
         <View style={globalStyles.googleButtonContent}>
           <GenericIcon name="logo-google" style={{marginRight: 15}} />
