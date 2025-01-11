@@ -5,26 +5,26 @@ import {globalStyles} from '../../../config/theme/theme.ts';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {RootStackParams} from '../../navigator/Navigator.tsx';
 import {Message} from '../../components/common/Message.tsx';
-import {isValidEmail} from '../../../utils/validations.ts';
 import {Input} from '../../components/common/Input.tsx';
+import {useFormValidation} from '../../hooks/useFormValidation.tsx';
 
 export const ForgotPasswordScreen = () => {
   const navigation = useNavigation<NavigationProp<RootStackParams>>();
-  const [email, setEmail] = useState('');
-  const [error, setError] = useState('');
+  const {fields, error, validateForm, handleInputChange} = useFormValidation({
+    email: '',
+    error: '',
+  });
   const [focusedInput, setFocusedInput] = useState<'email' | null>(null);
 
   const handleFocus = (input: 'email') => setFocusedInput(input);
   const handleBlur = () => setFocusedInput(null);
 
   const handleResetPassword = () => {
-    if (!isValidEmail(email)) {
-      setError('Introduce una dirección de correo electrónico válida');
+    if (!validateForm()) {
       return;
     }
 
-    navigation.navigate('ResetPassword', {email});
-    setError('');
+    navigation.navigate('ResetPassword', {email: fields.email});
   };
 
   return (
@@ -46,8 +46,8 @@ export const ForgotPasswordScreen = () => {
       <Input
         label="Correo electrónico"
         placeholder="hello@example.com"
-        value={email}
-        onChangeText={setEmail}
+        value={fields.email}
+        onChangeText={value => handleInputChange('email', value)}
         isFocused={focusedInput === 'email'}
         onFocus={() => handleFocus('email')}
         onBlur={handleBlur}

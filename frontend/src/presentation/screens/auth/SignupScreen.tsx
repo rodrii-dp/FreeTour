@@ -5,19 +5,20 @@ import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {RootStackParams} from '../../navigator/Navigator.tsx';
 import {GenericIcon} from '../../icons/GenericIcon.tsx';
 import {Message} from '../../components/common/Message.tsx';
-import {isValidEmail, isValidPassword} from '../../../utils/validations.ts';
 import {Input} from '../../components/common/Input.tsx';
 import {Separator} from '../../components/common/Separator.tsx';
+import {useFormValidation} from '../../hooks/useFormValidation.tsx';
 
 export const SignupScreen = () => {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const {fields, error, handleInputChange, validateForm} = useFormValidation({
+    name: '',
+    email: '',
+    password: '',
+  });
   const [showPassword, setShowPassword] = useState(false);
   const [focusedInput, setFocusedInput] = useState<
     'name' | 'email' | 'password' | null
   >(null);
-  const [error, setError] = useState('');
 
   const navigation = useNavigation<NavigationProp<RootStackParams>>();
 
@@ -25,23 +26,9 @@ export const SignupScreen = () => {
     setFocusedInput(input);
   const handleBlur = () => setFocusedInput(null);
   const handleRegister = () => {
-    if (!name || !email || !password) {
-      setError('Rellena todos los campos');
-      return;
+    if (validateForm()) {
+      navigation.navigate('SignupSuccess');
     }
-
-    if (!isValidEmail(email)) {
-      setError('Introduce una dirección de correo electrónico válida');
-      return;
-    }
-
-    if (!isValidPassword(password)) {
-      setError('Contraseña inválida');
-      return;
-    }
-
-    navigation.navigate('SignupSuccess');
-    setError('');
   };
 
   return (
@@ -50,18 +37,17 @@ export const SignupScreen = () => {
       <Input
         label="Nombre"
         placeholder="John Doe"
-        value={name}
-        onChangeText={setName}
+        value={fields.name}
+        onChangeText={value => handleInputChange('name', value)}
         isFocused={focusedInput === 'name'}
         onFocus={() => handleFocus('name')}
         onBlur={handleBlur}
-        keyboardType="default"
       />
       <Input
         label="Correo electrónico"
         placeholder="hello@example.com"
-        value={email}
-        onChangeText={setEmail}
+        value={fields.email}
+        onChangeText={value => handleInputChange('email', value)}
         isFocused={focusedInput === 'email'}
         onFocus={() => handleFocus('email')}
         onBlur={handleBlur}
@@ -69,8 +55,8 @@ export const SignupScreen = () => {
       <Input
         label="Contraseña"
         placeholder="Password"
-        value={password}
-        onChangeText={setPassword}
+        value={fields.password}
+        onChangeText={value => handleInputChange('password', value)}
         isFocused={focusedInput === 'password'}
         onFocus={() => handleFocus('password')}
         onBlur={handleBlur}
