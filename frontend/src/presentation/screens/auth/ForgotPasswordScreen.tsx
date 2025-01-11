@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {View, Text, Pressable} from 'react-native';
 import {BackArrowButton} from '../../components/common/BackArrowButton.tsx';
 import {globalStyles} from '../../../config/theme/theme.ts';
@@ -7,17 +7,14 @@ import {RootStackParams} from '../../navigator/Navigator.tsx';
 import {Message} from '../../components/common/Message.tsx';
 import {Input} from '../../components/common/Input.tsx';
 import {useFormValidation} from '../../hooks/useFormValidation.tsx';
+import {useFocus} from '../../hooks/useFocus.tsx';
 
 export const ForgotPasswordScreen = () => {
   const navigation = useNavigation<NavigationProp<RootStackParams>>();
   const {fields, error, validateForm, handleInputChange} = useFormValidation({
     email: '',
-    error: '',
   });
-  const [focusedInput, setFocusedInput] = useState<'email' | null>(null);
-
-  const handleFocus = (input: 'email') => setFocusedInput(input);
-  const handleBlur = () => setFocusedInput(null);
+  const {focusedInput, handleFocus, handleBlur} = useFocus<'email'>();
 
   const handleResetPassword = () => {
     if (!validateForm()) {

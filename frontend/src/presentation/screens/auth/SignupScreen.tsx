@@ -8,6 +8,7 @@ import {Message} from '../../components/common/Message.tsx';
 import {Input} from '../../components/common/Input.tsx';
 import {Separator} from '../../components/common/Separator.tsx';
 import {useFormValidation} from '../../hooks/useFormValidation.tsx';
+import {useFocus} from '../../hooks/useFocus.tsx';
 
 export const SignupScreen = () => {
   const {fields, error, handleInputChange, validateForm} = useFormValidation({
@@ -16,15 +17,11 @@ export const SignupScreen = () => {
     password: '',
   });
   const [showPassword, setShowPassword] = useState(false);
-  const [focusedInput, setFocusedInput] = useState<
-    'name' | 'email' | 'password' | null
-  >(null);
+  const {focusedInput, handleFocus, handleBlur} = useFocus<
+    'name' | 'email' | 'password'
+  >();
 
   const navigation = useNavigation<NavigationProp<RootStackParams>>();
-
-  const handleFocus = (input: 'name' | 'email' | 'password') =>
-    setFocusedInput(input);
-  const handleBlur = () => setFocusedInput(null);
   const handleRegister = () => {
     if (validateForm()) {
       navigation.navigate('SignupSuccess');

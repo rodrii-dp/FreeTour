@@ -9,6 +9,7 @@ import {Checkbox} from '../../components/common/Checkbox.tsx';
 import {Separator} from '../../components/common/Separator.tsx';
 import {GenericIcon} from '../../icons/GenericIcon.tsx';
 import {useFormValidation} from '../../hooks/useFormValidation.tsx';
+import {useFocus} from '../../hooks/useFocus.tsx';
 
 export const SignInScreen = () => {
   const navigation = useNavigation<NavigationProp<RootStackParams>>();
@@ -18,13 +19,11 @@ export const SignInScreen = () => {
     password: '',
   });
   const [showPassword, setShowPassword] = useState(false);
-  const [focusedInput, setFocusedInput] = useState<'email' | 'password' | null>(
-    null,
-  );
-  const [isCheckedCheckbox, setIsCheckedCheckbox] = useState(false);
+  const {focusedInput, handleFocus, handleBlur} = useFocus<
+    'email' | 'password'
+  >();
 
-  const handleFocus = (input: 'email' | 'password') => setFocusedInput(input);
-  const handleBlur = () => setFocusedInput(null);
+  const [isCheckedCheckbox, setIsCheckedCheckbox] = useState(false);
 
   const handleLogin = () => {
     if (validateForm()) {

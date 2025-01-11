@@ -7,6 +7,7 @@ import {BackArrowButton} from '../../components/common/BackArrowButton.tsx';
 import {Message} from '../../components/common/Message.tsx';
 import {Input} from '../../components/common/Input.tsx';
 import {useFormValidation} from '../../hooks/useFormValidation.tsx';
+import {useFocus} from '../../hooks/useFocus.tsx';
 
 export const ResetPasswordScreen = () => {
   const {fields, error, handleInputChange, validatePasswords} =
@@ -17,14 +18,11 @@ export const ResetPasswordScreen = () => {
 
   const [showFirstPassword, setShowFirstPassword] = useState(false);
   const [showSecondPassword, setShowSecondPassword] = useState(false);
-  const [focusedInput, setFocusedInput] = useState<'first' | 'second' | null>(
-    null,
-  );
+  const {focusedInput, handleFocus, handleBlur} = useFocus<
+    'first' | 'second'
+  >();
 
   const navigation = useNavigation<NavigationProp<RootStackParams>>();
-
-  const handleFocus = (input: 'first' | 'second') => setFocusedInput(input);
-  const handleBlur = () => setFocusedInput(null);
 
   const handleResetPassword = () => {
     if (validatePasswords(fields.password, fields.confirmPassword)) {
