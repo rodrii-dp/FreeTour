@@ -1,7 +1,11 @@
 import React, {useState} from 'react';
 import {View, Text, Pressable} from 'react-native';
 import {globalStyles} from '../../../config/theme/theme.ts';
-import {NavigationProp, useNavigation} from '@react-navigation/native';
+import {
+  NavigationProp,
+  StackActions,
+  useNavigation,
+} from '@react-navigation/native';
 import {RootStackParams} from '../../navigator/Navigator.tsx';
 import {GenericIcon} from '../../icons/GenericIcon.tsx';
 import {Message} from '../../components/common/Message.tsx';
@@ -10,7 +14,7 @@ import {Separator} from '../../components/common/Separator.tsx';
 import {useFormValidation} from '../../hooks/useFormValidation.tsx';
 import {useFocus} from '../../hooks/useFocus.tsx';
 
-export const SignupScreen = () => {
+export const SignUpScreen = () => {
   const {fields, error, handleInputChange, validateForm} = useFormValidation({
     name: '',
     email: '',
