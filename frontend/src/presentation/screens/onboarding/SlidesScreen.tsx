@@ -1,5 +1,6 @@
 import React, {useRef, useState} from 'react';
 import {
+  StyleSheet,
   View,
   Text,
   FlatList,
@@ -8,11 +9,13 @@ import {
   NativeScrollEvent,
 } from 'react-native';
 import {Button} from '../../components/common/Button';
-import {useNavigation} from '@react-navigation/native';
+import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {SvgProps} from 'react-native-svg';
 import Slide1 from '../../assets/slide-1.svg';
 import Slide2 from '../../assets/slide-2.svg';
 import Slide3 from '../../assets/slide-3.svg';
+import {globalStyles} from '../../../config/theme/theme.ts';
+import {RootStackParams} from '../../navigator/Navigator.tsx';
 
 interface Slide {
   title: string;
@@ -22,18 +25,18 @@ interface Slide {
 
 const items: Slide[] = [
   {
-    title: 'Titulo 1',
-    desc: 'Ea et eu enim fugiat sunt reprehenderit sunt aute quis tempor ipsum cupidatat et.',
+    title: 'Bienvenido a FreeTour',
+    desc: 'Aquí encontrarás una gran variedad de lugares por descubrir al alcance de un solo clic.',
     SvgComponent: Slide1,
   },
   {
-    title: 'Titulo 2',
-    desc: 'Anim est quis elit proident magna quis cupidatat curlpa labore Lorem ea. Exercitation mollit velit in aliquip tempor occaecat dolor minim amet dolor enim cillum excepteur. ',
+    title: 'Gestiona tus experiencias',
+    desc: 'Reserva fácilmente tu lugar en los tours que más te interesen.',
     SvgComponent: Slide2,
   },
   {
-    title: 'Titulo 3',
-    desc: 'Ex amet duis amet nulla. Aliquip ea Lorem ea culpa consequat proident. Nulla tempor esse ad tempor sit amet Lorem. Velit ea labore aute pariatur commodo duis veniam enim.',
+    title: 'Explora sin límites',
+    desc: 'Sumérgete en aventuras inolvidables y descubre todo lo que el mundo tiene para ofrecer.',
     SvgComponent: Slide3,
   },
 ];
@@ -41,7 +44,7 @@ const items: Slide[] = [
 export const SlidesScreen = () => {
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
   const flatListRef = useRef<FlatList>(null);
-  const navigation = useNavigation();
+  const navigation = useNavigation<NavigationProp<RootStackParams>>();
 
   const onScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
     const {contentOffset, layoutMeasurement} = event.nativeEvent;
@@ -49,49 +52,49 @@ export const SlidesScreen = () => {
     setCurrentSlideIndex(currentIndex > 0 ? currentIndex : 0);
   };
 
-  const scrollToSlide = (index: number) => {
-    if (!flatListRef.current) {
-      return;
-    }
-
-    flatListRef.current.scrollToIndex({index, animated: true});
-  };
-
   return (
-    <View style={{flex: 1}}>
-      <FlatList
-        ref={flatListRef}
-        data={items}
-        renderItem={({item}) => <SlideItem item={item} />}
-        keyExtractor={item => item.title}
-        horizontal
-        pagingEnabled
-        // scrollEnabled={false}
-        onScroll={onScroll}
-      />
+    <View style={styles.container}>
+      <View style={styles.slidesContainer}>
+        <FlatList
+          ref={flatListRef}
+          data={items}
+          renderItem={({item}) => (
+            <SlideItem item={item} currentSlideIndex={currentSlideIndex} />
+          )}
+          keyExtractor={item => item.title}
+          horizontal
+          pagingEnabled
+          onScroll={onScroll}
+          showsHorizontalScrollIndicator={false}
+        />
+      </View>
 
-      {currentSlideIndex === items.length - 1 ? (
+      <View style={styles.buttonsContainer}>
         <Button
-          text="Finalizar"
-          onPress={() => navigation.goBack()}
-          style={{position: 'absolute', bottom: 60, right: 30, width: 100}}
+          text="Iniciar sesión"
+          onPress={() => navigation.navigate('Signin')}
         />
-      ) : (
         <Button
-          text="Siguiente"
-          onPress={() => scrollToSlide(currentSlideIndex + 1)}
-          style={{position: 'absolute', bottom: 60, right: 30, width: 100}}
+          text="Crear cuenta"
+          onPress={() => navigation.navigate('Signup')}
+          style={{alignSelf: 'center'}}
+          textStyle={{
+            ...globalStyles.link,
+            marginTop: 20,
+            textAlign: 'center',
+          }}
         />
-      )}
+      </View>
     </View>
   );
 };
 
 interface SlideItemProps {
   item: Slide;
+  currentSlideIndex: number;
 }
 
-const SlideItem = ({item}: SlideItemProps) => {
+const SlideItem = ({item, currentSlideIndex}: SlideItemProps) => {
   const {width} = useWindowDimensions();
   const {title, desc, SvgComponent} = item;
 
@@ -99,11 +102,8 @@ const SlideItem = ({item}: SlideItemProps) => {
     <View
       style={{
         flex: 1,
-        // backgroundColor: 'white',
-        borderRadius: 5,
-        padding: 40,
-        justifyContent: 'center',
         width,
+        justifyContent: 'center',
       }}>
       <SvgComponent
         width={width * 0.7}
@@ -112,8 +112,68 @@ const SlideItem = ({item}: SlideItemProps) => {
           alignSelf: 'center',
         }}
       />
-      <Text>{title}</Text>
-      <Text>{desc}</Text>
+
+      <Text
+        style={[
+          globalStyles.title,
+          {
+            marginBottom: 7,
+            fontWeight: 600,
+            textAlign: 'center',
+          },
+        ]}>
+        {title}
+      </Text>
+      <Text
+        style={{
+          color: '#afb0b3',
+          fontSize: 18,
+          textAlign: 'center',
+          marginHorizontal: 15,
+        }}>
+        {desc}
+      </Text>
+
+      <View style={styles.dots}>
+        {[0, 1, 2].map((_, index) => (
+          <View
+            key={index}
+            style={[
+              styles.dot,
+              {
+                backgroundColor:
+                  currentSlideIndex === index ? '#4263EB' : '#E5E7EB',
+              },
+            ]}
+          />
+        ))}
+      </View>
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: 'white',
+  },
+  slidesContainer: {
+    flex: 1,
+  },
+  buttonsContainer: {
+    paddingHorizontal: 24,
+    paddingBottom: 24,
+  },
+  dots: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    marginTop: 40,
+  },
+  dot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+  },
+});

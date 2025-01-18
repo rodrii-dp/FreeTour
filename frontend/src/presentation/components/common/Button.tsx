@@ -32,7 +32,12 @@ export const Button = ({
       style={({pressed}) => [
         {opacity: pressed ? 0.8 : 1},
         style,
-        {flexDirection: 'row', alignItems: 'center', justifyContent: 'center'},
+        {
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'center',
+          marginHorizontal: 30,
+        },
       ]}>
       {iconPosition === 'left' && icon ? (
         <View style={{marginRight: 8}}>{icon}</View>

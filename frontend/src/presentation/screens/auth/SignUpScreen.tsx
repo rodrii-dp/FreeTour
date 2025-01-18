@@ -90,7 +90,7 @@ export const SignUpScreen = () => {
         <Text style={{fontSize: 16, color: '#818181'}}>
           ¿Ya tienes una cuenta?{' '}
         </Text>
-        <Pressable onPress={() => navigation.navigate('Login')}>
+        <Pressable onPress={() => navigation.navigate('Signin')}>
           <Text style={globalStyles.link}>Inicia sesión aquí</Text>
         </Pressable>
       </View>

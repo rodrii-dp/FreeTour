@@ -27,7 +27,7 @@ export const SignInScreen = () => {
 
   const handleLogin = () => {
     if (validateForm()) {
-      navigation.navigate('Home');
+      navigation.navigate('BottomTabs');
     }
   };
 

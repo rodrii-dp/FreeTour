@@ -8,58 +8,49 @@ import {ResetPasswordScreen} from '../screens/auth/ResetPasswordScreen.tsx';
 import {SignupSuccessScreen} from '../screens/auth/SignupSuccessScreen.tsx';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {SlidesScreen} from '../screens/onboarding/SlidesScreen.tsx';
+import {Text} from 'react-native';
+import {BottomTabsNavigator} from './BottomTabsNavigator.tsx';
 
 export type RootStackParams = {
   Slides: undefined;
-  Home: undefined;
+  BottomTabs: undefined;
   Signup: undefined;
-  Login: undefined;
+  Signin: undefined;
   ForgotPassword: undefined;
   ResetPassword: {email: string};
   SignupSuccess: undefined;
 };
-
 const Stack = createStackNavigator<RootStackParams>();
 
 export const Navigator = () => {
-  const [isFirstTime, setIsFirstTime] = useState<boolean | null>(null);
+  const [isAppFirstLaunched, setIsAppFirstLaunched] = useState<boolean | null>(
+    null,
+  );
 
   useEffect(() => {
-    const checkFirstTime = async () => {
-      try {
-        await AsyncStorage.clear();
-        const value = await AsyncStorage.getItem('isFirstTime');
-        console.log(`valor: ${value}, ${typeof value}`);
-        if (value === null) {
-          console.log('ENTRO Y SETTEO');
-          await AsyncStorage.setItem('isFirstTime', 'false');
-          setIsFirstTime(true);
-        } else {
-          setIsFirstTime(false);
-        }
-      } catch (error) {
-        console.error('Error checking AsyncStorage:', error);
+    const checkAppFirstLaunch = async () => {
+      const appData = await AsyncStorage.getItem('isAppFirstLaunched');
+      if (appData === null) {
+        setIsAppFirstLaunched(true);
+        await AsyncStorage.setItem('isAppFirstLaunched', 'false');
+      } else {
+        setIsAppFirstLaunched(false);
       }
     };
 
-    checkFirstTime();
+    checkAppFirstLaunch();
   }, []);
 
-  console.log(isFirstTime);
+  if (isAppFirstLaunched === null) {
+    return <Text>Loading...</Text>;
+  }
 
   return (
     <Stack.Navigator screenOptions={{headerShown: false}}>
-      {isFirstTime ? (
+      {isAppFirstLaunched && (
         <Stack.Screen name="Slides" component={SlidesScreen} />
-      ) : (
-        <Stack.Screen name="Home" component={HomeScreen} />
       )}
-      <Stack.Screen name="Signup" component={SignUpScreen} />
-      <Stack.Screen name="Login" component={SignInScreen} />
-      {/*<Stack.Screen name="Home" component={HomeScreen} />*/}
-      <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
-      <Stack.Screen name="ResetPassword" component={ResetPasswordScreen} />
-      <Stack.Screen name="SignupSuccess" component={SignupSuccessScreen} />
+      <Stack.Screen name="BottomTabs" component={BottomTabsNavigator} />
     </Stack.Navigator>
   );
 };
