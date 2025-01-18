@@ -1,6 +1,5 @@
 import React, {useEffect, useState} from 'react';
 import {createStackNavigator} from '@react-navigation/stack';
-import {HomeScreen} from '../screens/home/HomeScreen.tsx';
 import {SignUpScreen} from '../screens/auth/SignUpScreen.tsx';
 import {SignInScreen} from '../screens/auth/SignInScreen.tsx';
 import {ForgotPasswordScreen} from '../screens/auth/ForgotPasswordScreen.tsx';
@@ -50,6 +49,11 @@ export const Navigator = () => {
       {isAppFirstLaunched && (
         <Stack.Screen name="Slides" component={SlidesScreen} />
       )}
+      <Stack.Screen name="Signup" component={SignUpScreen} />
+      <Stack.Screen name="Signin" component={SignInScreen} />
+      <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
+      <Stack.Screen name="ResetPassword" component={ResetPasswordScreen} />
+      <Stack.Screen name="SignupSuccess" component={SignupSuccessScreen} />
       <Stack.Screen name="BottomTabs" component={BottomTabsNavigator} />
     </Stack.Navigator>
   );
