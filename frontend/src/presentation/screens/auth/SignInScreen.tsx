@@ -7,30 +7,28 @@ import {Message} from '../../components/common/Message.tsx';
 import {Input} from '../../components/common/Input.tsx';
 import {Checkbox} from '../../components/common/Checkbox.tsx';
 import {Separator} from '../../components/common/Separator.tsx';
-import {GenericIcon} from '../../icons/Icon.tsx';
-import {isValidEmail, isValidPassword} from '../../../utils/validations.ts';
+import {GenericIcon} from '../../icons/GenericIcon.tsx';
+import {useFormValidation} from '../../hooks/useFormValidation.tsx';
+import {useFocus} from '../../hooks/useFocus.tsx';
 
-export const LoginScreen = () => {
+export const SignInScreen = () => {
   const navigation = useNavigation<NavigationProp<RootStackParams>>();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+
+  const {fields, error, handleInputChange, validateForm} = useFormValidation({
+    email: '',
+    password: '',
+  });
   const [showPassword, setShowPassword] = useState(false);
-  const [focusedInput, setFocusedInput] = useState<'email' | 'password' | null>(
-    null,
-  );
-  const [error, setError] = useState('');
+  const {focusedInput, handleFocus, handleBlur} = useFocus<
+    'email' | 'password'
+  >();
+
   const [isCheckedCheckbox, setIsCheckedCheckbox] = useState(false);
 
-  const handleFocus = (input: 'email' | 'password') => setFocusedInput(input);
-  const handleBlur = () => setFocusedInput(null);
-
   const handleLogin = () => {
-    if (!isValidEmail(email) || !isValidPassword(password)) {
-      setError('Rellena todos los campos');
-      return;
+    if (validateForm()) {
+      navigation.navigate('BottomTabs');
     }
-
-    navigation.navigate('Home');
   };
 
   return (
@@ -43,8 +41,8 @@ export const LoginScreen = () => {
         <Input
           label="Correo electrónico"
           placeholder="hello@example.com"
-          value={email}
-          onChangeText={setEmail}
+          value={fields.email}
+          onChangeText={value => handleInputChange('email', value)}
           isFocused={focusedInput === 'email'}
           onFocus={() => handleFocus('email')}
           onBlur={handleBlur}
@@ -56,8 +54,8 @@ export const LoginScreen = () => {
         rightLabel="Olvidaste tu contraseña?"
         onPressRightLabel={() => navigation.navigate('ForgotPassword')}
         placeholder="Password"
-        value={password}
-        onChangeText={setPassword}
+        value={fields.password}
+        onChangeText={value => handleInputChange('password', value)}
         isFocused={focusedInput === 'password'}
         onFocus={() => handleFocus('password')}
         onBlur={handleBlur}
@@ -72,14 +70,16 @@ export const LoginScreen = () => {
         toggle={() => setIsCheckedCheckbox(!isCheckedCheckbox)}
       />
 
-      <Pressable style={globalStyles.button} onPress={handleLogin}>
+      <Pressable
+        style={[globalStyles.button, {marginBottom: 30}]}
+        onPress={handleLogin}>
         <Text style={globalStyles.buttonText}>Iniciar sesión</Text>
       </Pressable>
 
       <Separator text="o iniciar sesión con" />
 
       <Pressable
-        style={globalStyles.googleButton}
+        style={[globalStyles.googleButton, {marginTop: 30}]}
         onPress={() => console.log('Pressed')}>
         <View style={globalStyles.googleButtonContent}>
           <GenericIcon name="logo-google" style={{marginRight: 15}} />

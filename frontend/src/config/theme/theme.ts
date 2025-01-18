@@ -33,7 +33,8 @@ export const globalStyles = StyleSheet.create({
   eyeIcon: {
     position: 'absolute',
     right: 15,
-    top: 42.5,
+    top: '70%',
+    transform: [{translateY: -12.5}],
   },
   terms: {
     fontSize: 16,

@@ -1,0 +1,179 @@
+import React, {useRef, useState} from 'react';
+import {
+  StyleSheet,
+  View,
+  Text,
+  FlatList,
+  useWindowDimensions,
+  NativeSyntheticEvent,
+  NativeScrollEvent,
+} from 'react-native';
+import {Button} from '../../components/common/Button';
+import {NavigationProp, useNavigation} from '@react-navigation/native';
+import {SvgProps} from 'react-native-svg';
+import Slide1 from '../../assets/slide-1.svg';
+import Slide2 from '../../assets/slide-2.svg';
+import Slide3 from '../../assets/slide-3.svg';
+import {globalStyles} from '../../../config/theme/theme.ts';
+import {RootStackParams} from '../../navigator/Navigator.tsx';
+
+interface Slide {
+  title: string;
+  desc: string;
+  SvgComponent: React.FC<SvgProps>;
+}
+
+const items: Slide[] = [
+  {
+    title: 'Bienvenido a FreeTour',
+    desc: 'Aquí encontrarás una gran variedad de lugares por descubrir al alcance de un solo clic.',
+    SvgComponent: Slide1,
+  },
+  {
+    title: 'Gestiona tus experiencias',
+    desc: 'Reserva fácilmente tu lugar en los tours que más te interesen.',
+    SvgComponent: Slide2,
+  },
+  {
+    title: 'Explora sin límites',
+    desc: 'Sumérgete en aventuras inolvidables y descubre todo lo que el mundo tiene para ofrecer.',
+    SvgComponent: Slide3,
+  },
+];
+
+export const SlidesScreen = () => {
+  const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
+  const flatListRef = useRef<FlatList>(null);
+  const navigation = useNavigation<NavigationProp<RootStackParams>>();
+
+  const onScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+    const {contentOffset, layoutMeasurement} = event.nativeEvent;
+    const currentIndex = Math.floor(contentOffset.x / layoutMeasurement.width);
+    setCurrentSlideIndex(currentIndex > 0 ? currentIndex : 0);
+  };
+
+  return (
+    <View style={styles.container}>
+      <View style={styles.slidesContainer}>
+        <FlatList
+          ref={flatListRef}
+          data={items}
+          renderItem={({item}) => (
+            <SlideItem item={item} currentSlideIndex={currentSlideIndex} />
+          )}
+          keyExtractor={item => item.title}
+          horizontal
+          pagingEnabled
+          onScroll={onScroll}
+          showsHorizontalScrollIndicator={false}
+        />
+      </View>
+
+      <View style={styles.buttonsContainer}>
+        <Button
+          text="Iniciar sesión"
+          onPress={() => navigation.navigate('Signin')}
+        />
+        <Button
+          text="Crear cuenta"
+          onPress={() => navigation.navigate('Signup')}
+          style={{alignSelf: 'center'}}
+          textStyle={{
+            ...globalStyles.link,
+            marginTop: 20,
+            textAlign: 'center',
+          }}
+        />
+      </View>
+    </View>
+  );
+};
+
+interface SlideItemProps {
+  item: Slide;
+  currentSlideIndex: number;
+}
+
+const SlideItem = ({item, currentSlideIndex}: SlideItemProps) => {
+  const {width} = useWindowDimensions();
+  const {title, desc, SvgComponent} = item;
+
+  return (
+    <View
+      style={{
+        flex: 1,
+        width,
+        justifyContent: 'center',
+      }}>
+      <SvgComponent
+        width={width * 0.7}
+        height={width * 0.7}
+        style={{
+          alignSelf: 'center',
+        }}
+      />
+
+      <Text
+        style={[
+          globalStyles.title,
+          {
+            marginBottom: 7,
+            fontWeight: 600,
+            textAlign: 'center',
+          },
+        ]}>
+        {title}
+      </Text>
+      <Text
+        style={{
+          color: '#afb0b3',
+          fontSize: 18,
+          textAlign: 'center',
+          marginHorizontal: 15,
+        }}>
+        {desc}
+      </Text>
+
+      <View style={styles.dots}>
+        {[0, 1, 2].map((_, index) => (
+          <View
+            key={index}
+            style={[
+              styles.dot,
+              {
+                backgroundColor:
+                  currentSlideIndex === index ? '#4263EB' : '#E5E7EB',
+              },
+            ]}
+          />
+        ))}
+      </View>
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: 'white',
+  },
+  slidesContainer: {
+    flex: 1,
+  },
+  buttonsContainer: {
+    paddingHorizontal: 24,
+    paddingBottom: 24,
+  },
+  dots: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    marginTop: 40,
+  },
+  dot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+  },
+});

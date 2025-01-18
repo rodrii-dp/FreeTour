@@ -1,11 +1,10 @@
 import React from 'react';
-import {View} from 'react-native';
-import {BottomTabsNavigator} from '../../navigator/BottomTabsNavigator.tsx';
+import {Text, View} from 'react-native';
 
 export const HomeScreen = () => {
   return (
-    <View>
-      <BottomTabsNavigator />
+    <View style={{flex: 1, backgroundColor: 'red'}}>
+      <Text>Home</Text>
     </View>
   );
 };

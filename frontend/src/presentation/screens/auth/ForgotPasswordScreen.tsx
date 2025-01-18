@@ -1,25 +1,27 @@
-import React, {useState} from 'react';
-import {View, Text, TextInput, Pressable} from 'react-native';
+import React from 'react';
+import {View, Text, Pressable} from 'react-native';
 import {BackArrowButton} from '../../components/common/BackArrowButton.tsx';
 import {globalStyles} from '../../../config/theme/theme.ts';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {RootStackParams} from '../../navigator/Navigator.tsx';
 import {Message} from '../../components/common/Message.tsx';
-import {isValidEmail} from '../../../utils/validations.ts';
+import {Input} from '../../components/common/Input.tsx';
+import {useFormValidation} from '../../hooks/useFormValidation.tsx';
+import {useFocus} from '../../hooks/useFocus.tsx';
 
 export const ForgotPasswordScreen = () => {
   const navigation = useNavigation<NavigationProp<RootStackParams>>();
-  const [email, setEmail] = useState('');
-  const [error, setError] = useState('');
+  const {fields, error, validateForm, handleInputChange} = useFormValidation({
+    email: '',
+  });
+  const {focusedInput, handleFocus, handleBlur} = useFocus<'email'>();
 
   const handleResetPassword = () => {
-    if (!isValidEmail(email)) {
-      setError('Introduce una dirección de correo electrónico válida');
+    if (!validateForm()) {
       return;
     }
 
-    navigation.navigate('ResetPassword', {email});
-    setError('');
+    navigation.navigate('ResetPassword', {email: fields.email});
   };
 
   return (
@@ -38,22 +40,18 @@ export const ForgotPasswordScreen = () => {
         </Text>
       </View>
 
-      <View style={{marginTop: 50}}>
-        <Text style={{...globalStyles.label, fontWeight: 'bold'}}>
-          Correo electrónico
-        </Text>
-        <TextInput
-          style={{...globalStyles.input, marginBottom: 30}}
-          placeholder="hello@example.com"
-          placeholderTextColor="#aaa"
-          value={email}
-          onChangeText={value => setEmail(value)}
-          keyboardType="email-address"
-        />
-        <Pressable style={globalStyles.button} onPress={handleResetPassword}>
-          <Text style={globalStyles.buttonText}>Reestablecer contraseña</Text>
-        </Pressable>
-      </View>
+      <Input
+        label="Correo electrónico"
+        placeholder="hello@example.com"
+        value={fields.email}
+        onChangeText={value => handleInputChange('email', value)}
+        isFocused={focusedInput === 'email'}
+        onFocus={() => handleFocus('email')}
+        onBlur={handleBlur}
+      />
+      <Pressable style={globalStyles.button} onPress={handleResetPassword}>
+        <Text style={globalStyles.buttonText}>Restablecer contraseña</Text>
+      </Pressable>
 
       <Pressable
         style={{
