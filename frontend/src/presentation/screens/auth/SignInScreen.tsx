@@ -66,7 +66,7 @@ export const SignInScreen = () => {
         <View style={globalStyles.container}>
           <Text
             variant="headlineLarge"
-            style={{fontWeight: '800', marginBottom: 40}}>
+            style={{fontWeight: '800', marginBottom: 10}}>
             Iniciar sesión
           </Text>
           <Text style={{color: '#4c5667', fontSize: 18}}>

@@ -14,7 +14,6 @@ export const useFormValidation = (initialFields: InputFields) => {
   };
 
   const validateForm = () => {
-    console.log(fields);
     for (const key in fields) {
       if (!fields[key]) {
         setError('Rellena todos los campos');

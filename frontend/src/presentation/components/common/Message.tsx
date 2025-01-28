@@ -31,7 +31,9 @@ export const Message = ({error, type = 'error', style = {}}: Props) => {
   return (
     <View style={[styles.container, style]}>
       <Text style={styles.icon}>{icon}</Text>
-      <Text style={globalStyles.error}>{error}</Text>
+      <Text style={[globalStyles.error, {flexShrink: 1}]} numberOfLines={3}>
+        {error}
+      </Text>
     </View>
   );
 };
