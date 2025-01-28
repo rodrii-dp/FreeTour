@@ -18,7 +18,7 @@ import {GenericIcon} from '../../icons/GenericIcon.tsx';
 import {useFormValidation} from '../../hooks/useFormValidation.tsx';
 import {useFocus} from '../../hooks/useFocus.tsx';
 import {Button} from '../../components/common/Button.tsx';
-import {Text} from 'react-native-paper';
+import {HelperText, Text} from 'react-native-paper';
 
 export const SignInScreen = () => {
   const navigation = useNavigation<NavigationProp<RootStackParams>>();
