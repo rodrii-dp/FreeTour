@@ -9,6 +9,7 @@ import {Input} from '../../components/common/Input.tsx';
 import {useFormValidation} from '../../hooks/useFormValidation.tsx';
 import {useFocus} from '../../hooks/useFocus.tsx';
 import {Text} from 'react-native-paper';
+import {CustomButton} from '../../components/common/CustomButton.tsx';
 
 export const ForgotPasswordScreen = () => {
   const navigation = useNavigation<NavigationProp<RootStackParams>>();
@@ -52,16 +53,16 @@ export const ForgotPasswordScreen = () => {
         onFocus={() => handleFocus('email')}
         onBlur={handleBlur}
       />
-      <Pressable style={globalStyles.button} onPress={handleResetPassword}>
-        <Text
-          variant="bodyLarge"
-          style={{
-            color: '#fefeff',
-            fontWeight: '500',
-          }}>
-          Restablecer contraseña
-        </Text>
-      </Pressable>
+
+      <CustomButton
+        style={globalStyles.button}
+        onPress={handleResetPassword}
+        text="Restablecer contraseña"
+        textStyle={{
+          color: '#fefeff',
+          fontWeight: '500',
+        }}
+      />
 
       <Pressable
         style={{

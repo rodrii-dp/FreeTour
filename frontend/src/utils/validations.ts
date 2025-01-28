@@ -1,14 +1,20 @@
 export function isValidEmail(email: string): boolean {
-  if (!email) {
+  if (email == null || email.trim() === '') {
     return false;
   }
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  email = email.trim();
+
+  const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
   return emailRegex.test(email);
 }
+
 export function isValidPassword(password: string): boolean {
-  if (!password) {
+  if (password == null || password.trim() === '') {
     return false;
   }
+
+  password = password.trim();
+
   if (password.length < 8) {
     return false;
   }

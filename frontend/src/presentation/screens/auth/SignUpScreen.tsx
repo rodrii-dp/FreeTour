@@ -10,6 +10,7 @@ import {Separator} from '../../components/common/Separator.tsx';
 import {useFormValidation} from '../../hooks/useFormValidation.tsx';
 import {useFocus} from '../../hooks/useFocus.tsx';
 import {Text} from 'react-native-paper';
+import {CustomButton} from '../../components/common/CustomButton.tsx';
 
 export const SignUpScreen = () => {
   const {fields, error, handleInputChange, validateForm} = useFormValidation({
@@ -23,7 +24,7 @@ export const SignUpScreen = () => {
   >();
 
   const navigation = useNavigation<NavigationProp<RootStackParams>>();
-  const handleRegister = () => {
+  const handleSignUp = () => {
     if (validateForm()) {
       navigation.navigate('SignupSuccess');
     }
@@ -84,11 +85,12 @@ export const SignUpScreen = () => {
         </Text>
       </Text>
 
-      <Pressable
-        style={[globalStyles.button, {marginBottom: 30}]}
-        onPress={handleRegister}>
-        <Text style={globalStyles.buttonText}>Registrarse</Text>
-      </Pressable>
+      <CustomButton
+        text="Registrarse"
+        textStyle={globalStyles.buttonText}
+        style={{marginBottom: 30}}
+        onPress={handleSignUp}
+      />
 
       <Separator text="o" />
 

@@ -1,13 +1,7 @@
 import React, {ReactNode} from 'react';
-import {
-  Text,
-  Pressable,
-  StyleProp,
-  ViewStyle,
-  TextStyle,
-  View,
-} from 'react-native';
+import {Pressable, StyleProp, ViewStyle, TextStyle, View} from 'react-native';
 import {globalStyles} from '../../../config/theme/theme.ts';
+import {Text} from 'react-native-paper';
 
 interface Props {
   text?: string;
@@ -19,7 +13,7 @@ interface Props {
   children?: any;
 }
 
-export const Button = ({
+export const CustomButton = ({
   text,
   onPress,
   style,
@@ -45,7 +39,11 @@ export const Button = ({
       {iconPosition === 'left' && icon ? (
         <View style={{marginRight: 8}}>{icon}</View>
       ) : null}
-      {text ? <Text style={textStyle}>{text}</Text> : null}
+      {text ? (
+        <Text variant="bodyLarge" style={textStyle}>
+          {text}
+        </Text>
+      ) : null}
       {iconPosition === 'right' && icon ? (
         <View style={{marginLeft: 8}}>{icon}</View>
       ) : null}
