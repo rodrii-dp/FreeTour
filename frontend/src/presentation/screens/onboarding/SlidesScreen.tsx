@@ -7,6 +7,7 @@ import {
   useWindowDimensions,
   NativeSyntheticEvent,
   NativeScrollEvent,
+  Pressable,
 } from 'react-native';
 import {Button} from '../../components/common/Button';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
@@ -25,7 +26,7 @@ interface Slide {
 
 const items: Slide[] = [
   {
-    title: 'Bienvenido a FreeTour',
+    title: 'Bienvenido a TourNest',
     desc: 'Aquí encontrarás una gran variedad de lugares por descubrir al alcance de un solo clic.',
     SvgComponent: Slide1,
   },
@@ -74,16 +75,19 @@ export const SlidesScreen = () => {
           text="Iniciar sesión"
           onPress={() => navigation.navigate('Signin')}
         />
-        <Button
-          text="Crear cuenta"
-          onPress={() => navigation.navigate('Signup')}
-          style={{alignSelf: 'center'}}
-          textStyle={{
-            ...globalStyles.link,
-            marginTop: 20,
-            textAlign: 'center',
+        <Pressable
+          style={{
+            alignSelf: 'center',
           }}
-        />
+          onPress={() => navigation.navigate('Signup')}>
+          <Text
+            style={{
+              ...globalStyles.link,
+              textAlign: 'center',
+            }}>
+            Crear cuenta
+          </Text>
+        </Pressable>
       </View>
     </View>
   );

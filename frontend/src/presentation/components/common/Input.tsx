@@ -2,26 +2,29 @@ import React from 'react';
 import {
   Pressable,
   StyleSheet,
-  Text,
   TextInput,
   View,
   TextInputProps,
+  StyleProp,
+  TextStyle,
 } from 'react-native';
 import {GenericIcon} from '../../icons/GenericIcon.tsx';
 import {globalStyles} from '../../../config/theme/theme.ts';
+import {Text} from 'react-native-paper';
 
 interface Props extends TextInputProps {
-  label: string;
+  label?: string;
   rightLabel?: string;
   value: string;
   onChangeText: (text: string) => void;
-  isFocused: boolean;
-  onFocus: () => void;
-  onBlur: () => void;
+  isFocused?: boolean;
+  onFocus?: () => void;
+  onBlur?: () => void;
   isPassword?: boolean;
   showPassword?: boolean;
   togglePasswordVisibility?: () => void;
   onPressRightLabel?: () => void;
+  style?: StyleProp<TextStyle>;
 }
 
 export const Input = ({
@@ -38,20 +41,30 @@ export const Input = ({
   isPassword = false,
   showPassword = false,
   togglePasswordVisibility,
+  style,
   ...props
 }: Props) => {
   return (
     <View style={globalStyles.inputContainer}>
-      <View style={styles.labelContainer}>
-        <Text style={globalStyles.label}>{label}</Text>
-        {rightLabel && (
-          <Pressable onPress={onPressRightLabel}>
-            <Text style={globalStyles.link}>{rightLabel}</Text>
-          </Pressable>
-        )}
-      </View>
+      {label && (
+        <View style={styles.labelContainer}>
+          <Text style={globalStyles.label}>{label}</Text>
+          {rightLabel && (
+            <Pressable onPress={onPressRightLabel}>
+              <Text
+                style={{
+                  color: '#2f4eff',
+                  textAlign: 'center',
+                  fontWeight: 'bold',
+                }}>
+                {rightLabel}
+              </Text>
+            </Pressable>
+          )}
+        </View>
+      )}
       <TextInput
-        style={[globalStyles.input, isFocused && styles.inputFocused]}
+        style={[globalStyles.input, isFocused && styles.inputFocused, style]}
         placeholder={placeholder}
         placeholderTextColor="#aaa"
         value={value}

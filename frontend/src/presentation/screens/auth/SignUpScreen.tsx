@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {View, Text, Pressable} from 'react-native';
+import {View, Pressable} from 'react-native';
 import {globalStyles} from '../../../config/theme/theme.ts';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {RootStackParams} from '../../navigator/Navigator.tsx';
@@ -9,6 +9,7 @@ import {Input} from '../../components/common/Input.tsx';
 import {Separator} from '../../components/common/Separator.tsx';
 import {useFormValidation} from '../../hooks/useFormValidation.tsx';
 import {useFocus} from '../../hooks/useFocus.tsx';
+import {Text} from 'react-native-paper';
 
 export const SignUpScreen = () => {
   const {fields, error, handleInputChange, validateForm} = useFormValidation({
@@ -30,7 +31,11 @@ export const SignUpScreen = () => {
 
   return (
     <View style={globalStyles.container}>
-      <Text style={globalStyles.title}>Crear cuenta</Text>
+      <Text
+        variant="headlineLarge"
+        style={{marginBottom: 40, fontWeight: '800'}}>
+        Crear cuenta
+      </Text>
       <Input
         label="Nombre"
         placeholder="John Doe"
@@ -48,6 +53,7 @@ export const SignUpScreen = () => {
         isFocused={focusedInput === 'email'}
         onFocus={() => handleFocus('email')}
         onBlur={handleBlur}
+        keyboardType="email-address"
       />
       <Input
         label="Contraseña"
@@ -62,9 +68,20 @@ export const SignUpScreen = () => {
         togglePasswordVisibility={() => setShowPassword(!showPassword)}
       />
 
-      <Text style={globalStyles.terms}>
+      <Text
+        variant="bodyLarge"
+        style={{
+          color: '#4c5667',
+          marginTop: 5,
+          marginBottom: 20,
+          textAlign: 'center',
+        }}>
         Al continuar, aceptas nuestros{' '}
-        <Text style={globalStyles.link}>términos y condiciones</Text>
+        <Text
+          variant="bodyLarge"
+          style={{color: '#2f4eff', textAlign: 'center', fontWeight: 'bold'}}>
+          términos y condiciones
+        </Text>
       </Text>
 
       <Pressable
@@ -80,18 +97,22 @@ export const SignUpScreen = () => {
         onPress={() => console.log('Pressed')}>
         <View style={globalStyles.googleButtonContent}>
           <GenericIcon name="logo-google" style={{marginRight: 15}} />
-          <Text style={globalStyles.googleButtonText}>
+          <Text variant="bodyLarge" style={{color: '#444'}}>
             Continuar con Google
           </Text>
         </View>
       </Pressable>
 
       <View style={globalStyles.footer}>
-        <Text style={{fontSize: 16, color: '#818181'}}>
+        <Text variant="bodyLarge" style={{color: '#818181'}}>
           ¿Ya tienes una cuenta?{' '}
         </Text>
         <Pressable onPress={() => navigation.navigate('Signin')}>
-          <Text style={globalStyles.link}>Inicia sesión aquí</Text>
+          <Text
+            variant="bodyLarge"
+            style={{color: '#2f4eff', textAlign: 'center', fontWeight: 'bold'}}>
+            Inicia sesión aquí
+          </Text>
         </Pressable>
       </View>
       <View />

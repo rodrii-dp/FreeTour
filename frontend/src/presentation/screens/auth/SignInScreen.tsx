@@ -1,5 +1,12 @@
-import React, {useState} from 'react';
-import {View, Text, Pressable} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {
+  View,
+  Pressable,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  Keyboard,
+} from 'react-native';
 import {globalStyles} from '../../../config/theme/theme.ts';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {RootStackParams} from '../../navigator/Navigator.tsx';
@@ -10,6 +17,8 @@ import {Separator} from '../../components/common/Separator.tsx';
 import {GenericIcon} from '../../icons/GenericIcon.tsx';
 import {useFormValidation} from '../../hooks/useFormValidation.tsx';
 import {useFocus} from '../../hooks/useFocus.tsx';
+import {Button} from '../../components/common/Button.tsx';
+import {Text} from 'react-native-paper';
 
 export const SignInScreen = () => {
   const navigation = useNavigation<NavigationProp<RootStackParams>>();
@@ -18,6 +27,8 @@ export const SignInScreen = () => {
     email: '',
     password: '',
   });
+
+  const [isKeyboardVisible, setIsKeyboardVisible] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const {focusedInput, handleFocus, handleBlur} = useFocus<
     'email' | 'password'
@@ -31,80 +42,109 @@ export const SignInScreen = () => {
     }
   };
 
+  useEffect(() => {
+    const showSubscription = Keyboard.addListener('keyboardDidShow', () => {
+      setIsKeyboardVisible(true);
+    });
+    const hideSubscription = Keyboard.addListener('keyboardDidHide', () => {
+      setIsKeyboardVisible(false);
+    });
+
+    return () => {
+      showSubscription.remove();
+      hideSubscription.remove();
+    };
+  }, []);
+
   return (
-    <View style={globalStyles.container}>
-      <Text style={{...globalStyles.title, marginBottom: 10}}>
-        Iniciar sesión
-      </Text>
-      <Text style={{color: '#4c5667', fontSize: 18}}>Bienvenido de vuelta</Text>
-      <View style={{marginTop: 50}}>
-        <Input
-          label="Correo electrónico"
-          placeholder="hello@example.com"
-          value={fields.email}
-          onChangeText={value => handleInputChange('email', value)}
-          isFocused={focusedInput === 'email'}
-          onFocus={() => handleFocus('email')}
-          onBlur={handleBlur}
-        />
-      </View>
-
-      <Input
-        label="Contraseña"
-        rightLabel="Olvidaste tu contraseña?"
-        onPressRightLabel={() => navigation.navigate('ForgotPassword')}
-        placeholder="Password"
-        value={fields.password}
-        onChangeText={value => handleInputChange('password', value)}
-        isFocused={focusedInput === 'password'}
-        onFocus={() => handleFocus('password')}
-        onBlur={handleBlur}
-        isPassword
-        showPassword={showPassword}
-        togglePasswordVisibility={() => setShowPassword(!showPassword)}
-      />
-
-      <Checkbox
-        title="Mantener mi sesión iniciada"
-        isChecked={isCheckedCheckbox}
-        toggle={() => setIsCheckedCheckbox(!isCheckedCheckbox)}
-      />
-
-      <Pressable
-        style={[globalStyles.button, {marginBottom: 30}]}
-        onPress={handleLogin}>
-        <Text style={globalStyles.buttonText}>Iniciar sesión</Text>
-      </Pressable>
-
-      <Separator text="o iniciar sesión con" />
-
-      <Pressable
-        style={[globalStyles.googleButton, {marginTop: 30}]}
-        onPress={() => console.log('Pressed')}>
-        <View style={globalStyles.googleButtonContent}>
-          <GenericIcon name="logo-google" style={{marginRight: 15}} />
-          <Text style={globalStyles.googleButtonText}>
-            Continuar con Google
+    <KeyboardAvoidingView
+      style={{flex: 1}}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+      <ScrollView
+        contentContainerStyle={{flexGrow: 1}}
+        keyboardShouldPersistTaps="handled">
+        <View style={globalStyles.container}>
+          <Text
+            variant="headlineLarge"
+            style={{fontWeight: '800', marginBottom: 40}}>
+            Iniciar sesión
           </Text>
-        </View>
-      </Pressable>
-      <Pressable
-        style={{
-          alignSelf: 'center',
-          position: 'absolute',
-          bottom: 50,
-        }}
-        onPress={() => navigation.navigate('Signup')}>
-        <Text
-          style={{
-            ...globalStyles.link,
-            textAlign: 'center',
-          }}>
-          Crear cuenta
-        </Text>
-      </Pressable>
+          <Text style={{color: '#4c5667', fontSize: 18}}>
+            Bienvenido de vuelta
+          </Text>
+          <View style={{marginTop: 50}}>
+            <Input
+              label="Correo electrónico"
+              placeholder="hello@example.com"
+              value={fields.email}
+              onChangeText={value => handleInputChange('email', value)}
+              isFocused={focusedInput === 'email'}
+              onFocus={() => handleFocus('email')}
+              onBlur={handleBlur}
+            />
+          </View>
 
-      {error && <Message error={error} />}
-    </View>
+          <Input
+            label="Contraseña"
+            rightLabel="Olvidaste tu contraseña?"
+            onPressRightLabel={() => navigation.navigate('ForgotPassword')}
+            placeholder="Password"
+            value={fields.password}
+            onChangeText={value => handleInputChange('password', value)}
+            isFocused={focusedInput === 'password'}
+            onFocus={() => handleFocus('password')}
+            onBlur={handleBlur}
+            isPassword
+            showPassword={showPassword}
+            togglePasswordVisibility={() => setShowPassword(!showPassword)}
+          />
+
+          <Checkbox
+            title="Mantener mi sesión iniciada"
+            isChecked={isCheckedCheckbox}
+            toggle={() => setIsCheckedCheckbox(!isCheckedCheckbox)}
+          />
+
+          <Button
+            text="Iniciar sesión"
+            textStyle={globalStyles.buttonText}
+            style={{marginTop: 30}}
+            onPress={handleLogin}
+          />
+
+          <Separator text="o iniciar sesión con" />
+
+          <Pressable
+            style={globalStyles.googleButton}
+            onPress={() => console.log('Pressed')}>
+            <View style={globalStyles.googleButtonContent}>
+              <GenericIcon name="logo-google" style={{marginRight: 15}} />
+              <Text variant="bodyLarge" style={{color: '#444'}}>
+                Continuar con Google
+              </Text>
+            </View>
+          </Pressable>
+          <Pressable
+            style={{
+              alignSelf: 'center',
+              ...(isKeyboardVisible
+                ? {marginBottom: 20}
+                : {position: 'absolute', bottom: 50}),
+            }}
+            onPress={() => navigation.navigate('Signup')}>
+            <Text
+              style={{
+                color: '#2f4eff',
+                textAlign: 'center',
+                fontWeight: 'bold',
+              }}>
+              Crear cuenta
+            </Text>
+          </Pressable>
+
+          {error && <Message error={error} />}
+        </View>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 };

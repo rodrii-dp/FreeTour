@@ -14,29 +14,32 @@ interface Props {
   onPress?: () => void;
   style?: StyleProp<ViewStyle>;
   textStyle?: StyleProp<TextStyle>;
-  icon?: ReactNode; // Permitir cualquier componente React como ícono
-  iconPosition?: 'left' | 'right'; // Posición del ícono
+  icon?: ReactNode;
+  iconPosition?: 'left' | 'right';
+  children?: any;
 }
 
 export const Button = ({
   text,
   onPress,
-  style = globalStyles.button,
+  style,
   textStyle = globalStyles.buttonText,
   icon,
   iconPosition = 'left',
+  children,
 }: Props) => {
   return (
     <Pressable
       onPress={onPress}
       style={({pressed}) => [
         {opacity: pressed ? 0.8 : 1},
+        globalStyles.button,
         style,
         {
           flexDirection: 'row',
           alignItems: 'center',
           justifyContent: 'center',
-          marginHorizontal: 30,
+          // marginHorizontal: 30,
         },
       ]}>
       {iconPosition === 'left' && icon ? (
@@ -46,6 +49,7 @@ export const Button = ({
       {iconPosition === 'right' && icon ? (
         <View style={{marginLeft: 8}}>{icon}</View>
       ) : null}
+      {children}
     </Pressable>
   );
 };
