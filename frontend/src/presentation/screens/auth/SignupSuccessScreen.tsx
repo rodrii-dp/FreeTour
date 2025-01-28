@@ -1,9 +1,11 @@
 import React from 'react';
-import {View, Text, Pressable} from 'react-native';
+import {View, Pressable} from 'react-native';
 import {globalStyles} from '../../../config/theme/theme.ts';
 import {BackArrowButton} from '../../components/common/BackArrowButton.tsx';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {RootStackParams} from '../../navigator/Navigator.tsx';
+import {Text} from 'react-native-paper';
+
 // @ts-ignore
 import Congratulations from '../../assets/congratulations.svg';
 
@@ -42,7 +44,7 @@ export const SignupSuccessScreen = () => {
           position: 'absolute',
           bottom: 50,
         }}
-        onPress={() => navigation.navigate('Login')}>
+        onPress={() => navigation.navigate('Signin')}>
         <Text
           style={{
             ...globalStyles.link,

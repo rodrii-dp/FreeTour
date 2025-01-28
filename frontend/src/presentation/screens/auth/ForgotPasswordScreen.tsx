@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, Text, Pressable} from 'react-native';
+import {View, Pressable} from 'react-native';
 import {BackArrowButton} from '../../components/common/BackArrowButton.tsx';
 import {globalStyles} from '../../../config/theme/theme.ts';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
@@ -8,6 +8,7 @@ import {Message} from '../../components/common/Message.tsx';
 import {Input} from '../../components/common/Input.tsx';
 import {useFormValidation} from '../../hooks/useFormValidation.tsx';
 import {useFocus} from '../../hooks/useFocus.tsx';
+import {Text} from 'react-native-paper';
 
 export const ForgotPasswordScreen = () => {
   const navigation = useNavigation<NavigationProp<RootStackParams>>();
@@ -31,7 +32,9 @@ export const ForgotPasswordScreen = () => {
         style={{marginBottom: 50}}
       />
       <View style={{marginBottom: 30}}>
-        <Text style={{...globalStyles.title, marginBottom: 10}}>
+        <Text
+          variant="headlineLarge"
+          style={{fontWeight: '800', marginBottom: 50}}>
           ¿Olvidaste tu contraseña?
         </Text>
         <Text style={{color: '#4c5667', fontSize: 18}}>
@@ -50,7 +53,14 @@ export const ForgotPasswordScreen = () => {
         onBlur={handleBlur}
       />
       <Pressable style={globalStyles.button} onPress={handleResetPassword}>
-        <Text style={globalStyles.buttonText}>Restablecer contraseña</Text>
+        <Text
+          variant="bodyLarge"
+          style={{
+            color: '#fefeff',
+            fontWeight: '500',
+          }}>
+          Restablecer contraseña
+        </Text>
       </Pressable>
 
       <Pressable
@@ -61,10 +71,8 @@ export const ForgotPasswordScreen = () => {
         }}
         onPress={() => navigation.navigate('Signup')}>
         <Text
-          style={{
-            ...globalStyles.link,
-            textAlign: 'center',
-          }}>
+          variant="bodyLarge"
+          style={{color: '#2f4eff', textAlign: 'center', fontWeight: 'bold'}}>
           Crear cuenta
         </Text>
       </Pressable>

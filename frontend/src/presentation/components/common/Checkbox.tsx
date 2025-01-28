@@ -1,6 +1,7 @@
 import React from 'react';
-import {StyleSheet, View, Text, Pressable, Dimensions} from 'react-native';
+import {StyleSheet, View, Pressable, Dimensions} from 'react-native';
 import {GenericIcon} from '../../icons/GenericIcon.tsx';
+import {Text} from 'react-native-paper';
 
 interface Props {
   title: string;

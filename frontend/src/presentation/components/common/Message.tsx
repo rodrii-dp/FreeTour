@@ -1,7 +1,8 @@
 import React from 'react';
-import {View, Text, StyleSheet} from 'react-native';
+import {View, StyleSheet} from 'react-native';
 import {globalStyles} from '../../../config/theme/theme.ts';
 import {GenericIcon} from '../../icons/GenericIcon.tsx';
+import {Text} from 'react-native-paper';
 
 interface Props {
   error: string | null;

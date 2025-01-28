@@ -57,8 +57,8 @@ export const globalStyles = StyleSheet.create({
     marginBottom: 10,
   },
   buttonText: {
-    color: '#fefeff',
     fontSize: 16,
+    color: '#fefeff',
     fontWeight: '500',
   },
   or: {
