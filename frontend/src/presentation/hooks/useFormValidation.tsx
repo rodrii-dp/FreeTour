@@ -21,12 +21,12 @@ export const useFormValidation = (initialFields: InputFields) => {
       }
     }
 
-    if (fields.email && !isValidEmail(fields.email)) {
+    if (fields.email && !isValidEmail(fields.email.trim())) {
       setError('Introduce una dirección de correo electrónico válida');
       return false;
     }
 
-    if (fields.password && !isValidPassword(fields.password)) {
+    if (fields.password && !isValidPassword(fields.password.trim())) {
       setError(
         'La contraseña debe contener al menos ocho caracteres incluyendo una minúscula, una mayúscula, un símbolo y un número',
       );
@@ -42,7 +42,7 @@ export const useFormValidation = (initialFields: InputFields) => {
       setError('Las contraseñas deben coincidir');
       return false;
     }
-    if (!isValidPassword(password)) {
+    if (!isValidPassword(password.trim())) {
       setError('Contraseña inválida');
       return false;
     }

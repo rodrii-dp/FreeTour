@@ -17,8 +17,8 @@ import {Separator} from '../../components/common/Separator.tsx';
 import {GenericIcon} from '../../icons/GenericIcon.tsx';
 import {useFormValidation} from '../../hooks/useFormValidation.tsx';
 import {useFocus} from '../../hooks/useFocus.tsx';
-import {Button} from '../../components/common/Button.tsx';
-import {HelperText, Text} from 'react-native-paper';
+import {Button, Text} from 'react-native-paper';
+import {CustomButton} from '../../components/common/CustomButton.tsx';
 
 export const SignInScreen = () => {
   const navigation = useNavigation<NavigationProp<RootStackParams>>();
@@ -36,7 +36,7 @@ export const SignInScreen = () => {
 
   const [isCheckedCheckbox, setIsCheckedCheckbox] = useState(false);
 
-  const handleLogin = () => {
+  const handleSignIn = () => {
     if (validateForm()) {
       navigation.navigate('BottomTabs');
     }
@@ -105,11 +105,11 @@ export const SignInScreen = () => {
             toggle={() => setIsCheckedCheckbox(!isCheckedCheckbox)}
           />
 
-          <Button
+          <CustomButton
             text="Iniciar sesión"
             textStyle={globalStyles.buttonText}
             style={{marginTop: 30}}
-            onPress={handleLogin}
+            onPress={handleSignIn}
           />
 
           <Separator text="o iniciar sesión con" />
@@ -133,6 +133,7 @@ export const SignInScreen = () => {
             }}
             onPress={() => navigation.navigate('Signup')}>
             <Text
+              variant="bodyLarge"
               style={{
                 color: '#2f4eff',
                 textAlign: 'center',

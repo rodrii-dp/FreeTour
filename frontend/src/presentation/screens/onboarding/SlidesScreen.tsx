@@ -9,7 +9,7 @@ import {
   NativeScrollEvent,
   Pressable,
 } from 'react-native';
-import {Button} from '../../components/common/Button';
+import {Button} from '../../components/common/CustomButton.tsx';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {SvgProps} from 'react-native-svg';
 import Slide1 from '../../assets/slide-1.svg';
