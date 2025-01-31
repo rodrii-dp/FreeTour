@@ -81,6 +81,7 @@ export const SignInScreen = () => {
               isFocused={focusedInput === 'email'}
               onFocus={() => handleFocus('email')}
               onBlur={handleBlur}
+              keyboardType="email-address"
             />
           </View>
 
@@ -135,7 +136,7 @@ export const SignInScreen = () => {
             <Text
               variant="bodyLarge"
               style={{
-                color: '#2f4eff',
+                color: '#FF5A5F',
                 textAlign: 'center',
                 fontWeight: 'bold',
               }}>

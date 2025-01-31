@@ -13,7 +13,7 @@ export const BottomTabsNavigator = () => {
   return (
     <Tab.Navigator screenOptions={{headerShown: false}}>
       <Tab.Screen
-        name="Home"
+        name="Explore"
         options={{
           tabBarIcon: ({color}) => (
             <GenericIcon name="compass-outline" color={color} />
@@ -51,16 +51,3 @@ export const BottomTabsNavigator = () => {
     </Tab.Navigator>
   );
 };
-
-/*
-  <Tab.Screen
-    name="Tab2"
-    options={{
-      title: 'Tab2',
-      tabBarIcon: ({color}) => (
-        <IonIcon name="airplane-outline" color={color} />
-      ),
-    }}
-    component={TopTabsNavigator}
-  />
- */

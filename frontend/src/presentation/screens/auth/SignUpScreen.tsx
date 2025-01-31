@@ -80,7 +80,7 @@ export const SignUpScreen = () => {
         Al continuar, aceptas nuestros{' '}
         <Text
           variant="bodyLarge"
-          style={{color: '#2f4eff', textAlign: 'center', fontWeight: 'bold'}}>
+          style={{color: '#FF5A5F', textAlign: 'center', fontWeight: 'bold'}}>
           términos y condiciones
         </Text>
       </Text>
@@ -112,7 +112,7 @@ export const SignUpScreen = () => {
         <Pressable onPress={() => navigation.navigate('Signin')}>
           <Text
             variant="bodyLarge"
-            style={{color: '#2f4eff', textAlign: 'center', fontWeight: 'bold'}}>
+            style={{color: '#FF5A5F', textAlign: 'center', fontWeight: 'bold'}}>
             Inicia sesión aquí
           </Text>
         </Pressable>
