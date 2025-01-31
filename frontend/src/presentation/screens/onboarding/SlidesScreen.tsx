@@ -2,14 +2,14 @@ import React, {useRef, useState} from 'react';
 import {
   StyleSheet,
   View,
-  Text,
   FlatList,
   useWindowDimensions,
   NativeSyntheticEvent,
   NativeScrollEvent,
   Pressable,
 } from 'react-native';
-import {Button} from '../../components/common/CustomButton.tsx';
+import {Text} from 'react-native-paper';
+import {CustomButton} from '../../components/common/CustomButton.tsx';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {SvgProps} from 'react-native-svg';
 import Slide1 from '../../assets/slide-1.svg';
@@ -71,7 +71,7 @@ export const SlidesScreen = () => {
       </View>
 
       <View style={styles.buttonsContainer}>
-        <Button
+        <CustomButton
           text="Iniciar sesión"
           onPress={() => navigation.navigate('Signin')}
         />
@@ -146,7 +146,7 @@ const SlideItem = ({item, currentSlideIndex}: SlideItemProps) => {
               styles.dot,
               {
                 backgroundColor:
-                  currentSlideIndex === index ? '#4263EB' : '#E5E7EB',
+                  currentSlideIndex === index ? '#FF5A5F' : '#E5E7EB',
               },
             ]}
           />

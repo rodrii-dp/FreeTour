@@ -45,12 +45,12 @@ export const globalStyles = StyleSheet.create({
   },
   link: {
     fontSize: 16,
-    color: '#2f4eff',
+    color: '#FF5A5F',
     textAlign: 'center',
     fontWeight: 'bold',
   },
   button: {
-    backgroundColor: '#2f4eff',
+    backgroundColor: '#FF5A5F',
     borderRadius: 50,
     paddingVertical: 15,
     alignItems: 'center',

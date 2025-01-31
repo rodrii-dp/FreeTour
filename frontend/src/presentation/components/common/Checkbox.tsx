@@ -17,7 +17,7 @@ export const Checkbox = ({title, toggle, isChecked}: Props) => {
   return (
     <View style={styles.container}>
       <Pressable onPress={toggle}>
-        <GenericIcon name={iconName} color={isChecked ? '#2f4eff' : 'black'} />
+        <GenericIcon name={iconName} color={isChecked ? '#FF5A5F' : 'black'} />
       </Pressable>
       <Text variant="bodyLarge" style={styles.title}>
         {title}

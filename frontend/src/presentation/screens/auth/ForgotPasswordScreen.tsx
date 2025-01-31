@@ -52,6 +52,7 @@ export const ForgotPasswordScreen = () => {
         isFocused={focusedInput === 'email'}
         onFocus={() => handleFocus('email')}
         onBlur={handleBlur}
+        keyboardType="email-address"
       />
 
       <CustomButton
@@ -73,7 +74,7 @@ export const ForgotPasswordScreen = () => {
         onPress={() => navigation.navigate('Signup')}>
         <Text
           variant="bodyLarge"
-          style={{color: '#2f4eff', textAlign: 'center', fontWeight: 'bold'}}>
+          style={{color: '#FF5A5F', textAlign: 'center', fontWeight: 'bold'}}>
           Crear cuenta
         </Text>
       </Pressable>

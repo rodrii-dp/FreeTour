@@ -56,7 +56,7 @@ export const Input = ({
               <Text
                 variant="bodyLarge"
                 style={{
-                  color: '#2f4eff',
+                  color: '#FF5A5F',
                   textAlign: 'center',
                   fontWeight: 'bold',
                 }}>
