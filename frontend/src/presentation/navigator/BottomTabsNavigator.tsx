@@ -1,10 +1,10 @@
 import React from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import {HomeScreen} from '../screens/home/HomeScreen.tsx';
 import {FavoritesScreen} from '../screens/favourites/FavoritesScreen.tsx';
 import {ReservationsScreen} from '../screens/reservations/ReservationsScreen.tsx';
 import {ProfileScreen} from '../screens/profile/ProfileScreen.tsx';
 import {GenericIcon} from '../icons/GenericIcon.tsx';
+import {HomeStackNavigator} from './HomeStackNavigator.tsx';
 
 const Tab = createBottomTabNavigator();
 
@@ -19,7 +19,7 @@ export const BottomTabsNavigator = () => {
             <GenericIcon name="compass-outline" color={color} />
           ),
         }}
-        component={HomeScreen}
+        component={HomeStackNavigator}
       />
       <Tab.Screen
         name="favorites"

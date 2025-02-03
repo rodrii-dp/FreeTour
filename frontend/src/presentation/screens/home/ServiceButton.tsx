@@ -6,13 +6,28 @@ interface ServiceButtonProps {
   icon: string;
   label: string;
   onPress: () => void;
+  isSelected: boolean;
 }
 
-export const ServiceButton = ({icon, label, onPress}: ServiceButtonProps) => {
+export const ServiceButton = ({
+  icon,
+  label,
+  onPress,
+  isSelected,
+}: ServiceButtonProps) => {
   return (
-    <Pressable style={styles.button} onPress={onPress}>
-      <Icon name={icon} size={24} color="#FF5A5F" style={styles.icon} />
-      <Text style={styles.label}>{label}</Text>
+    <Pressable
+      style={[styles.button, isSelected && {backgroundColor: '#FF5A5F'}]}
+      onPress={onPress}>
+      <Icon
+        name={icon}
+        size={24}
+        color={isSelected ? '#F8F8F8' : '#FF5A5F'}
+        style={styles.icon}
+      />
+      <Text style={isSelected ? [styles.label, {color: '#F8F8F8'}] : ''}>
+        {label}
+      </Text>
     </Pressable>
   );
 };

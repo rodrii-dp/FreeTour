@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   ScrollView,
@@ -6,14 +6,103 @@ import {
   StyleSheet,
   ImageBackground,
   SafeAreaView,
+  ActivityIndicator,
 } from 'react-native';
 import YellowUnderline from '../../assets/yellow-underline.svg';
-import {ExperienceCard} from './ExperienceCard';
+import {TourCard} from './TourCard.tsx';
 import {ServiceButton} from './ServiceButton';
 import {IconButton, Searchbar} from 'react-native-paper';
+import {Service, Tour} from '../../../domain/entities/tour';
+import {NavigationProp, useNavigation} from '@react-navigation/native';
+import {HomeStackParamList} from '../../navigator/HomeStackNavigator.tsx';
 
+// TODO: Cuando estén listos los esquemas de MongoDB, mostrar los tours que vienen de la API
 export const HomeScreen = () => {
   const [searchQuery, setSearchQuery] = useState('');
+  const [selectedService, setSelectedService] = useState<string | null>(null);
+  const [tours, setTours] = useState<Tour[]>([]);
+  const [services, setServices] = useState<Service[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const navigation = useNavigation<NavigationProp<HomeStackParamList>>();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setTours([
+          {
+            id: '1',
+            title: 'Paseo en barca',
+            description:
+              'Disfruta de un paseo en barca por el hermoso lago di Braies, rodeado de montañas majestuosas y aguas cristalinas.',
+            location: {
+              name: 'Lago di Braies',
+              country: 'Italia',
+            },
+            imageUrl: require('../../assets/lago_di_braies.png'),
+            rating: 4.5,
+            reviews: Array(150).fill(null),
+            price: 50,
+          },
+          {
+            id: '2',
+            title: 'Tarde gastronómica',
+            description:
+              'Disfruta de una tarde por Varenna donde probarás la comida de este grandioso lugar, y que poca gente conoce.',
+            location: {
+              name: 'Varenna',
+              country: 'Italia',
+            },
+            imageUrl: require('../../assets/varenna.png'),
+            rating: 4.5,
+            reviews: Array(150).fill(null),
+            price: 50,
+          },
+        ]);
+
+        setServices([
+          {
+            id: '1',
+            name: 'Naturaleza',
+            icon: 'pine-tree',
+          },
+          {
+            id: '2',
+            name: 'Historia',
+            icon: 'castle',
+          },
+          {
+            id: '3',
+            name: 'Comida',
+            icon: 'silverware-fork-knife',
+          },
+          {
+            id: '4',
+            name: 'Aventura',
+            icon: 'parachute',
+          },
+        ]);
+
+        setIsLoading(false);
+      } catch (error) {
+        console.error(error);
+        setIsLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
+
+  const handleTourPress = (tour: Tour) => {
+    navigation.navigate('TourDetails', {tourId: tour.id});
+  };
+
+  if (isLoading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#FF5A5F" />
+      </View>
+    );
+  }
 
   return (
     <SafeAreaView style={{flex: 1}}>
@@ -59,16 +148,9 @@ export const HomeScreen = () => {
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Experiencias culturales</Text>
           <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-            <ExperienceCard
-              title="Paseo en barca"
-              location="Lago di Braies"
-              imageUrl={require('../../assets/lago_di_braies.png')}
-            />
-            <ExperienceCard
-              title="Tarde gastronómica"
-              location="Varenna"
-              imageUrl={require('../../assets/varenna.png')}
-            />
+            {tours.map(tour => (
+              <TourCard key={tour.id} tour={tour} onPress={handleTourPress} />
+            ))}
           </ScrollView>
         </View>
 
@@ -78,26 +160,24 @@ export const HomeScreen = () => {
             <Text style={styles.seeAll}>Ver todos</Text>
           </View>
           <View style={styles.servicesContainer}>
-            <ServiceButton icon="home" label="Hotel" onPress={() => {}} />
-            <ServiceButton icon="airplane" label="Flight" onPress={() => {}} />
-            <ServiceButton icon="bus" label="Bus" onPress={() => {}} />
-            <ServiceButton icon="ferry" label="Boat" onPress={() => {}} />
+            {services.map(service => (
+              <ServiceButton
+                key={service.id}
+                icon={service.icon}
+                label={service.name}
+                onPress={() => setSelectedService(service.id)}
+                isSelected={selectedService === service.id}
+              />
+            ))}
           </View>
         </View>
 
         <View style={[styles.section, styles.lastSection]}>
           <Text style={styles.sectionTitle}>Experiencias culturales</Text>
           <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-            <ExperienceCard
-              title="Paseo en barca"
-              location="Lago di Braies"
-              imageUrl={require('../../assets/lago_di_braies.png')}
-            />
-            <ExperienceCard
-              title="Tarde gastronómica"
-              location="Varenna"
-              imageUrl={require('../../assets/varenna.png')}
-            />
+            {tours.map(tour => (
+              <TourCard key={tour.id} tour={tour} onPress={handleTourPress} />
+            ))}
           </ScrollView>
         </View>
       </ScrollView>
@@ -116,6 +196,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 15,
     gap: 10,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   searchBarWrapper: {
     flex: 1,
