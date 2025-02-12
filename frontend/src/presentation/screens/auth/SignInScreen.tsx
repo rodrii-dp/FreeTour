@@ -13,11 +13,11 @@ import {RootStackParams} from '../../navigator/Navigator.tsx';
 import {Message} from '../../components/common/Message.tsx';
 import {Input} from '../../components/common/Input.tsx';
 import {Checkbox} from '../../components/common/Checkbox.tsx';
-import {Separator} from '../../components/common/Separator.tsx';
+import {SeparatorWithText} from '../../components/common/SeparatorWithText.tsx';
 import {GenericIcon} from '../../icons/GenericIcon.tsx';
 import {useFormValidation} from '../../hooks/useFormValidation.tsx';
 import {useFocus} from '../../hooks/useFocus.tsx';
-import {Button, Text} from 'react-native-paper';
+import {Text} from 'react-native-paper';
 import {CustomButton} from '../../components/common/CustomButton.tsx';
 
 export const SignInScreen = () => {
@@ -113,7 +113,7 @@ export const SignInScreen = () => {
             onPress={handleSignIn}
           />
 
-          <Separator text="o iniciar sesión con" />
+          <SeparatorWithText text="o iniciar sesión con" />
 
           <Pressable
             style={globalStyles.googleButton}
