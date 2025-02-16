@@ -1,4 +1,11 @@
-import {StyleSheet, Pressable, Text, View} from 'react-native';
+import {
+  StyleSheet,
+  Pressable,
+  Text,
+  View,
+  StyleProp,
+  ViewStyle,
+} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import React from 'react';
 
@@ -7,10 +14,11 @@ interface Props {
   value?: string;
   onPress: () => void;
   red?: boolean;
+  style?: StyleProp<ViewStyle>;
 }
 
-export const SettingRow = ({title, value, onPress, red}: Props) => (
-  <Pressable style={styles.row} onPress={onPress}>
+export const SettingRow = ({title, value, onPress, red, style}: Props) => (
+  <Pressable style={[style && style, styles.row]} onPress={onPress}>
     <View style={styles.rowContent}>
       <Text style={red ? styles.redTitle : styles.title}>{title}</Text>
       {value && <Text style={styles.value}>{value}</Text>}

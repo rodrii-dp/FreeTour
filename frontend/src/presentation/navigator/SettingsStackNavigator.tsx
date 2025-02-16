@@ -4,7 +4,7 @@ import {ProfileDetailsScreen} from '../screens/profile/ProfileDetailsScreen.tsx'
 import {SettingsScreen} from '../screens/settings/SettingsScreen.tsx';
 
 export type ProfileStackParamList = {
-  Settings: undefined;
+  Ajustes: undefined;
   ProfileDetails: undefined; // {tourId: string};
 };
 
@@ -13,7 +13,7 @@ const Stack = createStackNavigator<ProfileStackParamList>();
 export const SettingsStackNavigator = () => (
   <Stack.Navigator>
     <Stack.Screen
-      name="Settings"
+      name="Ajustes"
       component={SettingsScreen}
       options={{headerLeft: () => null}}
     />

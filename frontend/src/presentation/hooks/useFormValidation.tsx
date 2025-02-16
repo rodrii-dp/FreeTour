@@ -46,6 +46,10 @@ export const useFormValidation = (initialFields: InputFields) => {
       setError('Contraseña inválida');
       return false;
     }
+    if (!isValidPassword(confirmPassword.trim())) {
+      setError('Contraseña inválida');
+      return false;
+    }
     setError('');
     return true;
   };

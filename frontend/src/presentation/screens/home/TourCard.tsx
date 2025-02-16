@@ -17,8 +17,8 @@ interface TourCardProps {
 
 /*
 TODO:
- 1. Ajustar información a mostrar según lo que contenga el esquema de MongoDB y hacer que se pueda pulsar en el Card
- para navegar al TourDetailsScreen
+ 1. Ajustar información a mostrar según lo que contenga el esquema de MongoDB
+ y hacer que pueda pulsar en el Card para navegar al TourDetailsScreen
  2. Recibir el tour como prop, no las propiedades individualmente ✅
 */
 
@@ -33,11 +33,7 @@ export const TourCard = ({
       onPress={() => onPress && onPress(tour)}
       activeOpacity={0.8}>
       <ImageBackground
-        source={
-          typeof tour.imageUrl === 'number'
-            ? tour.imageUrl
-            : {uri: tour.imageUrl.uri}
-        }
+        source={{uri: tour.images[0].imageUrl}}
         style={styles.imageBackground}
         imageStyle={styles.image}>
         <View style={styles.content}>
