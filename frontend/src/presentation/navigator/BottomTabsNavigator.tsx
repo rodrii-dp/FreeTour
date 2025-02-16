@@ -1,15 +1,15 @@
 import React from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import {HomeScreen} from '../screens/home/HomeScreen.tsx';
 import {FavoritesScreen} from '../screens/favourites/FavoritesScreen.tsx';
 import {ReservationsScreen} from '../screens/reservations/ReservationsScreen.tsx';
-import {ProfileScreen} from '../screens/profile/ProfileScreen.tsx';
 import {GenericIcon} from '../icons/GenericIcon.tsx';
+import {HomeStackNavigator} from './HomeStackNavigator.tsx';
+import {SettingsStackNavigator} from './SettingsStackNavigator.tsx';
 
 const Tab = createBottomTabNavigator();
 
 export const BottomTabsNavigator = () => {
-  // explore (home), favourites, reservations, profile
+  // explore (home), favourites, reservations, settings
   return (
     <Tab.Navigator screenOptions={{headerShown: false}}>
       <Tab.Screen
@@ -19,7 +19,7 @@ export const BottomTabsNavigator = () => {
             <GenericIcon name="compass-outline" color={color} />
           ),
         }}
-        component={HomeScreen}
+        component={HomeStackNavigator}
       />
       <Tab.Screen
         name="favorites"
@@ -40,13 +40,13 @@ export const BottomTabsNavigator = () => {
         component={ReservationsScreen}
       />
       <Tab.Screen
-        name="profile"
+        name="settings"
         options={{
           tabBarIcon: ({color}) => (
-            <GenericIcon name="person-outline" color={color} />
+            <GenericIcon name="settings-outline" color={color} />
           ),
         }}
-        component={ProfileScreen}
+        component={SettingsStackNavigator}
       />
     </Tab.Navigator>
   );

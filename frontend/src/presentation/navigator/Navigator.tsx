@@ -7,7 +7,7 @@ import {ResetPasswordScreen} from '../screens/auth/ResetPasswordScreen.tsx';
 import {SignupSuccessScreen} from '../screens/auth/SignupSuccessScreen.tsx';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {SlidesScreen} from '../screens/onboarding/SlidesScreen.tsx';
-import {Text} from 'react-native';
+import {ActivityIndicator} from 'react-native';
 import {BottomTabsNavigator} from './BottomTabsNavigator.tsx';
 
 export type RootStackParams = {
@@ -41,7 +41,13 @@ export const Navigator = () => {
   }, []);
 
   if (isAppFirstLaunched === null) {
-    return <Text>Loading...</Text>;
+    return (
+      <ActivityIndicator
+        size={32}
+        color="#FF5A5F"
+        style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}
+      />
+    );
   }
 
   return (

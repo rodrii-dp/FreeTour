@@ -6,7 +6,7 @@ import {RootStackParams} from '../../navigator/Navigator.tsx';
 import {GenericIcon} from '../../icons/GenericIcon.tsx';
 import {Message} from '../../components/common/Message.tsx';
 import {Input} from '../../components/common/Input.tsx';
-import {Separator} from '../../components/common/Separator.tsx';
+import {SeparatorWithText} from '../../components/common/SeparatorWithText.tsx';
 import {useFormValidation} from '../../hooks/useFormValidation.tsx';
 import {useFocus} from '../../hooks/useFocus.tsx';
 import {Text} from 'react-native-paper';
@@ -92,7 +92,7 @@ export const SignUpScreen = () => {
         onPress={handleSignUp}
       />
 
-      <Separator text="o" />
+      <SeparatorWithText text="o" />
 
       <Pressable
         style={[globalStyles.googleButton, {marginTop: 30}]}

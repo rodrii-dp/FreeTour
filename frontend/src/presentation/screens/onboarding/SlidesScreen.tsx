@@ -17,6 +17,7 @@ import Slide2 from '../../assets/slide-2.svg';
 import Slide3 from '../../assets/slide-3.svg';
 import {globalStyles} from '../../../config/theme/theme.ts';
 import {RootStackParams} from '../../navigator/Navigator.tsx';
+import {PaginationDots} from '../../components/common/PaginationDots.tsx';
 
 interface Slide {
   title: string;
@@ -138,20 +139,14 @@ const SlideItem = ({item, currentSlideIndex}: SlideItemProps) => {
         {desc}
       </Text>
 
-      <View style={styles.dots}>
-        {[0, 1, 2].map((_, index) => (
-          <View
-            key={index}
-            style={[
-              styles.dot,
-              {
-                backgroundColor:
-                  currentSlideIndex === index ? '#FF5A5F' : '#E5E7EB',
-              },
-            ]}
+      {items.length > 1 && (
+        <View style={styles.dotsContainer}>
+          <PaginationDots
+            totalDots={items.length}
+            activeIndex={currentSlideIndex}
           />
-        ))}
-      </View>
+        </View>
+      )}
     </View>
   );
 };
@@ -168,16 +163,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
     paddingBottom: 24,
   },
-  dots: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 8,
+  dotsContainer: {
     marginTop: 40,
-  },
-  dot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
   },
 });
