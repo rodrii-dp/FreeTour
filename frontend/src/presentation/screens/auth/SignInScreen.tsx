@@ -6,6 +6,7 @@ import {
   Platform,
   ScrollView,
   Keyboard,
+  Dimensions,
 } from 'react-native';
 import {globalStyles} from '../../../config/theme/theme.ts';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
@@ -19,6 +20,8 @@ import {useFormValidation} from '../../hooks/useFormValidation.tsx';
 import {useFocus} from '../../hooks/useFocus.tsx';
 import {Text} from 'react-native-paper';
 import {CustomButton} from '../../components/common/CustomButton.tsx';
+
+const {width} = Dimensions.get('window');
 
 export const SignInScreen = () => {
   const navigation = useNavigation<NavigationProp<RootStackParams>>();
@@ -35,6 +38,8 @@ export const SignInScreen = () => {
   >();
 
   const [isCheckedCheckbox, setIsCheckedCheckbox] = useState(false);
+
+  const fontSize = width < 360 ? 16 : 18;
 
   const handleSignIn = () => {
     if (validateForm()) {
@@ -69,9 +74,7 @@ export const SignInScreen = () => {
             style={{fontWeight: '800', marginBottom: 10}}>
             Iniciar sesión
           </Text>
-          <Text style={{color: '#4c5667', fontSize: 18}}>
-            Bienvenido de vuelta
-          </Text>
+          <Text style={{color: '#4c5667', fontSize}}>Bienvenido de vuelta</Text>
           <View style={{marginTop: 50}}>
             <Input
               label="Correo electrónico"

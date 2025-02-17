@@ -3,6 +3,8 @@ import {
   Dimensions,
   FlatList,
   Image,
+  NativeScrollEvent,
+  NativeSyntheticEvent,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -20,6 +22,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import {PaginationDots} from '../../components/common/PaginationDots.tsx';
 import {StarRating} from '../../components/common/StarRating.tsx';
 import {SettingRow} from '../../components/common/SettingRow.tsx';
+import {useScroll} from '../../hooks/useScroll.tsx';
 
 const {width: SCREEN_WIDTH} = Dimensions.get('window');
 
@@ -31,12 +34,7 @@ export const TourDetailsScreen = () => {
 
   const navigation = useNavigation<NavigationProp<HomeStackParamList>>();
 
-  const [activeIndex, setActiveIndex] = useState(0);
-
-  const handleScroll = (event: any) => {
-    const index = Math.floor(event.nativeEvent.contentOffset.x / SCREEN_WIDTH);
-    setActiveIndex(index);
-  };
+  const {activeIndex, onScroll} = useScroll();
 
   const renderImageCarousel = () => (
     <View>
@@ -46,7 +44,7 @@ export const TourDetailsScreen = () => {
         showsHorizontalScrollIndicator={false}
         data={tour.images}
         keyExtractor={item => item.id}
-        onScroll={handleScroll}
+        onScroll={onScroll}
         renderItem={({item}) => (
           <Image source={{uri: item.imageUrl}} style={styles.image} />
         )}

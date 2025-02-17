@@ -1,11 +1,9 @@
-import React, {useRef, useState} from 'react';
+import React, {useRef} from 'react';
 import {
   StyleSheet,
   View,
   FlatList,
   useWindowDimensions,
-  NativeSyntheticEvent,
-  NativeScrollEvent,
   Pressable,
 } from 'react-native';
 import {Text} from 'react-native-paper';
@@ -18,6 +16,7 @@ import Slide3 from '../../assets/slide-3.svg';
 import {globalStyles} from '../../../config/theme/theme.ts';
 import {RootStackParams} from '../../navigator/Navigator.tsx';
 import {PaginationDots} from '../../components/common/PaginationDots.tsx';
+import {useScroll} from '../../hooks/useScroll.tsx';
 
 interface Slide {
   title: string;
@@ -44,15 +43,10 @@ const items: Slide[] = [
 ];
 
 export const SlidesScreen = () => {
-  const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
   const flatListRef = useRef<FlatList>(null);
   const navigation = useNavigation<NavigationProp<RootStackParams>>();
 
-  const onScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
-    const {contentOffset, layoutMeasurement} = event.nativeEvent;
-    const currentIndex = Math.floor(contentOffset.x / layoutMeasurement.width);
-    setCurrentSlideIndex(currentIndex > 0 ? currentIndex : 0);
-  };
+  const {activeIndex: currentSlideIndex, onScroll} = useScroll();
 
   return (
     <View style={styles.container}>
