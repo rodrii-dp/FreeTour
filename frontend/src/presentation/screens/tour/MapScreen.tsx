@@ -1,6 +1,6 @@
 import React, {useEffect, useRef, useState, useCallback} from 'react';
 import {RouteProp, useRoute, useFocusEffect} from '@react-navigation/native';
-import {HomeStackParamList} from '../../navigator/HomeStackNavigator.tsx';
+import {HomeStackParamList} from '../../navigation/HomeStackNavigator.tsx';
 import MapView, {Marker, Polyline, PROVIDER_GOOGLE} from 'react-native-maps';
 import {StyleSheet, ScrollView, Text, View, Dimensions} from 'react-native';
 

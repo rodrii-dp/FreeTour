@@ -2,10 +2,10 @@ import React from 'react';
 import {View, Text, StyleSheet, ScrollView} from 'react-native';
 import {SettingRow} from './SettingRow.tsx';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
-import {ProfileStackParamList} from '../../navigator/SettingsStackNavigator.tsx';
+import {SettingsStackParamList} from '../../navigation/SettingsStackNavigator.tsx';
 
 export const MenuSection = () => {
-  const navigation = useNavigation<NavigationProp<ProfileStackParamList>>();
+  const navigation = useNavigation<NavigationProp<SettingsStackParamList>>();
 
   return (
     <ScrollView style={styles.container}>
@@ -18,7 +18,7 @@ export const MenuSection = () => {
       <SettingRow
         title="Perfil"
         value="Detalles"
-        onPress={() => navigation.navigate('ProfileDetails')}
+        onPress={() => navigation.navigate('Perfil')}
       />
       <SettingRow title="Notificaciones" onPress={() => {}} />
 

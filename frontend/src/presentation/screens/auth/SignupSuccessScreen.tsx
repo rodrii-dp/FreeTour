@@ -3,7 +3,7 @@ import {View, Pressable, Dimensions} from 'react-native';
 import {globalStyles} from '../../../config/theme/theme.ts';
 import {BackArrowButton} from '../../components/common/BackArrowButton.tsx';
 import {type NavigationProp, useNavigation} from '@react-navigation/native';
-import type {RootStackParams} from '../../navigator/Navigator.tsx';
+import type {RootStackParams} from '../../navigation/Navigator.tsx';
 import {Text} from 'react-native-paper';
 
 // @ts-ignore

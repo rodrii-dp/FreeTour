@@ -14,7 +14,7 @@ import {ServiceButton} from './ServiceButton';
 import {IconButton, Searchbar} from 'react-native-paper';
 import {Service, Tour} from '../../../domain/entities/tour';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
-import {HomeStackParamList} from '../../navigator/HomeStackNavigator.tsx';
+import {HomeStackParamList} from '../../navigation/HomeStackNavigator.tsx';
 
 // TODO: Cuando estén listos los esquemas de MongoDB, mostrar los tours que vienen de la API
 export const HomeScreen = () => {

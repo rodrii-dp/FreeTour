@@ -14,7 +14,7 @@ import Slide1 from '../../assets/slide-1.svg';
 import Slide2 from '../../assets/slide-2.svg';
 import Slide3 from '../../assets/slide-3.svg';
 import {globalStyles} from '../../../config/theme/theme.ts';
-import {RootStackParams} from '../../navigator/Navigator.tsx';
+import {RootStackParams} from '../../navigation/Navigator.tsx';
 import {PaginationDots} from '../../components/common/PaginationDots.tsx';
 import {useScroll} from '../../hooks/useScroll.tsx';
 

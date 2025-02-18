@@ -24,7 +24,7 @@ export interface Provider {
   verificationStatus: 'verificado' | 'pendiente' | 'no verificado';
 }
 
-export interface Resena {
+export interface Review {
   id: string;
   title: string;
   userId: string;
@@ -34,7 +34,7 @@ export interface Resena {
 }
 
 export interface User {
-  id: string;
+  id?: string;
   name: string;
   email: string;
   password: string;
@@ -53,7 +53,7 @@ export interface Tour {
   images: ImageTour[];
   provider: Provider;
   rating: number;
-  reviews: Resena[];
+  reviews: Review[];
   description: string;
   duration: string;
   language: string[];
