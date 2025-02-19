@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {View, Pressable} from 'react-native';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
-import {RootStackParams} from '../../navigation/Navigator.tsx';
+import {RootStackParams} from '../../navigator/Navigator.tsx';
 import {globalStyles} from '../../../config/theme/theme.ts';
 import {BackArrowButton} from '../../components/common/BackArrowButton.tsx';
 import {Message} from '../../components/common/Message.tsx';

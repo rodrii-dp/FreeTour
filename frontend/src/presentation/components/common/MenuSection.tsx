@@ -2,16 +2,10 @@ import React from 'react';
 import {View, Text, StyleSheet, ScrollView} from 'react-native';
 import {SettingRow} from './SettingRow.tsx';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
-import {SettingsStackParamList} from '../../navigation/SettingsStackNavigator.tsx';
-import {RootStackParams} from '../../navigation/Navigator.tsx';
+import {ProfileStackParamList} from '../../navigator/SettingsStackNavigator.tsx';
 
 export const MenuSection = () => {
-  // Navegación dentro del stack de ajustes
-  const settingsNavigation =
-    useNavigation<NavigationProp<SettingsStackParamList>>();
-
-  // Navegación en el stack raíz
-  const rootNavigation = useNavigation<NavigationProp<RootStackParams>>();
+  const navigation = useNavigation<NavigationProp<ProfileStackParamList>>();
 
   return (
     <ScrollView style={styles.container}>
@@ -24,7 +18,7 @@ export const MenuSection = () => {
       <SettingRow
         title="Perfil"
         value="Detalles"
-        onPress={() => settingsNavigation.navigate('Perfil')} // Navegación dentro del stack de ajustes
+        onPress={() => navigation.navigate('ProfileDetails')}
       />
       <SettingRow title="Notificaciones" onPress={() => {}} />
 
@@ -33,12 +27,9 @@ export const MenuSection = () => {
       <SettingRow title="Escríbenos" onPress={() => {}} />
 
       <Text style={styles.sectionHeader}>Comentarios</Text>
+      {/* Todo: Redirigir usuario a playstore / appstore. Ver enlace: https://reactnative.dev/docs/linking*/}
       <SettingRow title="Deja una valoración" onPress={() => {}} />
-      <SettingRow
-        title="Cerrar sesión"
-        onPress={() => rootNavigation.navigate('Signin')} // Navegación en el stack raíz
-        red
-      />
+      <SettingRow title="Cerrar sesión" onPress={() => {}} red />
     </ScrollView>
   );
 };
