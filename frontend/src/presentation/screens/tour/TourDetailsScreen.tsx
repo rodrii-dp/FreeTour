@@ -31,11 +31,11 @@ export const TourDetailsScreen = ({route}: Props) => {
   const {tour} = route.params;
 
   const [isFavorite, setIsFavorite] = useState(false);
-  const [isLiked, setIsLiked] = useState(false);
 
   const {activeIndex, onScroll} = useScroll();
   const {width} = useWindowDimensions();
 
+  // TODO: Guardar en AsyncStorage o BBDD
   const toggleFavorite = useCallback(() => {
     setIsFavorite(!isFavorite);
     console.log(isFavorite ? 'Eliminado de favoritos' : 'Añadido a favoritos');

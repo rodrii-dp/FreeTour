@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React from 'react';
 import {
   View,
   Text,
@@ -6,7 +6,6 @@ import {
   Pressable,
   ScrollView,
   Alert,
-  useWindowDimensions,
   ActivityIndicator,
 } from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
@@ -23,6 +22,8 @@ export const ProfileDetailsScreen = () => {
   const navigation = useNavigation<NavigationProp<SettingsStackParamList>>();
   const {user, isLoading, error, updateUser, deleteAccount} = useUser();
 
+  console.log({user, isLoading, error, updateUser, deleteAccount});
+
   const {
     fields,
     error: formError,
@@ -37,19 +38,12 @@ export const ProfileDetailsScreen = () => {
     'name' | 'email' | 'role'
   >();
 
-  useEffect(() => {
-    if (user) {
-      handleInputChange('name', user.name);
-      handleInputChange('email', user.email);
-    }
-  }, [user, handleInputChange]);
-
   const handleSave = async () => {
     try {
       if (validateForm()) {
+        await updateUser(fields);
+        Alert.alert('Éxito', 'Cambios guardados correctamente');
       }
-      await updateUser(fields);
-      Alert.alert('Éxito', 'Cambios guardados correctamente');
     } catch (err) {
       Alert.alert('Error', 'No se pudieron guardar los cambios');
     }
@@ -128,7 +122,6 @@ export const ProfileDetailsScreen = () => {
             onFocus={() => handleFocus('name')}
             onBlur={handleBlur}
           />
-          {formError && <Message error={formError} />}
         </View>
 
         <View style={styles.formGroup}>
@@ -146,6 +139,9 @@ export const ProfileDetailsScreen = () => {
             onBlur={handleBlur}
           />
         </View>
+
+        {formError && <Message error={formError} />}
+
         <Pressable onPress={handleDeleteAccount} style={styles.deleteButton}>
           <Text style={styles.deleteButtonText}>Eliminar cuenta</Text>
         </Pressable>
