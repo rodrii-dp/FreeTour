@@ -64,7 +64,7 @@ export const HomeScreen = () => {
               id: 'r1',
               title: 'Experiencia inolvidable',
               userId: 'u1',
-              date: new Date(),
+              date: new Date().toISOString(),
               rating: 5,
               comment: 'Un paseo maravilloso con vistas impresionantes.',
             }),
@@ -101,8 +101,8 @@ export const HomeScreen = () => {
             meetingPoint:
               'Muelle principal del Lago di Braies, junto al Hotel Lago di Braies',
             availability: {
-              dateStart: new Date('2023-05-01'),
-              dateEnd: new Date('2023-10-31'),
+              dateStart: new Date('2023-05-01').toISOString(),
+              dateEnd: new Date('2023-10-31').toISOString(),
             },
           },
           {
@@ -129,7 +129,7 @@ export const HomeScreen = () => {
               id: 'r2',
               title: 'Delicioso recorrido',
               userId: 'u2',
-              date: new Date(),
+              date: new Date().toISOString(),
               rating: 5,
               comment:
                 'Una experiencia culinaria increíble en un lugar encantador.',
@@ -175,8 +175,8 @@ export const HomeScreen = () => {
             meetingPoint:
               'Plaza central de Varenna, frente a la iglesia de San Giorgio',
             availability: {
-              dateStart: new Date('2023-04-01'),
-              dateEnd: new Date('2023-11-30'),
+              dateStart: new Date('2023-04-01').toISOString(),
+              dateEnd: new Date('2023-11-30').toISOString(),
             },
           },
         ]);

@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useCallback, useLayoutEffect, useState} from 'react';
 import {
   FlatList,
   Image,
@@ -12,7 +12,6 @@ import {
   type NavigationProp,
   type RouteProp,
   useNavigation,
-  useRoute,
 } from '@react-navigation/native';
 import type {HomeStackParamList} from '../../navigation/HomeStackNavigator.tsx';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -20,25 +19,41 @@ import {PaginationDots} from '../../components/common/PaginationDots.tsx';
 import {StarRating} from '../../components/common/StarRating.tsx';
 import {SettingRow} from '../../components/common/SettingRow.tsx';
 import {useScroll} from '../../hooks/useScroll.tsx';
-import {SafeAreaView, useSafeAreaInsets} from 'react-native-safe-area-context';
+import {SafeAreaView} from 'react-native-safe-area-context';
 import {useWindowDimensions} from 'react-native';
 
-type TourDetailsRouteProp = RouteProp<HomeStackParamList, 'TourDetails'>;
+interface Props {
+  route: RouteProp<HomeStackParamList, 'TourDetails'>;
+}
 
-export const TourDetailsScreen = () => {
-  const route = useRoute<TourDetailsRouteProp>();
+export const TourDetailsScreen = ({route}: Props) => {
+  const navigation = useNavigation<NavigationProp<HomeStackParamList>>();
   const {tour} = route.params;
 
-  const navigation = useNavigation<NavigationProp<HomeStackParamList>>();
+  const [isFavorite, setIsFavorite] = useState(false);
+  const [isLiked, setIsLiked] = useState(false);
 
   const {activeIndex, onScroll} = useScroll();
   const {width} = useWindowDimensions();
 
-  const [isLiked, setIsLiked] = useState(false);
+  const toggleFavorite = useCallback(() => {
+    setIsFavorite(!isFavorite);
+    console.log(isFavorite ? 'Eliminado de favoritos' : 'Añadido a favoritos');
+  }, [isFavorite]);
 
-  const handleLikePress = () => {
-    setIsLiked(prevState => !prevState);
-  };
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <Pressable onPress={toggleFavorite} style={{padding: 8}}>
+          <Icon
+            name={isFavorite ? 'heart' : 'heart-outline'}
+            size={24}
+            color={isFavorite ? 'red' : 'black'}
+          />
+        </Pressable>
+      ),
+    });
+  }, [navigation, isFavorite, toggleFavorite]);
 
   const renderImageCarousel = () => (
     <View>
@@ -68,21 +83,7 @@ export const TourDetailsScreen = () => {
   );
 
   return (
-    <SafeAreaView style={styles.safeArea} edges={['top']}>
-      <View style={styles.header}>
-        <Pressable
-          onPress={() => navigation.goBack()}
-          style={styles.backButton}>
-          <Icon name="arrow-back" size={24} color="#000000" />
-        </Pressable>
-        <Pressable onPress={handleLikePress} style={styles.likeButton}>
-          <Icon
-            name={isLiked ? 'heart' : 'heart-outline'}
-            size={24}
-            color={isLiked ? '#FF5A5F' : '#000000'}
-          />
-        </Pressable>
-      </View>
+    <SafeAreaView style={styles.safeArea}>
       <ScrollView style={styles.container}>
         {renderImageCarousel()}
         <View style={styles.content}>

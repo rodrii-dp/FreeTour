@@ -28,7 +28,7 @@ export interface Review {
   id: string;
   title: string;
   userId: string;
-  date: Date;
+  date: string; // Date;
   rating: number; // 0-5
   comment: string;
 }
@@ -68,7 +68,7 @@ export interface Tour {
   };
   meetingPoint: string;
   availability: {
-    dateStart: Date;
-    dateEnd: Date;
+    dateStart: string; // Date;
+    dateEnd: string; // Date;
   };
 }
