@@ -24,17 +24,17 @@ export interface Provider {
   verificationStatus: 'verificado' | 'pendiente' | 'no verificado';
 }
 
-export interface Review {
+export interface Resena {
   id: string;
   title: string;
   userId: string;
-  date: string; // Date;
+  date: Date;
   rating: number; // 0-5
   comment: string;
 }
 
 export interface User {
-  id?: string;
+  id: string;
   name: string;
   email: string;
   password: string;
@@ -53,7 +53,7 @@ export interface Tour {
   images: ImageTour[];
   provider: Provider;
   rating: number;
-  reviews: Review[];
+  reviews: Resena[];
   description: string;
   duration: string;
   language: string[];
@@ -68,7 +68,7 @@ export interface Tour {
   };
   meetingPoint: string;
   availability: {
-    dateStart: string; // Date;
-    dateEnd: string; // Date;
+    dateStart: Date;
+    dateEnd: Date;
   };
 }
