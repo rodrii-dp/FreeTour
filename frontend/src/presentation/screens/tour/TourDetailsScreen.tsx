@@ -1,10 +1,7 @@
-import React, {useState} from 'react';
+import React, {useCallback, useLayoutEffect, useState} from 'react';
 import {
-  Dimensions,
   FlatList,
   Image,
-  NativeScrollEvent,
-  NativeSyntheticEvent,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -12,29 +9,51 @@ import {
   View,
 } from 'react-native';
 import {
-  NavigationProp,
-  RouteProp,
+  type NavigationProp,
+  type RouteProp,
   useNavigation,
-  useRoute,
 } from '@react-navigation/native';
-import {HomeStackParamList} from '../../navigator/HomeStackNavigator.tsx';
+import type {HomeStackParamList} from '../../navigation/HomeStackNavigator.tsx';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {PaginationDots} from '../../components/common/PaginationDots.tsx';
 import {StarRating} from '../../components/common/StarRating.tsx';
 import {SettingRow} from '../../components/common/SettingRow.tsx';
 import {useScroll} from '../../hooks/useScroll.tsx';
+import {SafeAreaView} from 'react-native-safe-area-context';
+import {useWindowDimensions} from 'react-native';
 
-const {width: SCREEN_WIDTH} = Dimensions.get('window');
+interface Props {
+  route: RouteProp<HomeStackParamList, 'TourDetails'>;
+}
 
-type TourDetailsRouteProp = RouteProp<HomeStackParamList, 'TourDetails'>;
-
-export const TourDetailsScreen = () => {
-  const route = useRoute<TourDetailsRouteProp>();
+export const TourDetailsScreen = ({route}: Props) => {
+  const navigation = useNavigation<NavigationProp<HomeStackParamList>>();
   const {tour} = route.params;
 
-  const navigation = useNavigation<NavigationProp<HomeStackParamList>>();
+  const [isFavorite, setIsFavorite] = useState(false);
 
   const {activeIndex, onScroll} = useScroll();
+  const {width} = useWindowDimensions();
+
+  // TODO: Guardar en AsyncStorage o BBDD
+  const toggleFavorite = useCallback(() => {
+    setIsFavorite(!isFavorite);
+    console.log(isFavorite ? 'Eliminado de favoritos' : 'Añadido a favoritos');
+  }, [isFavorite]);
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <Pressable onPress={toggleFavorite} style={{padding: 8}}>
+          <Icon
+            name={isFavorite ? 'heart' : 'heart-outline'}
+            size={24}
+            color={isFavorite ? 'red' : 'black'}
+          />
+        </Pressable>
+      ),
+    });
+  }, [navigation, isFavorite, toggleFavorite]);
 
   const renderImageCarousel = () => (
     <View>
@@ -46,7 +65,10 @@ export const TourDetailsScreen = () => {
         keyExtractor={item => item.id}
         onScroll={onScroll}
         renderItem={({item}) => (
-          <Image source={{uri: item.imageUrl}} style={styles.image} />
+          <Image
+            source={{uri: item.imageUrl}}
+            style={[styles.image, {width: width, height: width * 0.75}]}
+          />
         )}
       />
       {tour.images.length > 1 && (
@@ -61,74 +83,71 @@ export const TourDetailsScreen = () => {
   );
 
   return (
-    <ScrollView style={styles.container}>
-      {renderImageCarousel()}
-      <View style={styles.content}>
-        <Text style={styles.category}>{tour.category.toUpperCase()}</Text>
-        <Text style={styles.title}>{tour.title}</Text>
-        <Text style={styles.provider}>Proovedor: {tour.provider.name}</Text>
-        <View style={styles.ratingContainer}>
-          <StarRating rating={tour.rating} />
-          <Text style={styles.reviews}> {tour.reviews.length} reseñas</Text>
-        </View>
-
-        <View style={styles.infoContainer}>
-          <View style={styles.infoItem}>
-            <Icon name="time-outline" size={24} color="#34495E" />
-            <Text style={styles.infoText}>{tour.duration}</Text>
+    <SafeAreaView style={styles.safeArea}>
+      <ScrollView style={styles.container}>
+        {renderImageCarousel()}
+        <View style={styles.content}>
+          <Text style={styles.category}>{tour.category.toUpperCase()}</Text>
+          <Text style={styles.title}>{tour.title}</Text>
+          <Text style={styles.provider}>Proveedor: {tour.provider.name}</Text>
+          <View style={styles.ratingContainer}>
+            <StarRating rating={tour.rating} />
+            <Text style={styles.reviews}> {tour.reviews.length} reseñas</Text>
           </View>
-          <View style={styles.infoItem}>
-            <Icon name="language-outline" size={24} color="#34495E" />
-            <Text style={styles.infoText}>{tour.language.join(', ')}</Text>
+
+          <View style={styles.infoContainer}>
+            <View style={styles.infoItem}>
+              <Icon name="time-outline" size={24} color="#34495E" />
+              <Text style={styles.infoText}>{tour.duration}</Text>
+            </View>
+            <View style={styles.infoItem}>
+              <Icon name="language-outline" size={24} color="#34495E" />
+              <Text style={styles.infoText}>{tour.language.join(', ')}</Text>
+            </View>
+          </View>
+
+          <Text style={styles.sectionTitle}>Acerca de este tour</Text>
+          <Text style={styles.description}>{tour.description}</Text>
+
+          <Text style={styles.sectionTitle}>Itinerario</Text>
+          <SettingRow
+            title="Ver itinerario"
+            onPress={() => navigation.navigate('Map', {stops: tour.stops})}
+            style={{
+              borderWidth: 1,
+              borderColor: '#E0E0E0',
+              borderRadius: 8,
+            }}
+          />
+
+          <Text style={styles.sectionTitle}>Punto de encuentro</Text>
+          <Text style={styles.meetingPoint}>{tour.meetingPoint}</Text>
+
+          <Text style={styles.sectionTitle}>Disponibilidad</Text>
+          <Text style={styles.availability}>
+            {`Del ${new Date(
+              tour.availability.dateStart,
+            ).toLocaleDateString()} al ${new Date(
+              tour.availability.dateEnd,
+            ).toLocaleDateString()}`}
+          </Text>
+
+          <View style={styles.priceContainer}>
+            <Text style={styles.priceLabel}>Precio</Text>
+            {tour.price.basedOnTips ? (
+              <Text style={styles.price}>Basado en propinas</Text>
+            ) : (
+              <Text style={styles.price}>{`${tour.price.value}€`}</Text>
+            )}
           </View>
         </View>
-
-        <Text style={styles.sectionTitle}>Acerca de este tour</Text>
-        <Text style={styles.description}>{tour.description}</Text>
-
-        <Text style={styles.sectionTitle}>Itinerario</Text>
-        {/*tour.stops.map((stop, index) => (
-          <View key={index} style={styles.stopItem}>
-            <Text style={styles.stopNumber}>{index + 1}</Text>
-            <Text style={styles.stopText}>{stop.stopName}</Text>
-          </View>
-        ))*/}
-        <SettingRow
-          title="Ver itinerario"
-          onPress={() => navigation.navigate('Map', {stops: tour.stops})}
-          style={{
-            borderWidth: 1,
-            borderColor: '#E0E0E0',
-            borderRadius: 8,
-          }}
-        />
-
-        <Text style={styles.sectionTitle}>Punto de encuentro</Text>
-        <Text style={styles.meetingPoint}>{tour.meetingPoint}</Text>
-
-        <Text style={styles.sectionTitle}>Disponibilidad</Text>
-        <Text style={styles.availability}>
-          {`Del ${new Date(
-            tour.availability.dateStart,
-          ).toLocaleDateString()} al ${new Date(
-            tour.availability.dateEnd,
-          ).toLocaleDateString()}`}
-        </Text>
-
-        <View style={styles.priceContainer}>
-          <Text style={styles.priceLabel}>Precio</Text>
-          {tour.price.basedOnTips ? (
-            <Text style={styles.price}>Basado en propinas</Text>
-          ) : (
-            <Text style={styles.price}>{`${tour.price.value}€`}</Text>
-          )}
-        </View>
-
+      </ScrollView>
+      <View style={styles.footer}>
         <Pressable style={styles.bookButton}>
           <Text style={styles.bookButtonText}>Reservar ahora</Text>
         </Pressable>
       </View>
-    </ScrollView>
+    </SafeAreaView>
   );
 };
 
@@ -152,32 +171,26 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
   },
   image: {
-    width: SCREEN_WIDTH,
-    height: 250,
     resizeMode: 'cover',
   },
   content: {
-    padding: 16,
+    padding: '4%',
   },
   category: {
     fontSize: 14,
     color: '#7F8C8D',
-    marginBottom: 4,
+    marginBottom: '1%',
   },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
     color: '#2C3E50',
-    marginBottom: 8,
+    marginBottom: '2%',
   },
   ratingContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 8,
-  },
-  stars: {
-    flexDirection: 'row',
-    marginRight: 8,
+    marginBottom: '2%',
   },
   reviews: {
     fontSize: 14,
@@ -186,19 +199,19 @@ const styles = StyleSheet.create({
   provider: {
     fontSize: 16,
     color: '#34495E',
-    marginBottom: 16,
+    marginBottom: '4%',
   },
   infoContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: 16,
+    marginBottom: '4%',
   },
   infoItem: {
     flexDirection: 'row',
     alignItems: 'center',
   },
   infoText: {
-    marginLeft: 8,
+    marginLeft: '2%',
     fontSize: 16,
     color: '#34495E',
   },
@@ -206,14 +219,14 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     color: '#2C3E50',
-    marginTop: 16,
-    marginBottom: 8,
+    marginTop: '4%',
+    marginBottom: '2%',
   },
   description: {
     fontSize: 16,
     color: '#34495E',
     lineHeight: 24,
-    marginBottom: 16,
+    marginBottom: '4%',
   },
   stopItem: {
     flexDirection: 'row',
@@ -237,18 +250,18 @@ const styles = StyleSheet.create({
   meetingPoint: {
     fontSize: 16,
     color: '#34495E',
-    marginBottom: 16,
+    marginBottom: '4%',
   },
   availability: {
     fontSize: 16,
     color: '#34495E',
-    marginBottom: 16,
+    marginBottom: '4%',
   },
   priceContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 16,
+    marginBottom: '4%',
   },
   priceLabel: {
     fontSize: 18,
@@ -262,7 +275,7 @@ const styles = StyleSheet.create({
   },
   bookButton: {
     backgroundColor: '#FF5A5F',
-    paddingVertical: 12,
+    paddingVertical: '4%',
     borderRadius: 8,
     alignItems: 'center',
   },
@@ -270,5 +283,31 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     fontSize: 18,
     fontWeight: 'bold',
+  },
+  likeButton: {
+    padding: 8,
+  },
+  safeArea: {
+    flex: 1,
+    backgroundColor: '#FFFFFF',
+  },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: '4%',
+    height: 56,
+    backgroundColor: '#FFFFFF',
+    borderBottomWidth: 1,
+    borderBottomColor: '#E0E0E0',
+  },
+  backButton: {
+    padding: 8,
+  },
+  footer: {
+    padding: '4%',
+    backgroundColor: '#FFFFFF',
+    borderTopWidth: 1,
+    borderTopColor: '#E0E0E0',
   },
 });
