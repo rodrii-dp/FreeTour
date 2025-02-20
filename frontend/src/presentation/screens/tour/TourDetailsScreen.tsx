@@ -124,13 +124,11 @@ export const TourDetailsScreen = ({route}: Props) => {
           <Text style={styles.meetingPoint}>{tour.meetingPoint}</Text>
 
           <Text style={styles.sectionTitle}>Disponibilidad</Text>
-          <Text style={styles.availability}>
-            {`Del ${new Date(
-              tour.availability.dateStart,
-            ).toLocaleDateString()} al ${new Date(
-              tour.availability.dateEnd,
-            ).toLocaleDateString()}`}
-          </Text>
+          <Pressable
+            style={styles.bookButton}
+            onPress={() => navigation.navigate('Calendar')}>
+            <Text style={styles.bookButtonText}>Ver disponibilidad</Text>
+          </Pressable>
 
           <View style={styles.priceContainer}>
             <Text style={styles.priceLabel}>Precio</Text>
