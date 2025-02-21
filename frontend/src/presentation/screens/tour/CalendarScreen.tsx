@@ -39,7 +39,15 @@ export const CalendarScreen = ({route}: Props) => {
   };
 
   const handleDayPress = (day: DateData): void => {
-    setSelectedDate(day.dateString);
+    const isAvailableDate = tour.availableDates.includes(day.dateString);
+
+    if (isAvailableDate) {
+      setSelectedDate(day.dateString);
+      navigation.navigate('Checkout', {
+        tour,
+        selectedDate: day.dateString,
+      });
+    }
   };
 
   return (
