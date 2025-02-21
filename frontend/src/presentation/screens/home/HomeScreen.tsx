@@ -33,7 +33,6 @@ export const HomeScreen = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        console.log(tours);
         if (tours.length === 0) {
           // TODO: Reemplazar con llamada a API
           setTours([
@@ -107,10 +106,7 @@ export const HomeScreen = () => {
               },
               meetingPoint:
                 'Muelle principal del Lago di Braies, junto al Hotel Lago di Braies',
-              availability: {
-                dateStart: new Date('2023-05-01').toISOString(),
-                dateEnd: new Date('2023-10-31').toISOString(),
-              },
+              availableDates: ['2025-03-10', '2025-04-15', '2025-06-06'],
             },
             {
               id: '2',
@@ -181,10 +177,7 @@ export const HomeScreen = () => {
               },
               meetingPoint:
                 'Plaza central de Varenna, frente a la iglesia de San Giorgio',
-              availability: {
-                dateStart: new Date('2023-04-01').toISOString(),
-                dateEnd: new Date('2023-11-30').toISOString(),
-              },
+              availableDates: ['2025-03-10', '2025-04-15', '2025-06-06'],
             },
           ]);
         }

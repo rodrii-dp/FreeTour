@@ -9,8 +9,8 @@ import {CalendarScreen} from '../screens/tour/CalendarScreen.tsx';
 export type HomeStackParamList = {
   Home: undefined;
   TourDetails: {tour: Tour};
-  Map: {stops: Stop[]};
-  Calendar: undefined;
+  Map: {stops: Stop[]; meetingPoint: string};
+  Calendar: {tour: Tour};
 };
 
 const Stack = createStackNavigator<HomeStackParamList>();
@@ -22,16 +22,16 @@ export const HomeStackNavigator = () => (
       component={HomeScreen}
       options={{headerShown: false}}
     />
+    <Stack.Screen
+      name="TourDetails"
+      component={TourDetailsScreen}
+      options={{title: 'Detalles del Tour'}}
+    />
     <Stack.Screen name="Map" component={MapScreen} options={{title: 'Mapa'}} />
     <Stack.Screen
       name="Calendar"
       component={CalendarScreen}
       options={{title: 'Disponibilidad'}}
-    />
-    <Stack.Screen
-      name="TourDetails"
-      component={TourDetailsScreen}
-      options={{title: 'Detalles del Tour'}}
     />
   </Stack.Navigator>
 );

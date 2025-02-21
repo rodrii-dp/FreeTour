@@ -38,7 +38,6 @@ export const TourDetailsScreen = ({route}: Props) => {
   // TODO: Guardar en AsyncStorage o BBDD
   const toggleFavorite = useCallback(() => {
     setIsFavorite(!isFavorite);
-    console.log(isFavorite ? 'Eliminado de favoritos' : 'Añadido a favoritos');
   }, [isFavorite]);
 
   useLayoutEffect(() => {
@@ -112,7 +111,12 @@ export const TourDetailsScreen = ({route}: Props) => {
           <Text style={styles.sectionTitle}>Itinerario</Text>
           <SettingRow
             title="Ver itinerario"
-            onPress={() => navigation.navigate('Map', {stops: tour.stops})}
+            onPress={() =>
+              navigation.navigate('Map', {
+                stops: tour.stops,
+                meetingPoint: tour.meetingPoint,
+              })
+            }
             style={{
               borderWidth: 1,
               borderColor: '#E0E0E0',
@@ -122,13 +126,6 @@ export const TourDetailsScreen = ({route}: Props) => {
 
           <Text style={styles.sectionTitle}>Punto de encuentro</Text>
           <Text style={styles.meetingPoint}>{tour.meetingPoint}</Text>
-
-          <Text style={styles.sectionTitle}>Disponibilidad</Text>
-          <Pressable
-            style={styles.bookButton}
-            onPress={() => navigation.navigate('Calendar')}>
-            <Text style={styles.bookButtonText}>Ver disponibilidad</Text>
-          </Pressable>
 
           <View style={styles.priceContainer}>
             <Text style={styles.priceLabel}>Precio</Text>
@@ -141,8 +138,10 @@ export const TourDetailsScreen = ({route}: Props) => {
         </View>
       </ScrollView>
       <View style={styles.footer}>
-        <Pressable style={styles.bookButton}>
-          <Text style={styles.bookButtonText}>Reservar ahora</Text>
+        <Pressable
+          style={styles.bookButton}
+          onPress={() => navigation.navigate('Calendar', {tour: tour})}>
+          <Text style={styles.bookButtonText}>Ver disponibilidad</Text>
         </Pressable>
       </View>
     </SafeAreaView>

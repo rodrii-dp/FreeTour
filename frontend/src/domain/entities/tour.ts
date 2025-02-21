@@ -67,8 +67,5 @@ export interface Tour {
     country: string;
   };
   meetingPoint: string;
-  availability: {
-    dateStart: string; // Date;
-    dateEnd: string; // Date;
-  };
+  availableDates: string[];
 }
