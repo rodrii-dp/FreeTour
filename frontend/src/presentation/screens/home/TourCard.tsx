@@ -4,36 +4,39 @@ import {
   View,
   Text,
   ImageBackground,
+  ImageSourcePropType,
   StyleSheet,
   Dimensions,
 } from 'react-native';
 import {Tour} from '../../../domain/entities/tour';
 
-interface TourCardProps {
+const DEFAULT_IMAGE = require('../../assets/no_image.png');
+
+interface Props {
   tour: Tour;
   width?: number;
   onPress?: (experience: Tour) => void;
 }
 
-/*
-TODO:
- 1. Ajustar información a mostrar según lo que contenga el esquema de MongoDB
- y hacer que pueda pulsar en el Card para navegar al TourDetailsScreen
- 2. Recibir el tour como prop, no las propiedades individualmente ✅
-*/
-
 export const TourCard = ({
   tour,
   width = Dimensions.get('window').width * 0.7,
   onPress,
-}: TourCardProps) => {
+}: Props) => {
+  const getImageSource = (): ImageSourcePropType => {
+    if (tour.images.length > 0) {
+      return {uri: tour.images[0].imageUrl};
+    }
+    return DEFAULT_IMAGE;
+  };
+
   return (
     <TouchableOpacity
       style={[styles.card, {width}]}
       onPress={() => onPress && onPress(tour)}
       activeOpacity={0.8}>
       <ImageBackground
-        source={{uri: tour.images[0].imageUrl}}
+        source={getImageSource()}
         style={styles.imageBackground}
         imageStyle={styles.image}>
         <View style={styles.content}>

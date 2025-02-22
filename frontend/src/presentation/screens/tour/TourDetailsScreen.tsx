@@ -26,6 +26,8 @@ interface Props {
   route: RouteProp<HomeStackParamList, 'TourDetails'>;
 }
 
+const DEFAULT_IMAGE = require('../../assets/no_image.png');
+
 export const TourDetailsScreen = ({route}: Props) => {
   const navigation = useNavigation<NavigationProp<HomeStackParamList>>();
   const {tour} = route.params;
@@ -54,32 +56,45 @@ export const TourDetailsScreen = ({route}: Props) => {
     });
   }, [navigation, isFavorite, toggleFavorite]);
 
-  const renderImageCarousel = () => (
-    <View>
-      <FlatList
-        horizontal
-        pagingEnabled
-        showsHorizontalScrollIndicator={false}
-        data={tour.images}
-        keyExtractor={item => item.id}
-        onScroll={onScroll}
-        renderItem={({item}) => (
-          <Image
-            source={{uri: item.imageUrl}}
-            style={[styles.image, {width: width, height: width * 0.75}]}
-          />
+  const renderImageCarousel = () => {
+    const getImageSource = (imageUrl: string) => {
+      return imageUrl.startsWith('../../assets')
+        ? DEFAULT_IMAGE
+        : {uri: imageUrl};
+    };
+
+    const images =
+      tour.images.length > 0
+        ? tour.images
+        : [{id: 'default', imageUrl: '../../assets/no_image.png'}];
+
+    return (
+      <View>
+        <FlatList
+          horizontal
+          pagingEnabled
+          showsHorizontalScrollIndicator={false}
+          data={images}
+          keyExtractor={item => item.id}
+          onScroll={onScroll}
+          renderItem={({item}) => (
+            <Image
+              source={getImageSource(item.imageUrl)}
+              style={[styles.image, {width: width, height: width * 0.75}]}
+            />
+          )}
+        />
+        {tour.images.length > 1 && (
+          <View style={styles.paginationDots}>
+            <PaginationDots
+              activeIndex={activeIndex}
+              totalDots={tour.images.length}
+            />
+          </View>
         )}
-      />
-      {tour.images.length > 1 && (
-        <View style={styles.paginationDots}>
-          <PaginationDots
-            activeIndex={activeIndex}
-            totalDots={tour.images.length}
-          />
-        </View>
-      )}
-    </View>
-  );
+      </View>
+    );
+  };
 
   return (
     <SafeAreaView style={styles.safeArea}>
