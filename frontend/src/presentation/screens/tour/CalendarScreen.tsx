@@ -1,3 +1,4 @@
+/*
 import React, {useState} from 'react';
 import {View, StyleSheet} from 'react-native';
 import {Calendar, DateData} from 'react-native-calendars';
@@ -76,3 +77,4 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
 });
+*/

@@ -4,14 +4,12 @@ import {HomeScreen} from '../screens/home/HomeScreen';
 import {Stop, Tour} from '../../domain/entities/tour.ts';
 import {TourDetailsScreen} from '../screens/tour/TourDetailsScreen.tsx';
 import {MapScreen} from '../screens/tour/MapScreen.tsx';
-import {CalendarScreen} from '../screens/tour/CalendarScreen.tsx';
 import {CheckoutScreen} from '../screens/tour/CheckoutScreen.tsx';
 
 export type HomeStackParamList = {
   Home: undefined;
   TourDetails: {tour: Tour};
   Map: {stops: Stop[]; meetingPoint: string};
-  Calendar: {tour: Tour};
   Checkout: {tour: Tour; selectedDate: string};
 };
 
@@ -30,11 +28,6 @@ export const HomeStackNavigator = () => (
       options={{title: 'Detalles del Tour'}}
     />
     <Stack.Screen name="Map" component={MapScreen} options={{title: 'Mapa'}} />
-    <Stack.Screen
-      name="Calendar"
-      component={CalendarScreen}
-      options={{title: 'Disponibilidad'}}
-    />
     <Stack.Screen
       name="Checkout"
       component={CheckoutScreen}

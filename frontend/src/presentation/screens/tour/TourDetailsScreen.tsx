@@ -21,6 +21,7 @@ import {SettingRow} from '../../components/common/SettingRow.tsx';
 import {useScroll} from '../../hooks/useScroll.tsx';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useWindowDimensions} from 'react-native';
+import {CalendarModal} from '../../components/common/CalendarModal.tsx';
 
 interface Props {
   route: RouteProp<HomeStackParamList, 'TourDetails'>;
@@ -33,6 +34,7 @@ export const TourDetailsScreen = ({route}: Props) => {
   const {tour} = route.params;
 
   const [isFavorite, setIsFavorite] = useState(false);
+  const [isCalendarVisible, setIsCalendarVisible] = useState(false);
 
   const {activeIndex, onScroll} = useScroll();
   const {width} = useWindowDimensions();
@@ -41,6 +43,13 @@ export const TourDetailsScreen = ({route}: Props) => {
   const toggleFavorite = useCallback(() => {
     setIsFavorite(!isFavorite);
   }, [isFavorite]);
+
+  const handleDateSelect = (date: string) => {
+    navigation.navigate('Checkout', {
+      tour,
+      selectedDate: date,
+    });
+  };
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -155,10 +164,17 @@ export const TourDetailsScreen = ({route}: Props) => {
       <View style={styles.footer}>
         <Pressable
           style={styles.bookButton}
-          onPress={() => navigation.navigate('Calendar', {tour: tour})}>
+          onPress={() => setIsCalendarVisible(true)}>
           <Text style={styles.bookButtonText}>Ver disponibilidad</Text>
         </Pressable>
       </View>
+
+      <CalendarModal
+        visible={isCalendarVisible}
+        onClose={() => setIsCalendarVisible(false)}
+        onDateSelect={handleDateSelect}
+        availableDates={tour.availableDates}
+      />
     </SafeAreaView>
   );
 };

@@ -10,7 +10,7 @@ import {
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useNavigation} from '@react-navigation/native';
 import type {Tour} from '../../../domain/entities/tour';
-import {ParticipantsModal} from '../../components/ParticipantsModal.tsx';
+import {ParticipantsModal} from '../../components/common/ParticipantsModal.tsx';
 
 interface Props {
   route: {
