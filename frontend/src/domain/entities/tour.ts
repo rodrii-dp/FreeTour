@@ -48,7 +48,7 @@ export interface ImageTour {
 
 export interface Availability {
   date: string;
-  hour: string;
+  hours: string[];
 }
 
 export interface Tour {

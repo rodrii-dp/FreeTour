@@ -107,9 +107,9 @@ export const HomeScreen = () => {
               meetingPoint:
                 'Muelle principal del Lago di Braies, junto al Hotel Lago di Braies',
               availableDates: [
-                {date: '2025-03-10', hour: '11:30'},
-                {date: '2025-04-15', hour: '10:00'},
-                {date: '2025-06-06', hour: '17:00'},
+                {date: '2025-03-10', hours: ['11:30']},
+                {date: '2025-04-15', hours: ['10:00']},
+                {date: '2025-06-06', hours: ['17:00']},
               ],
             },
             {
@@ -182,9 +182,9 @@ export const HomeScreen = () => {
               meetingPoint:
                 'Plaza central de Varenna, frente a la iglesia de San Giorgio',
               availableDates: [
-                {date: '2025-03-10', hour: '11:30'},
-                {date: '2025-04-15', hour: '10:00'},
-                {date: '2025-06-06', hour: '17:00'},
+                {date: '2025-03-10', hours: ['11:30']},
+                {date: '2025-04-15', hours: ['10:00']},
+                {date: '2025-06-06', hours: ['17:00']},
               ],
             },
           ]);

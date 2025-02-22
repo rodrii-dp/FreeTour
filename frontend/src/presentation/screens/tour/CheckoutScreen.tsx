@@ -11,6 +11,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useNavigation} from '@react-navigation/native';
 import type {Tour} from '../../../domain/entities/tour';
 import {ParticipantsModal} from '../../components/common/ParticipantsModal.tsx';
+import {TimeSlotPicker} from '../../components/common/TimeSlotPicker.tsx';
 
 interface Props {
   route: {
@@ -32,6 +33,12 @@ export const CheckoutScreen = ({route}: Props) => {
     {type: 'Niño', ageRange: 'Edad 4-13', count: 0},
     {type: 'Bebé', ageRange: 'Hasta los 3 años', count: 0},
   ]);
+
+  console.log(tour.availableDates[0]);
+
+  const [selectedTime, setSelectedTime] = useState(
+    tour.availableDates[0]?.hours[0] || '',
+  );
 
   const formattedDate = new Date(selectedDate).toLocaleDateString('es-ES', {
     day: 'numeric',
@@ -122,10 +129,12 @@ export const CheckoutScreen = ({route}: Props) => {
                   year: 'numeric',
                 })}
               </Text>
-              <Pressable style={styles.timeButton}>
-                <Text style={styles.timeButtonText}>11:30</Text>
-                <Icon name="chevron-down" size={24} color="#1a1a1a" />
-              </Pressable>
+              <TimeSlotPicker
+                availableTimes={tour.availableDates}
+                selectedDate={selectedDate}
+                selectedTime={selectedTime}
+                onTimeSelected={setSelectedTime}
+              />
             </View>
 
             <View style={styles.priceBreakdown}>
