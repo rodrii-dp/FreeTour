@@ -39,6 +39,10 @@ export const TourDetailsScreen = ({route}: Props) => {
   const {activeIndex, onScroll} = useScroll();
   const {width} = useWindowDimensions();
 
+  const availableDates = [
+    ...new Set(tour.availableDates.map(availableDate => availableDate.date)),
+  ];
+
   // TODO: Guardar en AsyncStorage o BBDD
   const toggleFavorite = useCallback(() => {
     setIsFavorite(!isFavorite);
@@ -173,7 +177,7 @@ export const TourDetailsScreen = ({route}: Props) => {
         visible={isCalendarVisible}
         onClose={() => setIsCalendarVisible(false)}
         onDateSelect={handleDateSelect}
-        availableDates={tour.availableDates}
+        availableDates={availableDates}
       />
     </SafeAreaView>
   );

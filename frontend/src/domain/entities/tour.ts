@@ -46,6 +46,11 @@ export interface ImageTour {
   imageUrl: string;
 }
 
+export interface Availability {
+  date: string;
+  hour: string;
+}
+
 export interface Tour {
   id: string;
   category: string;
@@ -67,5 +72,5 @@ export interface Tour {
     country: string;
   };
   meetingPoint: string;
-  availableDates: string[];
+  availableDates: Availability[];
 }
