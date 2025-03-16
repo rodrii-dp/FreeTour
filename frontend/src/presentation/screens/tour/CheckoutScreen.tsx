@@ -165,7 +165,9 @@ export const CheckoutScreen = ({route}: Props) => {
         <View style={styles.totalPrice}>
           <Text style={styles.totalPriceLabel}>Precio total</Text>
           <Text style={styles.totalPriceValue}>
-            {calculateTotalPrice()} EUR
+            {calculateTotalPrice() === 0
+              ? 'Gratis'
+              : `${calculateTotalPrice()} EUR`}
           </Text>
         </View>
         <Pressable style={styles.bookButton}>

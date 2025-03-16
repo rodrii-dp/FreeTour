@@ -286,8 +286,8 @@ export const HomeScreen = () => {
 
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
-            <Text style={styles.sectionTitle}>Servicios</Text>
-            <Text style={styles.seeAll}>Ver todos</Text>
+            <Text style={styles.sectionTitle}>Categorías</Text>
+            <Text style={styles.seeAll}>Ver todas</Text>
           </View>
           <View style={styles.servicesContainer}>
             {services.map(service => (

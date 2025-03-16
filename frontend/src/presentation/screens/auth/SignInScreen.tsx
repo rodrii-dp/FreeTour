@@ -31,7 +31,7 @@ export const SignInScreen = () => {
     password: '',
   });
 
-  const [isKeyboardVisible, setIsKeyboardVisible] = useState(false);
+  // const [isKeyboardVisible, setIsKeyboardVisible] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const {focusedInput, handleFocus, handleBlur} = useFocus<
     'email' | 'password'
@@ -47,6 +47,7 @@ export const SignInScreen = () => {
     }
   };
 
+  /*
   useEffect(() => {
     const showSubscription = Keyboard.addListener('keyboardDidShow', () => {
       setIsKeyboardVisible(true);
@@ -60,11 +61,13 @@ export const SignInScreen = () => {
       hideSubscription.remove();
     };
   }, []);
+  */
 
   return (
-    <KeyboardAvoidingView
+    <View
       style={{flex: 1}}
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+      // behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+    >
       <ScrollView
         contentContainerStyle={{flexGrow: 1}}
         keyboardShouldPersistTaps="handled">
@@ -131,9 +134,8 @@ export const SignInScreen = () => {
           <Pressable
             style={{
               alignSelf: 'center',
-              ...(isKeyboardVisible
-                ? {marginBottom: 20}
-                : {position: 'absolute', bottom: 50}),
+              position: 'absolute',
+              bottom: 50,
             }}
             onPress={() => navigation.navigate('Signup')}>
             <Text
@@ -150,6 +152,6 @@ export const SignInScreen = () => {
           {error && <Message error={error} />}
         </View>
       </ScrollView>
-    </KeyboardAvoidingView>
+    </View>
   );
 };

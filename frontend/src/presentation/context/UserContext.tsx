@@ -26,6 +26,7 @@ export const UserProvider = ({children}: PropsWithChildren) => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    // TODO: Reemplazar por llamada a API y obtención de token
     const timer = setTimeout(() => {
       setUser(User);
       setIsLoading(false);

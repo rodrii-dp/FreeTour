@@ -160,7 +160,9 @@ export const TourDetailsScreen = ({route}: Props) => {
             {tour.price.basedOnTips ? (
               <Text style={styles.price}>Basado en propinas</Text>
             ) : (
-              <Text style={styles.price}>{`${tour.price.value}€`}</Text>
+              <Text style={styles.price}>
+                {tour.price.value === 0 ? 'Gratis' : `${tour.price.value}€`}
+              </Text>
             )}
           </View>
         </View>
