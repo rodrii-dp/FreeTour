@@ -42,7 +42,7 @@
     "@react-native-community/cli-platform-ios": "15.0.0",
     "@react-native/babel-preset": "0.76.1",
     "@react-native/eslint-config": "0.76.1",
-    "@react-native/metro-config": "0.76.1",
+    "@react-native/metro-confiC:\\Users\\Rodrigo>ssh pi@raspberrypi.local\nssh: connect to host raspberrypi.local port 22: Connection refused\n\nC:\\Users\\Rodrigo>g": "0.76.1",
     "@react-native/typescript-config": "0.76.1",
     "@types/react": "^18.2.6",
     "@types/react-native-vector-icons": "^6.4.18",
