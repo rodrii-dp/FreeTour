@@ -1,4 +1,4 @@
-import React, {useCallback, useLayoutEffect, useState} from 'react';
+import React, {useCallback, useEffect, useLayoutEffect, useState} from 'react';
 import {
   FlatList,
   Image,
@@ -13,15 +13,16 @@ import {
   type RouteProp,
   useNavigation,
 } from '@react-navigation/native';
-import type {HomeStackParamList} from '../../navigation/HomeStackNavigator.tsx';
+import type {HomeStackParamList} from '../../navigation/HomeStackNavigator';
 import Icon from 'react-native-vector-icons/Ionicons';
-import {PaginationDots} from '../../components/common/PaginationDots.tsx';
-import {StarRating} from '../../components/common/StarRating.tsx';
-import {SettingRow} from '../../components/common/SettingRow.tsx';
-import {useScroll} from '../../hooks/useScroll.tsx';
+import {PaginationDots} from '../../components/common/PaginationDots';
+import {StarRating} from '../../components/common/StarRating';
+import {SettingRow} from '../../components/common/SettingRow';
+import {useScroll} from '../../hooks/useScroll';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useWindowDimensions} from 'react-native';
-import {CalendarModal} from '../../components/common/CalendarModal.tsx';
+import {CalendarModal} from '../../components/common/CalendarModal';
+import {useFavoritesStore} from '../../stores/favoritesStore';
 
 interface Props {
   route: RouteProp<HomeStackParamList, 'TourDetails'>;
@@ -30,23 +31,39 @@ interface Props {
 const DEFAULT_IMAGE = require('../../assets/no_image.png');
 
 export const TourDetailsScreen = ({route}: Props) => {
+  const {favoriteTours, removeFavorite, loadFavorites, addFavorite} =
+    useFavoritesStore();
   const navigation = useNavigation<NavigationProp<HomeStackParamList>>();
   const {tour} = route.params;
 
-  const [isFavorite, setIsFavorite] = useState(false);
   const [isCalendarVisible, setIsCalendarVisible] = useState(false);
 
   const {activeIndex, onScroll} = useScroll();
   const {width} = useWindowDimensions();
 
+  useEffect(() => {
+    loadFavorites();
+  }, [loadFavorites]);
+
+  const isFavorite = favoriteTours.some(
+    favoriteTour => favoriteTour.id === tour.id,
+  );
+
+  const handleToggleFavorite = useCallback(() => {
+    if (isFavorite) {
+      removeFavorite(tour.id);
+    } else {
+      addFavorite(tour);
+    }
+  }, [isFavorite, removeFavorite, addFavorite, tour]);
+
+  const toggleFavorite = useCallback(() => {
+    handleToggleFavorite();
+  }, [handleToggleFavorite]);
+
   const availableDates = [
     ...new Set(tour.availableDates.map(availableDate => availableDate.date)),
   ];
-
-  // TODO: Guardar en AsyncStorage o BBDD
-  const toggleFavorite = useCallback(() => {
-    setIsFavorite(!isFavorite);
-  }, [isFavorite]);
 
   const handleDateSelect = (date: string) => {
     navigation.navigate('Checkout', {
@@ -194,12 +211,6 @@ const styles = StyleSheet.create({
     bottom: 10,
     width: '100%',
   },
-  dot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    marginHorizontal: 4,
-  },
   container: {
     flex: 1,
     backgroundColor: '#FFFFFF',
@@ -262,31 +273,7 @@ const styles = StyleSheet.create({
     lineHeight: 24,
     marginBottom: '4%',
   },
-  stopItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 8,
-  },
-  stopNumber: {
-    width: 24,
-    height: 24,
-    borderRadius: 12,
-    backgroundColor: '#3498DB',
-    color: '#FFFFFF',
-    textAlign: 'center',
-    lineHeight: 24,
-    marginRight: 8,
-  },
-  stopText: {
-    fontSize: 16,
-    color: '#34495E',
-  },
   meetingPoint: {
-    fontSize: 16,
-    color: '#34495E',
-    marginBottom: '4%',
-  },
-  availability: {
     fontSize: 16,
     color: '#34495E',
     marginBottom: '4%',
@@ -318,25 +305,9 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
   },
-  likeButton: {
-    padding: 8,
-  },
   safeArea: {
     flex: 1,
     backgroundColor: '#FFFFFF',
-  },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: '4%',
-    height: 56,
-    backgroundColor: '#FFFFFF',
-    borderBottomWidth: 1,
-    borderBottomColor: '#E0E0E0',
-  },
-  backButton: {
-    padding: 8,
   },
   footer: {
     padding: '4%',
