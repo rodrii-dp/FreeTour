@@ -40,7 +40,14 @@ export class Stop {
   @Prop({ required: true })
   stopName: string;
 
-  @Prop({ required: true })
+  @Prop({
+    required: true,
+    type: {
+      lat: { type: Number, required: true },
+      lng: { type: Number, required: true },
+      direction: { type: String, required: true },
+    },
+  })
   location: {
     lat: number;
     lng: number;
@@ -64,7 +71,10 @@ export class Provider {
   @Prop()
   contact: string;
 
-  @Prop({ enum: ['verificado', 'pendiente', 'no verificado'], default: 'pendiente' })
+  @Prop({
+    enum: ['verificado', 'pendiente', 'no verificado'],
+    default: 'pendiente',
+  })
   verificationStatus: 'verificado' | 'pendiente' | 'no verificado';
 }
 export const ProviderSchema = SchemaFactory.createForClass(Provider);
@@ -180,10 +190,8 @@ export type StopDocument = GenericDocument<Stop>;
 export type ImageTourDocument = GenericDocument<ImageTour>;
 export type AvailabilityDocument = GenericDocument<Availability>;
 
-
 UserSchema.pre<UserDocument>('save', async function () {
   if (!this.isModified('password')) return;
   const salt = await bcrypt.genSalt(10);
   this.password = await bcrypt.hash(this.password, salt);
 });
-

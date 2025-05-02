@@ -1,4 +1,13 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Query,
+} from '@nestjs/common';
 import {
   UserService,
   ProviderService,
@@ -9,7 +18,15 @@ import {
   AvailabilityService,
 } from '../services/all.service';
 
-import { User, Provider, Review, Tour, Service, Stop, Availability } from '../schemas/all.schema';
+import {
+  User,
+  Provider,
+  Review,
+  Tour,
+  Service,
+  Stop,
+  Availability,
+} from '../schemas/all.schema';
 
 // USER
 @Controller('users')
@@ -30,6 +47,16 @@ export class UserController {
   findByEmail(@Param('email') email: string) {
     return this.userService.findByEmail(email);
   }
+
+  @Delete(':id')
+  delete(@Param('id') id: string) {
+    return this.userService.delete(id);
+  }
+
+  @Get(':id')
+  findById(@Param('id') id: string) {
+    return this.userService.findById(id);
+  }
 }
 
 // PROVIDER
@@ -45,6 +72,21 @@ export class ProviderController {
   @Get()
   findAll() {
     return this.providerService.findAll();
+  }
+
+  @Get(':id')
+  findById(@Param('id') id: string) {
+    return this.providerService.findById(id);
+  }
+
+  @Patch(':id')
+  update(@Param('id') id: string, @Body() provider: Partial<Provider>) {
+    return this.providerService.update(id, provider);
+  }
+
+  @Delete(':id')
+  delete(@Param('id') id: string) {
+    return this.providerService.delete(id);
   }
 }
 
@@ -62,6 +104,11 @@ export class ReviewController {
   findAll() {
     return this.reviewService.findAll();
   }
+
+  @Get(':id')
+  findById(@Param('id') id: string) {
+    return this.reviewService.findById(id);
+  }
 }
 
 // TOUR
@@ -75,8 +122,40 @@ export class TourController {
   }
 
   @Get()
+  find(@Query('limit') limit: number) {
+    return this.tourService.find(limit);
+  }
+
+  @Get()
   findAll() {
     return this.tourService.findAll();
+  }
+
+  @Get(':id')
+  findById(@Param('id') id: string) {
+    return this.tourService.findById(id);
+  }
+
+  @Patch(':id')
+  update(
+    @Param('id') tourId: string,
+    @Body() providerId: string,
+    tour: Partial<Tour>,
+  ) {
+    return this.tourService.update(tourId, providerId, tour);
+  }
+
+  @Get('popular/:category')
+  getMostPopularsByCategory(
+    @Param('category') category: string,
+    @Query('limit') limit: number,
+  ) {
+    return this.tourService.getMostPopularsByCategory(category, limit);
+  }
+
+  @Delete(':id')
+  delete(@Param('id') id: string) {
+    return this.tourService.delete(id);
   }
 }
 
