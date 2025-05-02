@@ -113,8 +113,27 @@ export class TourService {
     return this.tourModel.findById(id).populate('provider').exec();
   }
 
-  async find(limit: number): Promise<Tour[]> {
-    return this.tourModel.find().limit(limit).exec();
+  async findWithFilters(filters: {
+    title?: string;
+    category?: string;
+    limit?: string;
+    providerId?: string;
+  }) {
+    const query: any = {};
+    if (filters.title) {
+      query.title = { $regex: filters.title, $options: 'i' };
+    }
+
+    if (filters.category) {
+      query.category = filters.category;
+    }
+
+    if (filters.providerId) {
+      query.provider = filters.providerId;
+    }
+
+    const limit = filters.limit ? parseInt(filters.limit, 10) : 20;
+    return this.tourModel.find(query).limit(limit).exec();
   }
 
   async update(

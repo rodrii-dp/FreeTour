@@ -122,13 +122,18 @@ export class TourController {
   }
 
   @Get()
-  find(@Query('limit') limit: number) {
-    return this.tourService.find(limit);
-  }
-
-  @Get()
-  findAll() {
-    return this.tourService.findAll();
+  findWithFilters(
+    @Query('title') title?: string,
+    @Query('category') category?: string,
+    @Query('providerId') providerId?: string,
+    @Query('limit') limit?: string,
+  ) {
+    return this.tourService.findWithFilters({
+      title,
+      category,
+      providerId,
+      limit,
+    });
   }
 
   @Get(':id')
