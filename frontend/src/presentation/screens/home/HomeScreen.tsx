@@ -4,24 +4,22 @@ import {
   ScrollView,
   Text,
   StyleSheet,
-  ImageBackground,
   SafeAreaView,
   ActivityIndicator,
+  Dimensions,
 } from 'react-native';
-import YellowUnderline from '../../assets/yellow-underline.svg';
-import {TourCard} from './TourCard.tsx';
-import {ServiceButton} from './ServiceButton';
 import {IconButton, Searchbar} from 'react-native-paper';
-import {Service, Tour} from '../../../domain/entities/tour';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
+import {Service, Tour} from '../../../domain/entities/tour';
 import {HomeStackParamList} from '../../navigation/HomeStackNavigator.tsx';
 import {useToursStore} from '../../stores/toursStore.tsx';
+import {TourCard} from './TourCard.tsx';
+import {ServiceButton} from './ServiceButton';
+import {HeroSlider} from '../../components/common/HeroSlider.tsx';
 
-// TODO: Cuando estén listos los esquemas de MongoDB, mostrar los tours que vienen de la API
 export const HomeScreen = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedService, setSelectedService] = useState<string | null>(null);
-  // const [tours, setTours] = useState<Tour[]>([]);
   const [services, setServices] = useState<Service[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -29,6 +27,37 @@ export const HomeScreen = () => {
   const setTours = useToursStore(state => state.setTours);
 
   const navigation = useNavigation<NavigationProp<HomeStackParamList>>();
+
+  // Define the hero slides data
+  const heroSlides = [
+    {
+      id: '1',
+      tourId: '2',
+      imageUrl: require('../../assets/varenna.png'),
+      title: 'Vive experiencias\núnicas en lugares\nmágicos',
+      subtitle: 'Conoce la belleza de Verenna',
+      originalPrice: 99,
+      discountedPrice: 79,
+    },
+    {
+      id: '2',
+      tourId: '1',
+      imageUrl: require('../../assets/lago_di_braies.png'), // You'll need to add this image
+      title: 'Descubre paisajes\nimpresionantes',
+      subtitle: 'Explora el Lago di Braies',
+      originalPrice: 120,
+      discountedPrice: 89,
+    },
+    {
+      id: '3',
+      tourId: '2',
+      imageUrl: require('../../assets/italian-food.png'), // You'll need to add this image
+      title: 'Saborea la auténtica\ncocina italiana',
+      subtitle: 'Tours gastronómicos',
+      originalPrice: 85,
+      discountedPrice: 65,
+    },
+  ];
 
   useEffect(() => {
     const fetchData = async () => {
@@ -238,41 +267,27 @@ export const HomeScreen = () => {
     <SafeAreaView style={{flex: 1}}>
       <ScrollView>
         <View style={styles.heroContainer}>
-          <ImageBackground
-            source={require('../../assets/varenna.png')}
-            style={styles.heroImage}
-            imageStyle={styles.backgroundImage}>
-            <View style={styles.searchContainer}>
-              <View style={styles.searchBarWrapper}>
-                <Searchbar
-                  placeholder="Encuentra tours"
-                  onChangeText={setSearchQuery}
-                  value={searchQuery}
-                  style={styles.searchBar}
-                  inputStyle={styles.searchInput}
-                  iconColor="#666"
-                  placeholderTextColor="#666"
-                />
-              </View>
-              <IconButton
-                icon="bell-outline"
+          <View style={styles.searchContainer}>
+            <View style={styles.searchBarWrapper}>
+              <Searchbar
+                placeholder="Encuentra tours"
+                onChangeText={setSearchQuery}
+                value={searchQuery}
+                style={styles.searchBar}
+                inputStyle={styles.searchInput}
                 iconColor="#666"
-                size={32}
-                onPress={() => {}}
-                style={styles.notificationButton}
+                placeholderTextColor="#666"
               />
             </View>
-            <View style={styles.heroContent}>
-              <Text style={styles.heroTitle}>
-                Vive experiencias{'\n'}únicas en lugares{'\n'}mágicos
-              </Text>
-              <YellowUnderline />
-              <Text style={styles.heroSubtitle}>
-                Conoce la belleza de Verenna
-              </Text>
-              <Text style={styles.heroMoreInfo}>Más información &rarr;</Text>
-            </View>
-          </ImageBackground>
+            <IconButton
+              icon="bell-outline"
+              iconColor="#666"
+              size={32}
+              onPress={() => {}}
+              style={styles.notificationButton}
+            />
+          </View>
+          <HeroSlider slides={heroSlides} tours={tours} />
         </View>
 
         <View style={styles.section}>
@@ -320,17 +335,26 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
   },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  heroContainer: {
+    width: '100%',
+    marginBottom: 20,
+  },
   searchContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     padding: 15,
     gap: 10,
-  },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    zIndex: 10,
   },
   searchBarWrapper: {
     flex: 1,
@@ -346,41 +370,6 @@ const styles = StyleSheet.create({
   notificationButton: {
     margin: 0,
     backgroundColor: '#f8f8f8',
-  },
-  heroContainer: {
-    height: 300,
-    width: '100%',
-    marginBottom: 20,
-  },
-  heroImage: {
-    flex: 1,
-    width: '100%',
-    resizeMode: 'cover',
-    justifyContent: 'flex-end',
-  },
-  backgroundImage: {
-    width: '100%',
-    resizeMode: 'cover',
-  },
-  heroContent: {
-    padding: 20,
-    backgroundColor: 'transparent',
-  },
-  heroTitle: {
-    color: 'white',
-    fontSize: 28,
-    fontWeight: 'bold',
-    marginBottom: -5,
-  },
-  heroSubtitle: {
-    color: 'white',
-    fontSize: 16,
-    marginTop: 10,
-  },
-  heroMoreInfo: {
-    color: 'white',
-    fontSize: 14,
-    textDecorationLine: 'underline',
   },
   section: {
     padding: 15,
