@@ -1,7 +1,7 @@
 // src/modules/general.module.ts
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { User, UserSchema } from './schemas/all.schema';
+import { Availability, AvailabilitySchema, ImageTour, ImageTourSchema, Provider, ProviderSchema, Review, ReviewSchema, Service, ServiceSchema, Stop, StopSchema, Tour, TourSchema, User, UserSchema } from './schemas/all.schema';
 import {
   UserService,
   ProviderService,
@@ -24,7 +24,16 @@ import {
 
 @Module({
   imports: [
-    MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
+    MongooseModule.forFeature([
+      { name: User.name, schema: UserSchema },
+      { name: Review.name, schema: ReviewSchema },
+      { name: Tour.name, schema: TourSchema },
+      { name: Service.name, schema: ServiceSchema },
+      { name: Stop.name, schema: StopSchema },
+      { name: ImageTour.name, schema: ImageTourSchema },
+      { name: Availability.name, schema: AvailabilitySchema },
+      { name: Provider.name, schema: ProviderSchema },
+    ]),
   ],
   controllers: [
     UserController,
@@ -45,12 +54,6 @@ import {
     ImageTourService,
     AvailabilityService,
   ], // Todos los servicios
+  exports: [UserService],
 })
 export class GeneralModule {}
-
-@Module({
-  imports: [],
-  controllers: [],
-  providers: [],
-})
-export class UsuarioModule {}

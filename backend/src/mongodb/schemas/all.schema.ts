@@ -2,10 +2,9 @@ import * as bcrypt from 'bcryptjs';
 
 // src/schemas/all.schemas.ts
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document, Types } from 'mongoose';
+import { Document, HydratedDocument, Types } from 'mongoose';
 
-export type GenericDocument<T> = T & Document;
-
+export type GenericDocument<T> = HydratedDocument<T>;
 // User
 @Schema()
 export class User {
@@ -150,13 +149,20 @@ export class Tour {
 
   @Prop({
     type: {
-      value: { type: Number, required: true },
+      value: { type: Number, required: true, min: 0},
       basedOnTips: { type: Boolean, required: true },
     },
   })
   price: {
     value: number;
     basedOnTips: boolean;
+    discount?: {
+      type: 'porcentaje' | 'valor';
+      amount: number; // Ej: 10 (10% o 10€ según el tipo)
+      description?: string;
+      validFrom?: string;
+      validTo?: string; 
+    };
   };
 
   @Prop({ type: [StopSchema], default: [] })
