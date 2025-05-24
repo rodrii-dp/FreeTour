@@ -86,6 +86,35 @@ export const TourDetailsScreen = ({route}: Props) => {
     });
   }, [navigation, isFavorite, toggleFavorite]);
 
+  const calculateDiscountedPrice = () => {
+    if (!tour.price.discount) {
+      return null;
+    }
+
+    const {value, discount} = tour.price;
+    const now = new Date();
+    const validFrom = discount.validFrom ? new Date(discount.validFrom) : null;
+    const validTo = discount.validTo ? new Date(discount.validTo) : null;
+
+    // Verificar si el descuento es válido actualmente
+    const isValid =
+      (!validFrom || now >= validFrom) && (!validTo || now <= validTo);
+
+    if (!isValid) {
+      return null;
+    }
+
+    // Calcular precio con descuento según el tipo
+    let discountedPrice = value;
+    if (discount.type === 'porcentaje') {
+      discountedPrice = value * (1 - discount.amount / 100);
+    } else if (discount.type === 'valor') {
+      discountedPrice = value - discount.amount;
+    }
+
+    return Math.max(0, discountedPrice);
+  };
+
   const renderImageCarousel = () => {
     const getImageSource = (imageUrl: string) => {
       return imageUrl.startsWith('../../assets')
@@ -177,9 +206,27 @@ export const TourDetailsScreen = ({route}: Props) => {
             {tour.price.basedOnTips ? (
               <Text style={styles.price}>Basado en propinas</Text>
             ) : (
-              <Text style={styles.price}>
-                {tour.price.value === 0 ? 'Gratis' : `${tour.price.value}€`}
-              </Text>
+              <View style={styles.priceWrapper}>
+                {calculateDiscountedPrice() !== null ? (
+                  <>
+                    <Text style={styles.originalPrice}>
+                      {tour.price.value}€
+                    </Text>
+                    <Text style={styles.discountedPrice}>
+                      {calculateDiscountedPrice()}€
+                    </Text>
+                    {tour.price.discount?.description && (
+                      <Text style={styles.discountLabel}>
+                        {tour.price.discount.description}
+                      </Text>
+                    )}
+                  </>
+                ) : (
+                  <Text style={styles.price}>
+                    {tour.price.value === 0 ? 'Gratis' : `${tour.price.value}€`}
+                  </Text>
+                )}
+              </View>
             )}
           </View>
         </View>
@@ -293,6 +340,30 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     color: '#FF5A5F',
+  },
+  priceWrapper: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  originalPrice: {
+    fontSize: 16,
+    color: '#7F8C8D',
+    textDecorationLine: 'line-through',
+    marginRight: 8,
+  },
+  discountedPrice: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#FF5A5F',
+  },
+  discountLabel: {
+    fontSize: 12,
+    color: '#FFFFFF',
+    backgroundColor: '#FF5A5F',
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    marginLeft: 8,
+    borderRadius: 4,
   },
   bookButton: {
     backgroundColor: '#FF5A5F',

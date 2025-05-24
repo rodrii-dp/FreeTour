@@ -46,9 +46,42 @@ export const CheckoutScreen = ({route}: Props) => {
     year: 'numeric',
   });
 
+  const calculateDiscountedPrice = () => {
+    if (!tour.price.discount) {
+      return null;
+    }
+
+    const {value, discount} = tour.price;
+    const now = new Date();
+    const validFrom = discount.validFrom ? new Date(discount.validFrom) : null;
+    const validTo = discount.validTo ? new Date(discount.validTo) : null;
+
+    // Verificar si el descuento es válido actualmente
+    const isValid =
+      (!validFrom || now >= validFrom) && (!validTo || now <= validTo);
+
+    if (!isValid) {
+      return null;
+    }
+
+    // Calcular precio con descuento según el tipo
+    let discountedPrice = value;
+    if (discount.type === 'porcentaje') {
+      discountedPrice = value * (1 - discount.amount / 100);
+    } else if (discount.type === 'valor') {
+      discountedPrice = value - discount.amount;
+    }
+
+    return Math.max(0, discountedPrice);
+  };
+
+  const discountedPrice = calculateDiscountedPrice();
+  const hasDiscount = discountedPrice !== null;
+  const pricePerPerson = hasDiscount ? discountedPrice : tour.price.value;
+
   const calculateTotalPrice = () => {
     return participants.reduce((total, participant) => {
-      return total + participant.count * tour.price.value;
+      return total + participant.count * pricePerPerson;
     }, 0);
   };
 
@@ -144,13 +177,39 @@ export const CheckoutScreen = ({route}: Props) => {
                   <View key={`${participant}-${index}`} style={styles.priceRow}>
                     <Text style={styles.priceText}>
                       {participant.count} {participant.type} x{' '}
-                      {tour.price.value} EUR
+                      {hasDiscount ? (
+                        <>
+                          <Text style={styles.originalPriceInline}>
+                            {tour.price.value}
+                          </Text>
+                          <Text style={styles.discountedPriceInline}>
+                            {' '}
+                            {pricePerPerson}
+                          </Text>
+                        </>
+                      ) : (
+                        `${tour.price.value}`
+                      )}{' '}
+                      EUR
                     </Text>
-                    <Text style={styles.priceValue}>
-                      {participant.count * tour.price.value} EUR
+                    <Text
+                      style={[
+                        styles.priceValue,
+                        hasDiscount && styles.discountedPriceValue,
+                      ]}>
+                      {participant.count * pricePerPerson} EUR
                     </Text>
                   </View>
                 ))}
+
+              {hasDiscount && tour.price.discount?.description && (
+                <View style={styles.discountInfo}>
+                  <Icon name="tag" size={16} color="#FF5A5F" />
+                  <Text style={styles.discountText}>
+                    {tour.price.discount.description}
+                  </Text>
+                </View>
+              )}
             </View>
 
             <View style={styles.cancellation}>
@@ -164,11 +223,26 @@ export const CheckoutScreen = ({route}: Props) => {
       <View style={styles.footer}>
         <View style={styles.totalPrice}>
           <Text style={styles.totalPriceLabel}>Precio total</Text>
-          <Text style={styles.totalPriceValue}>
-            {calculateTotalPrice() === 0
-              ? 'Gratis'
-              : `${calculateTotalPrice()} EUR`}
-          </Text>
+          <View>
+            {hasDiscount && (
+              <Text style={styles.originalTotalPrice}>
+                {participants.reduce(
+                  (total, p) => total + p.count * tour.price.value,
+                  0,
+                )}{' '}
+                EUR
+              </Text>
+            )}
+            <Text
+              style={[
+                styles.totalPriceValue,
+                hasDiscount ? {color: '#FF5A5F'} : null,
+              ]}>
+              {calculateTotalPrice() === 0
+                ? 'Gratis'
+                : `${calculateTotalPrice()} EUR`}
+            </Text>
+          </View>
         </View>
         <Pressable style={styles.bookButton}>
           <Text style={styles.bookButtonText}>Reservar ahora</Text>
@@ -302,6 +376,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginBottom: 8,
+    alignItems: 'center',
   },
   priceText: {
     fontSize: 14,
@@ -310,6 +385,37 @@ const styles = StyleSheet.create({
   priceValue: {
     fontSize: 14,
     fontWeight: '500',
+  },
+  discountedPriceValue: {
+    fontSize: 14,
+    fontWeight: '500',
+    color: '#FF5A5F',
+  },
+  inlinePrice: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  originalPriceInline: {
+    fontSize: 14,
+    color: '#7F8C8D',
+    textDecorationLine: 'line-through',
+    marginRight: 4,
+  },
+  discountedPriceInline: {
+    fontSize: 14,
+    color: '#FF5A5F',
+    fontWeight: '500',
+  },
+  discountInfo: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 8,
+    marginBottom: 8,
+  },
+  discountText: {
+    marginLeft: 4,
+    color: '#FF5A5F',
+    fontSize: 14,
   },
   cancellation: {
     flexDirection: 'row',
@@ -331,6 +437,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginBottom: 16,
+    alignItems: 'center',
   },
   totalPriceLabel: {
     fontSize: 16,
@@ -339,6 +446,13 @@ const styles = StyleSheet.create({
   totalPriceValue: {
     fontSize: 20,
     fontWeight: 'bold',
+    color: '#1a1a1a',
+  },
+  originalTotalPrice: {
+    fontSize: 14,
+    color: '#7F8C8D',
+    textDecorationLine: 'line-through',
+    textAlign: 'right',
   },
   bookButton: {
     backgroundColor: '#ff5a5f',
