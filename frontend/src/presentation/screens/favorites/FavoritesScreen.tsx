@@ -1,14 +1,15 @@
 import React from 'react';
 import {View, Text, FlatList, StyleSheet, Image} from 'react-native';
 import {useFavoritesStore} from '../../stores/favoritesStore';
+import {Tour} from '../../../domain/entities/tour.ts';
 
 export const FavoritesScreen = () => {
   const {favoriteTours} = useFavoritesStore();
 
-  const renderFavoriteItem = ({item}: {item: any}) => (
+  const renderFavoriteItem = ({item}: {item: Tour}) => (
     <View style={styles.itemContainer}>
       <Image
-        source={{uri: item.imageUrl}}
+        source={{uri: item.images[0]?.imageUrl}}
         style={styles.image}
         defaultSource={require('../../assets/no_image.png')}
       />

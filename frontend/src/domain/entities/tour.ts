@@ -65,6 +65,13 @@ export interface Tour {
   price: {
     value: number;
     basedOnTips: boolean;
+    discount?: {
+      type: 'porcentaje' | 'valor';
+      amount: number; // Ej: 10 (10% o 10€ según el tipo)
+      description?: string;
+      validFrom?: string;
+      validTo?: string;
+    };
   };
   stops: Stop[];
   location: {
