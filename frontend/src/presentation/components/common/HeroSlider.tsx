@@ -22,8 +22,6 @@ interface HeroSlide {
   imageUrl: any; // Can be require() or uri
   title: string;
   subtitle: string;
-  originalPrice?: number;
-  discountedPrice?: number;
 }
 
 interface HeroSliderProps {
@@ -96,6 +94,42 @@ export const HeroSlider = ({
     console.log('CTA pressed for slide:', slide.id);
   };
 
+  // Get the tour associated with the current slide
+  const getCurrentTour = () => {
+    const currentSlide = slides[activeIndex];
+    if (currentSlide.tourId) {
+      return tours.find(t => t.id === currentSlide.tourId);
+    }
+    return null;
+  };
+
+  // Calculate discount information
+  const getDiscountInfo = () => {
+    const tour = getCurrentTour();
+    console.log('tour', tour);
+    if (!tour || !tour.price.discount) {
+      return null;
+    }
+
+    const discount = tour.price.discount;
+    const originalPrice = tour.price.value;
+    let discountedPrice: number;
+
+    if (discount.type === 'porcentaje') {
+      discountedPrice = originalPrice - (originalPrice * discount.amount) / 100;
+    } else {
+      discountedPrice = originalPrice - discount.amount;
+    }
+
+    return {
+      originalPrice,
+      discountedPrice,
+      description: discount.description || '¡Oferta!',
+    };
+  };
+
+  const discountInfo = getDiscountInfo();
+
   return (
     <View style={styles.container}>
       <TouchableOpacity
@@ -115,18 +149,18 @@ export const HeroSlider = ({
             <Text style={styles.heroMoreInfo}>Más información &rarr;</Text>
           </View>
 
-          {slides[activeIndex].originalPrice && (
+          {discountInfo && (
             <TouchableOpacity
               style={styles.offerContainer}
               onPress={() => handleCTAPress(slides[activeIndex])}>
               <View style={styles.offerContent}>
                 <Text style={styles.originalPrice}>
-                  €{slides[activeIndex].originalPrice}
+                  €{discountInfo.originalPrice}
                 </Text>
                 <Text style={styles.discountedPrice}>
-                  €{slides[activeIndex].discountedPrice}
+                  €{discountInfo.discountedPrice.toFixed(0)}
                 </Text>
-                <Text style={styles.offerText}>¡Oferta!</Text>
+                <Text style={styles.offerText}>{discountInfo.description}</Text>
               </View>
             </TouchableOpacity>
           )}

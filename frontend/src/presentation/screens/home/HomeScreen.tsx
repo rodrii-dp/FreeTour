@@ -36,188 +36,207 @@ export const HomeScreen = () => {
       imageUrl: require('../../assets/varenna.png'),
       title: 'Vive experiencias\núnicas en lugares\nmágicos',
       subtitle: 'Conoce la belleza de Verenna',
-      originalPrice: 99,
-      discountedPrice: 79,
     },
     {
       id: '2',
       tourId: '1',
-      imageUrl: require('../../assets/lago_di_braies.png'), // You'll need to add this image
+      imageUrl: require('../../assets/lago_di_braies.png'),
       title: 'Descubre paisajes\nimpresionantes',
       subtitle: 'Explora el Lago di Braies',
-      originalPrice: 120,
-      discountedPrice: 89,
     },
     {
       id: '3',
       tourId: '2',
-      imageUrl: require('../../assets/italian-food.png'), // You'll need to add this image
+      imageUrl: require('../../assets/italian-food.png'),
       title: 'Saborea la auténtica\ncocina italiana',
       subtitle: 'Tours gastronómicos',
-      originalPrice: 85,
-      discountedPrice: 65,
     },
   ];
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        if (tours.length === 0) {
-          // TODO: Reemplazar con llamada a API
-          setTours([
-            {
-              id: '1',
-              category: 'Actividades acuáticas',
-              title: 'Paseo en barca por el Lago di Braies',
-              images: [
-                {
-                  id: '1',
-                  imageUrl:
-                    'https://cdn.bookatrekking.com/data/images/2024/03/lago-di-braies-hike-1.jpg',
-                },
-                {
-                  id: '2',
-                  imageUrl:
-                    'https://cdn.bookatrekking.com/data/images/2024/03/lago-di-braies-hike-1.jpg',
-                },
-                {
-                  id: '3',
-                  imageUrl:
-                    'https://cdn.bookatrekking.com/data/images/2024/03/lago-di-braies-hike-1.jpg',
-                },
-              ],
-              provider: {
-                id: 'p1',
-                name: 'Aventuras Alpinas',
-                tours: ['1'],
-                direction: 'Via Lago di Braies, 39030 Braies BZ, Italia',
-                contact: '+39 0474 748474',
-                verificationStatus: 'verificado',
+        // SIEMPRE actualizar los tours con los datos completos incluyendo descuentos
+        const toursWithDiscounts: Tour[] = [
+          {
+            id: '1',
+            category: 'Actividades acuáticas',
+            title: 'Paseo en barca por el Lago di Braies',
+            images: [
+              {
+                id: '1',
+                imageUrl:
+                  'https://cdn.bookatrekking.com/data/images/2024/03/lago-di-braies-hike-1.jpg',
               },
-              rating: 4.5,
-              reviews: Array(150).fill({
-                id: 'r1',
-                title: 'Experiencia inolvidable',
-                userId: 'u1',
-                date: new Date().toISOString(),
-                rating: 5,
-                comment: 'Un paseo maravilloso con vistas impresionantes.',
-              }),
-              description:
-                'Disfruta de un paseo en barca por el hermoso lago di Braies, rodeado de montañas majestuosas y aguas cristalinas.',
-              duration: '2 horas',
-              language: ['Español', 'Italiano', 'Inglés'],
-              price: {
-                value: 50,
-                basedOnTips: false,
+              {
+                id: '2',
+                imageUrl:
+                  'https://cdn.bookatrekking.com/data/images/2024/03/lago-di-braies-hike-1.jpg',
               },
-              stops: [
-                {
-                  location: {
-                    lat: 46.6948,
-                    lng: 12.0849,
-                    direction: 'Muelle principal del Lago di Braies',
-                  },
-                  stopName: 'Inicio del recorrido',
-                },
-                {
-                  location: {
-                    lat: 46.6943,
-                    lng: 12.086,
-                    direction: 'Zona norte del lago',
-                  },
-                  stopName: 'Mirador de las Dolomitas',
-                },
-              ],
-              location: {
-                name: 'Lago di Braies',
-                country: 'Italia',
+              {
+                id: '3',
+                imageUrl:
+                  'https://cdn.bookatrekking.com/data/images/2024/03/lago-di-braies-hike-1.jpg',
               },
-              meetingPoint:
-                'Muelle principal del Lago di Braies, junto al Hotel Lago di Braies',
-              availableDates: [
-                {date: '2025-03-10', hours: ['11:30']},
-                {date: '2025-04-15', hours: ['10:00']},
-                {date: '2025-06-06', hours: ['17:00']},
-              ],
+            ],
+            provider: {
+              id: 'p1',
+              name: 'Aventuras Alpinas',
+              tours: ['1'],
+              direction: 'Via Lago di Braies, 39030 Braies BZ, Italia',
+              contact: '+39 0474 748474',
+              verificationStatus: 'verificado',
             },
-            {
-              id: '2',
-              category: 'Gastronomía',
-              title: 'Tarde gastronómica en Varenna',
-              images: [
-                {
-                  id: '2',
-                  imageUrl:
-                    'https://mediaim.expedia.com/destination/1/bdaa37f1a8f6a663162794bec3280a2a.jpg',
-                },
-              ],
-              provider: {
-                id: 'p2',
-                name: 'Sabores de Italia',
-                tours: ['2'],
-                direction: 'Via XX Settembre, 23829 Varenna LC, Italia',
-                contact: '+39 0341 830111',
-                verificationStatus: 'verificado',
+            rating: 4.5,
+            reviews: Array(150).fill({
+              id: 'r1',
+              title: 'Experiencia inolvidable',
+              userId: 'u1',
+              date: new Date().toISOString(),
+              rating: 5,
+              comment: 'Un paseo maravilloso con vistas impresionantes.',
+            }),
+            description:
+              'Disfruta de un paseo en barca por el hermoso lago di Braies, rodeado de montañas majestuosas y aguas cristalinas.',
+            duration: '2 horas',
+            language: ['Español', 'Italiano', 'Inglés'],
+            price: {
+              value: 50,
+              basedOnTips: false,
+              discount: {
+                type: 'porcentaje',
+                amount: 30,
+                description: 'Oferta de temporada',
+                validFrom: '2025-03-01',
+                validTo: '2025-06-30',
               },
-              rating: 4.5,
-              reviews: Array(150).fill({
-                id: 'r2',
-                title: 'Delicioso recorrido',
-                userId: 'u2',
-                date: new Date().toISOString(),
-                rating: 5,
-                comment:
-                  'Una experiencia culinaria increíble en un lugar encantador.',
-              }),
-              description:
-                'Disfruta de una tarde por Varenna donde probarás la comida de este grandioso lugar, y que poca gente conoce.',
-              duration: '4 horas',
-              language: ['Español', 'Italiano', 'Inglés'],
-              price: {
-                value: 50,
-                basedOnTips: false,
-              },
-              stops: [
-                {
-                  location: {
-                    lat: 46.0112,
-                    lng: 9.2845,
-                    direction: 'Plaza central de Varenna',
-                  },
-                  stopName: 'Inicio del tour gastronómico',
-                },
-                {
-                  location: {
-                    lat: 46.0118,
-                    lng: 9.285,
-                    direction: 'Ristorante Il Caminetto',
-                  },
-                  stopName: 'Degustación de pasta fresca',
-                },
-                {
-                  location: {
-                    lat: 46.0106,
-                    lng: 9.2838,
-                    direction: 'Gelateria Riva',
-                  },
-                  stopName: 'Helados artesanales',
-                },
-              ],
-              location: {
-                name: 'Varenna',
-                country: 'Italia',
-              },
-              meetingPoint:
-                'Plaza central de Varenna, frente a la iglesia de San Giorgio',
-              availableDates: [
-                {date: '2025-03-10', hours: ['11:30']},
-                {date: '2025-04-15', hours: ['10:00']},
-                {date: '2025-06-06', hours: ['17:00']},
-              ],
             },
-          ]);
-        }
+            stops: [
+              {
+                location: {
+                  lat: 46.6948,
+                  lng: 12.0849,
+                  direction: 'Muelle principal del Lago di Braies',
+                },
+                stopName: 'Inicio del recorrido',
+              },
+              {
+                location: {
+                  lat: 46.6943,
+                  lng: 12.086,
+                  direction: 'Zona norte del lago',
+                },
+                stopName: 'Mirador de las Dolomitas',
+              },
+            ],
+            location: {
+              name: 'Lago di Braies',
+              country: 'Italia',
+            },
+            meetingPoint:
+              'Muelle principal del Lago di Braies, junto al Hotel Lago di Braies',
+            availableDates: [
+              {date: '2025-03-10', hours: ['11:30']},
+              {date: '2025-04-15', hours: ['10:00']},
+              {date: '2025-06-06', hours: ['17:00']},
+            ],
+          },
+          {
+            id: '2',
+            category: 'Gastronomía',
+            title: 'Tarde gastronómica en Varenna',
+            images: [
+              {
+                id: '2',
+                imageUrl:
+                  'https://mediaim.expedia.com/destination/1/bdaa37f1a8f6a663162794bec3280a2a.jpg',
+              },
+            ],
+            provider: {
+              id: 'p2',
+              name: 'Sabores de Italia',
+              tours: ['2'],
+              direction: 'Via XX Settembre, 23829 Varenna LC, Italia',
+              contact: '+39 0341 830111',
+              verificationStatus: 'verificado',
+            },
+            rating: 4.5,
+            reviews: Array(150).fill({
+              id: 'r2',
+              title: 'Delicioso recorrido',
+              userId: 'u2',
+              date: new Date().toISOString(),
+              rating: 5,
+              comment:
+                'Una experiencia culinaria increíble en un lugar encantador.',
+            }),
+            description:
+              'Disfruta de una tarde por Varenna donde probarás la comida de este grandioso lugar, y que poca gente conoce.',
+            duration: '4 horas',
+            language: ['Español', 'Italiano', 'Inglés'],
+            price: {
+              value: 50,
+              basedOnTips: false,
+              discount: {
+                type: 'valor',
+                amount: 15,
+                description: '¡Solo este mes!',
+                validFrom: '2025-02-15',
+                validTo: '2025-05-15',
+              },
+            },
+            stops: [
+              {
+                location: {
+                  lat: 46.0112,
+                  lng: 9.2845,
+                  direction: 'Plaza central de Varenna',
+                },
+                stopName: 'Inicio del tour gastronómico',
+              },
+              {
+                location: {
+                  lat: 46.0118,
+                  lng: 9.285,
+                  direction: 'Ristorante Il Caminetto',
+                },
+                stopName: 'Degustación de pasta fresca',
+              },
+              {
+                location: {
+                  lat: 46.0106,
+                  lng: 9.2838,
+                  direction: 'Gelateria Riva',
+                },
+                stopName: 'Helados artesanales',
+              },
+            ],
+            location: {
+              name: 'Varenna',
+              country: 'Italia',
+            },
+            meetingPoint:
+              'Plaza central de Varenna, frente a la iglesia de San Giorgio',
+            availableDates: [
+              {date: '2025-03-10', hours: ['11:30']},
+              {date: '2025-04-15', hours: ['10:00']},
+              {date: '2025-06-06', hours: ['17:00']},
+            ],
+          },
+        ];
+
+        // Forzar la actualización de los tours
+        console.log(
+          'Setting tours with discounts:',
+          toursWithDiscounts.map(t => ({
+            id: t.id,
+            title: t.title,
+            hasDiscount: !!t.price.discount,
+            discount: t.price.discount,
+          })),
+        );
+
+        setTours(toursWithDiscounts);
 
         setServices([
           {
@@ -249,7 +268,7 @@ export const HomeScreen = () => {
       }
     };
     fetchData();
-  }, [tours, setTours]);
+  }, []); // Removí las dependencias para que siempre se ejecute
 
   const handleTourPress = (tour: Tour) => {
     navigation.navigate('TourDetails', {tour: tour});
