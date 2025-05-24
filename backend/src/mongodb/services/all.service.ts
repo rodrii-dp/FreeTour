@@ -25,24 +25,25 @@ import {
 export class UserService {
   constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {}
 
-  async create(user: Partial<User>): Promise<User> {
-    return this.userModel.create(user);
+  async create(userData: Partial<User>): Promise<UserDocument> {
+    const createdUser = new this.userModel(userData);
+    return createdUser.save();
   }
 
   async findAll(): Promise<User[]> {
     return this.userModel.find().exec();
   }
 
-  async findByEmail(email: string): Promise<User | null> {
+  async findByEmail(email: string): Promise<UserDocument | null> {
     return this.userModel.findOne({ email }).exec();
   }
 
-  async findById(id: string): Promise<User | null> {
+  async findById(id: string): Promise<UserDocument | null> {
     return this.userModel.findById(id).exec();
   }
 
-  async delete(id: string): Promise<User | null> {
-    return this.userModel.findByIdAndDelete(id).exec();
+  async delete(id: string) {
+    await this.userModel.deleteOne({ _id: id });
   }
 }
 

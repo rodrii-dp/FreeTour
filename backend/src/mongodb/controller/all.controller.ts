@@ -54,8 +54,8 @@ export class UserController {
   }
 
   @Get(':id')
-  findById(@Param('id') id: string) {
-    return this.userService.findById(id);
+  findById(@Param('id') _id: string) {
+    return this.userService.findById(_id);
   }
 }
 
