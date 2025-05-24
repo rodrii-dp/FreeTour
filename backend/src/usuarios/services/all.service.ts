@@ -110,7 +110,12 @@ export class TourService {
   }
 
   async findById(id: string): Promise<Tour | null> {
-    return this.tourModel.findById(id).populate('provider').exec();
+    try {
+      return await this.tourModel.findById(id).populate('provider').exec();
+    } catch (error) {
+      console.log('entro');
+      return await this.tourModel.findById(id).exec();
+    }
   }
 
   async findWithFilters(filters: {

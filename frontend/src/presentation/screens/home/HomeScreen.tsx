@@ -274,6 +274,12 @@ export const HomeScreen = () => {
     navigation.navigate('TourDetails', {tour: tour});
   };
 
+  const handleSearchSubmit = () => {
+    if (searchQuery.trim()) {
+      navigation.navigate('SearchResults', {query: searchQuery.trim()});
+    }
+  };
+
   if (isLoading) {
     return (
       <View style={styles.loadingContainer}>
@@ -292,6 +298,7 @@ export const HomeScreen = () => {
                 placeholder="Encuentra tours"
                 onChangeText={setSearchQuery}
                 value={searchQuery}
+                onSubmitEditing={handleSearchSubmit}
                 style={styles.searchBar}
                 inputStyle={styles.searchInput}
                 iconColor="#666"
