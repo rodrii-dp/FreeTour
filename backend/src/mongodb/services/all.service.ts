@@ -11,8 +11,8 @@ import {
   ReviewDocument,
   Tour,
   TourDocument,
-  Service as ServiceModel,
-  ServiceDocument,
+  Category,
+  CategoryDocument,
   Stop,
   StopDocument,
   ImageTour,
@@ -38,7 +38,7 @@ export class UserService {
     return this.userModel.findOne({ email }).exec();
   }
 
-  async findById(id: string): Promise<UserDocument | null> {
+  async findById(id: string): Promise<User | null> {
     return this.userModel.findById(id).exec();
   }
 
@@ -187,17 +187,17 @@ export class TourService {
 }
 
 @Injectable()
-export class ServiceService {
+export class CategoryService {
   constructor(
-    @InjectModel(ServiceModel.name)
-    private serviceModel: Model<ServiceDocument>,
+    @InjectModel(Category.name)
+    private serviceModel: Model<CategoryDocument>,
   ) {}
 
-  async create(service: Partial<ServiceModel>): Promise<ServiceModel> {
+  async create(service: Partial<Category>): Promise<Category> {
     return this.serviceModel.create(service);
   }
 
-  async findAll(): Promise<ServiceModel[]> {
+  async findAll(): Promise<Category[]> {
     return this.serviceModel.find().exec();
   }
 }
