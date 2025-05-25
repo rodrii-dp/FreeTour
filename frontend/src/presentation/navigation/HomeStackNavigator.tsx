@@ -38,7 +38,7 @@ export const HomeStackNavigator = () => (
     <Stack.Screen
       name="SearchResults"
       component={SearchResultsScreen}
-      options={{title: 'Resultados de Búsqueda'}}
+      options={{title: 'Resultados de Búsqueda', headerShown: false}}
     />
   </Stack.Navigator>
 );
