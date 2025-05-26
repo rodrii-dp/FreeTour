@@ -7,9 +7,14 @@ export class AuthController {
 
   // 🔐 Paso 1: El usuario introduce su email para recibir el link de verificación
   @Post('send-verification-email')
-  async sendVerification(@Body('email') email: string) {
-    if (!email) throw new BadRequestException('Email requerido');
-    return this.authService.sendVerificationEmail(email);
+  async sendVerification(
+    @Body('email') email: string,
+    @Body('name') name: string,
+    @Body('password') password: string,
+    @Body('role') role: string,
+  ) {
+    if (!email || !name || !password) throw new BadRequestException('Faltan datos');
+    return this.authService.sendVerificationEmail(email, name, password, role);
   }
 
   // ✅ Paso 2: El usuario hace clic en el email recibido (link con JWT)

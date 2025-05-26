@@ -43,7 +43,7 @@ export class UserService {
   }
 
   async delete(id: string) {
-    await this.userModel.deleteOne({ _id: id });
+    return this.userModel.deleteOne({ _id: id });
   }
 }
 

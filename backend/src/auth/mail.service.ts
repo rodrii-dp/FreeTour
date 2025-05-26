@@ -7,8 +7,8 @@ export class MailService {
   private transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-      user: process.env.MAIL_USER, // Tu Gmail
-      pass: process.env.MAIL_PASS, // Contraseña o App Password
+      user: "oscar.haotian.ceb@immune.institute", // Tu Gmail
+      pass: "rjrfgpefjafdwgou", // Contraseña o App Password
     },
   });
 

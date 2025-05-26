@@ -18,14 +18,16 @@ export class AuthService {
 
   // 1. Enviar email de verificación
 
-  async sendVerificationEmail(email: string) {
-    const token = this.jwtService.sign({ email }, { expiresIn: '10m' });
+  async sendVerificationEmail(email: string, name: string, password: string, role = 'cliente') {
+    const token = this.jwtService.sign(
+      { email, name, password, role },
+      { expiresIn: '10m' },
+    );
     const url = `http://localhost:3000/auth/verify-email?token=${token}`;
   
     await this.mailService.sendVerificationEmail(email, url);
-  
     return { message: 'Correo de verificación enviado' };
-  }
+  }  
 
   // 2. Verificar el email desde el link
   async verifyEmail(token: string) {
