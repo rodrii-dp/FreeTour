@@ -13,7 +13,7 @@ import {
   ProviderService,
   ReviewService,
   TourService,
-  ServiceService,
+  CategoryService,
   StopService,
   AvailabilityService,
 } from '../services/all.service';
@@ -23,7 +23,7 @@ import {
   Provider,
   Review,
   Tour,
-  Service,
+  Category,
   Stop,
   Availability,
 } from '../schemas/all.schema';
@@ -54,8 +54,8 @@ export class UserController {
   }
 
   @Get(':id')
-  findById(@Param('id') _id: string) {
-    return this.userService.findById(_id);
+  findById(@Param('id') id: string) {
+    return this.userService.findById(id);
   }
 }
 
@@ -170,12 +170,12 @@ export class TourController {
 }
 
 // SERVICE
-@Controller('services')
-export class ServiceController {
-  constructor(private readonly serviceService: ServiceService) {}
+@Controller('category')
+export class CategoryController {
+  constructor(private readonly serviceService: CategoryService) {}
 
   @Post()
-  create(@Body() service: Partial<Service>) {
+  create(@Body() service: Partial<Category>) {
     return this.serviceService.create(service);
   }
 

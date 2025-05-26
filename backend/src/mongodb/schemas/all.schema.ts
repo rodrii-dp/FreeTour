@@ -22,16 +22,16 @@ export class User {
 }
 export const UserSchema = SchemaFactory.createForClass(User);
 
-// Service
+// Category
 @Schema()
-export class Service {
+export class Category {
   @Prop({ required: true })
   name: string;
 
   @Prop({ required: true })
   icon: string;
 }
-export const ServiceSchema = SchemaFactory.createForClass(Service);
+export const CategorySchema = SchemaFactory.createForClass(Category);
 
 // Stop
 @Schema()
@@ -117,6 +117,27 @@ export class Availability {
 }
 export const AvailabilitySchema = SchemaFactory.createForClass(Availability);
 
+
+@Schema()
+class Discount {
+  @Prop({ enum: ['porcentaje', 'valor'], required: true })
+  type: 'porcentaje' | 'valor';
+
+  @Prop({ required: true })
+  amount: number;
+
+  @Prop()
+  description?: string;
+
+  @Prop()
+  validFrom?: string;
+
+  @Prop()
+  validTo?: string;
+}
+const DiscountSchema = SchemaFactory.createForClass(Discount);
+
+
 @Schema()
 export class Discount {
   @Prop({ enum: ['porcentaje', 'valor'], required: true })
@@ -170,6 +191,7 @@ export class Tour {
     type: {
       value: { type: Number, required: true, min: 0 },
       basedOnTips: { type: Boolean, required: true },
+      discount: { type: DiscountSchema, required: false },
     },
   })
   price: {
@@ -205,7 +227,7 @@ export type UserDocument = GenericDocument<User>;
 export type ProviderDocument = GenericDocument<Provider>;
 export type ReviewDocument = GenericDocument<Review>;
 export type TourDocument = GenericDocument<Tour>;
-export type ServiceDocument = GenericDocument<Service>;
+export type CategoryDocument = GenericDocument<Category>;
 export type StopDocument = GenericDocument<Stop>;
 export type ImageTourDocument = GenericDocument<ImageTour>;
 export type AvailabilityDocument = GenericDocument<Availability>;
