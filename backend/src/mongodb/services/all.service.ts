@@ -169,6 +169,15 @@ export class TourService {
     return updatedTour;
   }
 
+  async findMostRecent(limit: number): Promise<Tour[]> {
+    return this.tourModel
+      .find()
+      .sort({ createdAt: -1 })
+      .limit(limit)
+      .populate('provider')
+      .exec();
+  }
+
   async getMostPopularsByCategory(
     category: string,
     limit: number,

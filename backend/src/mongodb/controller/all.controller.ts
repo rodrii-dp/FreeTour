@@ -43,7 +43,7 @@ export class UserController {
     return this.userService.findAll();
   }
 
-  @Get(':email')
+  @Get('email/:email')
   findByEmail(@Param('email') email: string) {
     return this.userService.findByEmail(email);
   }
@@ -119,6 +119,11 @@ export class TourController {
   @Post()
   create(@Body() tour: Partial<Tour>) {
     return this.tourService.create(tour);
+  }
+
+  @Get('recent')
+  findMostRecent(@Query('limit') limit?: string) {
+    return this.tourService.findMostRecent(Number(limit) || 5);
   }
 
   @Get()
