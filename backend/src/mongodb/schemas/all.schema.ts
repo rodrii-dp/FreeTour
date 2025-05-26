@@ -2,7 +2,7 @@ import * as bcrypt from 'bcryptjs';
 
 // src/schemas/all.schemas.ts
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document, HydratedDocument, Types } from 'mongoose';
+import { HydratedDocument, Types } from 'mongoose';
 
 export type GenericDocument<T> = HydratedDocument<T>;
 // User
@@ -117,6 +117,25 @@ export class Availability {
 }
 export const AvailabilitySchema = SchemaFactory.createForClass(Availability);
 
+@Schema()
+export class Discount {
+  @Prop({ enum: ['porcentaje', 'valor'], required: true })
+  type: 'porcentaje' | 'valor';
+
+  @Prop({ required: true })
+  amount: number;
+
+  @Prop()
+  description?: string;
+
+  @Prop()
+  validFrom?: string;
+
+  @Prop()
+  validTo?: string;
+}
+export const DiscountSchema = SchemaFactory.createForClass(Discount);
+
 // Tour
 @Schema()
 export class Tour {
@@ -149,20 +168,14 @@ export class Tour {
 
   @Prop({
     type: {
-      value: { type: Number, required: true, min: 0},
+      value: { type: Number, required: true, min: 0 },
       basedOnTips: { type: Boolean, required: true },
     },
   })
   price: {
     value: number;
     basedOnTips: boolean;
-    discount?: {
-      type: 'porcentaje' | 'valor';
-      amount: number; // Ej: 10 (10% o 10€ según el tipo)
-      description?: string;
-      validFrom?: string;
-      validTo?: string; 
-    };
+    discount?: Discount;
   };
 
   @Prop({ type: [StopSchema], default: [] })
@@ -186,6 +199,7 @@ export class Tour {
   availableDates: Availability[];
 }
 export const TourSchema = SchemaFactory.createForClass(Tour);
+TourSchema.set('timestamps', true);
 
 export type UserDocument = GenericDocument<User>;
 export type ProviderDocument = GenericDocument<Provider>;
@@ -195,6 +209,7 @@ export type ServiceDocument = GenericDocument<Service>;
 export type StopDocument = GenericDocument<Stop>;
 export type ImageTourDocument = GenericDocument<ImageTour>;
 export type AvailabilityDocument = GenericDocument<Availability>;
+export type DiscountDocument = GenericDocument<Discount>;
 
 UserSchema.pre<UserDocument>('save', async function () {
   if (!this.isModified('password')) return;
