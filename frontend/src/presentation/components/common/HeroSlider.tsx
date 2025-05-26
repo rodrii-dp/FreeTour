@@ -106,7 +106,6 @@ export const HeroSlider = ({
   // Calculate discount information
   const getDiscountInfo = () => {
     const tour = getCurrentTour();
-    console.log('tour', tour);
     if (!tour || !tour.price.discount) {
       return null;
     }

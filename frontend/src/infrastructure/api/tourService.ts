@@ -7,8 +7,8 @@ export const tourService = {
     category?: string;
     providerId?: string;
     limit?: string;
+    onlyDiscounted?: boolean;
   }) => {
-    console.log('filters', filters);
     const params = {
       ...filters,
       limit: filters?.limit || '5',
@@ -27,6 +27,13 @@ export const tourService = {
     limit = limit || 5;
     const response = await apiClient.get(`/tours/popular/${category}`, {
       params: {limit},
+    });
+    return response.data;
+  },
+
+  getMostRecent: async (limit?: number) => {
+    const response = await apiClient.get('/tours/recent', {
+      params: {limit: limit || 5},
     });
     return response.data;
   },

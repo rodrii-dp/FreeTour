@@ -22,10 +22,18 @@ export class User {
 }
 export const UserSchema = SchemaFactory.createForClass(User);
 
+export enum FixedCategories {
+  Gastronomia = 'gastronomía',
+  Historia = 'historia',
+  Naturaleza = 'naturaleza',
+  Aventura = 'aventura',
+  Otros = 'otros',
+}
+
 // Category
 @Schema()
 export class Category {
-  @Prop({ required: true })
+  @Prop({ required: true, enum: Object.values(FixedCategories) })
   name: string;
 
   @Prop({ required: true })
@@ -87,6 +95,9 @@ export class Review {
   @Prop({ type: Types.ObjectId, ref: 'User', required: true })
   userId: Types.ObjectId;
 
+  @Prop({ type: Types.ObjectId, ref: 'Tour', required: true })
+  tourId: Types.ObjectId;
+
   @Prop({ required: true })
   date: string;
 
@@ -117,7 +128,6 @@ export class Availability {
 }
 export const AvailabilitySchema = SchemaFactory.createForClass(Availability);
 
-
 @Schema()
 class Discount {
   @Prop({ enum: ['porcentaje', 'valor'], required: true })
@@ -137,30 +147,10 @@ class Discount {
 }
 const DiscountSchema = SchemaFactory.createForClass(Discount);
 
-
-@Schema()
-export class Discount {
-  @Prop({ enum: ['porcentaje', 'valor'], required: true })
-  type: 'porcentaje' | 'valor';
-
-  @Prop({ required: true })
-  amount: number;
-
-  @Prop()
-  description?: string;
-
-  @Prop()
-  validFrom?: string;
-
-  @Prop()
-  validTo?: string;
-}
-export const DiscountSchema = SchemaFactory.createForClass(Discount);
-
 // Tour
 @Schema()
 export class Tour {
-  @Prop({ required: true })
+  @Prop({ required: true, enum: Object.values(FixedCategories) })
   category: string;
 
   @Prop({ required: true })
@@ -175,8 +165,8 @@ export class Tour {
   @Prop({ default: 0 })
   rating: number;
 
-  @Prop({ type: [ReviewSchema], default: [] })
-  reviews: Review[];
+  @Prop({ type: [Types.ObjectId], ref: 'Review', default: [] })
+  reviews: Types.ObjectId[];
 
   @Prop()
   description: string;

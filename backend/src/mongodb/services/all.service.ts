@@ -1,7 +1,7 @@
 // src/services/all.services.ts
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import {
   User,
   UserDocument,
@@ -96,6 +96,55 @@ export class ReviewService {
   async findById(id: string): Promise<Review | null> {
     return this.reviewModel.findById(id).exec();
   }
+
+  async getReviewsByUserId(userId: string): Promise<Review[]> {
+    if (!Types.ObjectId.isValid(userId)) {
+      throw new NotFoundException('User ID inválido');
+    }
+
+    const reviews = await this.reviewModel.find({ userId }).exec();
+
+    if (!reviews || reviews.length === 0) {
+      throw new NotFoundException(
+        'No se encontraron reseñas para este usuario',
+      );
+    }
+
+    return reviews;
+  }
+
+  async getReviewByUserAndReviewId(
+    userId: string,
+    reviewId: string,
+  ): Promise<Review> {
+    if (!Types.ObjectId.isValid(userId) || !Types.ObjectId.isValid(reviewId)) {
+      throw new NotFoundException('ID inválido');
+    }
+
+    const review = await this.reviewModel
+      .findOne({ _id: reviewId, userId })
+      .exec();
+
+    if (!review) {
+      throw new NotFoundException('Reseña no encontrada para este usuario');
+    }
+
+    return review;
+  }
+
+  async getReviewsByTourId(tourId: string): Promise<Review[]> {
+    if (!Types.ObjectId.isValid(tourId)) {
+      throw new NotFoundException('Tour ID inválido');
+    }
+
+    const reviews = await this.reviewModel.find({ tourId }).exec();
+
+    if (!reviews || reviews.length === 0) {
+      throw new NotFoundException('No se encontraron reseñas para este tour');
+    }
+
+    return reviews;
+  }
 }
 
 @Injectable()
@@ -123,6 +172,7 @@ export class TourService {
     title?: string;
     category?: string;
     limit?: string;
+    onlyDiscounted?: boolean;
     providerId?: string;
   }) {
     const query: any = {};
@@ -136,6 +186,10 @@ export class TourService {
 
     if (filters.providerId) {
       query.provider = filters.providerId;
+    }
+
+    if (filters.onlyDiscounted) {
+      query['price.discount'] = { $exists: true, $ne: null };
     }
 
     const limit = filters.limit ? parseInt(filters.limit, 10) : 20;
@@ -199,15 +253,19 @@ export class TourService {
 export class CategoryService {
   constructor(
     @InjectModel(Category.name)
-    private serviceModel: Model<CategoryDocument>,
+    private categoryModel: Model<CategoryDocument>,
   ) {}
 
-  async create(service: Partial<Category>): Promise<Category> {
-    return this.serviceModel.create(service);
+  async create(category: Partial<Category>): Promise<Category> {
+    return this.categoryModel.create(category);
   }
 
   async findAll(): Promise<Category[]> {
-    return this.serviceModel.find().exec();
+    return this.categoryModel.find().exec();
+  }
+
+  async delete(categoryId: string): Promise<Category | null> {
+    return this.categoryModel.findByIdAndDelete(categoryId).exec();
   }
 }
 

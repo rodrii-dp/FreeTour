@@ -109,6 +109,24 @@ export class ReviewController {
   findById(@Param('id') id: string) {
     return this.reviewService.findById(id);
   }
+
+  @Get('tour/:tourId')
+  async getReviewsByTour(@Param('tourId') tourId: string): Promise<Review[]> {
+    return this.reviewService.getReviewsByTourId(tourId);
+  }
+
+  @Get('user/:userId')
+  async getReviewsByUser(@Param('userId') userId: string): Promise<Review[]> {
+    return this.reviewService.getReviewsByUserId(userId);
+  }
+
+  @Get('user/:userId/review/:reviewId')
+  async getReviewByUserAndReviewId(
+    @Param('userId') userId: string,
+    @Param('reviewId') reviewId: string,
+  ): Promise<Review> {
+    return this.reviewService.getReviewByUserAndReviewId(userId, reviewId);
+  }
 }
 
 // TOUR
@@ -170,7 +188,7 @@ export class TourController {
 }
 
 // SERVICE
-@Controller('category')
+@Controller('categories')
 export class CategoryController {
   constructor(private readonly serviceService: CategoryService) {}
 
@@ -182,6 +200,11 @@ export class CategoryController {
   @Get()
   findAll() {
     return this.serviceService.findAll();
+  }
+
+  @Delete(':id')
+  delete(@Param('id') id: string) {
+    return this.serviceService.delete(id);
   }
 }
 

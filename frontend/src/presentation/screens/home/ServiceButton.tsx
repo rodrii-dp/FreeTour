@@ -17,7 +17,7 @@ export const ServiceButton = ({
 }: ServiceButtonProps) => {
   return (
     <Pressable
-      style={[styles.button, isSelected && {backgroundColor: '#FF5A5F'}]}
+      style={[styles.button, isSelected && styles.selectedButton]}
       onPress={onPress}>
       <Icon
         name={icon}
@@ -25,7 +25,7 @@ export const ServiceButton = ({
         color={isSelected ? '#F8F8F8' : '#FF5A5F'}
         style={styles.icon}
       />
-      <Text style={isSelected ? [styles.label, {color: '#F8F8F8'}] : ''}>
+      <Text style={[styles.label, isSelected && styles.selectedLabel]}>
         {label}
       </Text>
     </Pressable>
@@ -40,11 +40,17 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     minWidth: 80,
   },
+  selectedButton: {
+    backgroundColor: '#FF5A5F',
+  },
   icon: {
     marginBottom: 5,
   },
   label: {
     fontSize: 12,
     color: '#333',
+  },
+  selectedLabel: {
+    color: '#F8F8F8',
   },
 });
