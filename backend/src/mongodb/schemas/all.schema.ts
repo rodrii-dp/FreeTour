@@ -208,10 +208,30 @@ export class Tour {
   meetingPoint: string;
 
   @Prop({ type: [AvailabilitySchema], default: [] })
-  availableDates: Availability[];
+  nonAvailableDates: Availability[];
 }
 export const TourSchema = SchemaFactory.createForClass(Tour);
 TourSchema.set('timestamps', true);
+
+// Booking
+@Schema()
+export class Booking {
+  @Prop({ type: Types.ObjectId, ref: 'User', required: true })
+  userId: Types.ObjectId;
+
+  @Prop({ type: Types.ObjectId, ref: 'Tour', required: true })
+  tourId: Types.ObjectId;
+
+  @Prop({ required: true })
+  date: string;
+
+  @Prop({ required: true })
+  hour: string;
+
+  @Prop({ default: 1 })
+  people: number;
+}
+export const BookingSchema = SchemaFactory.createForClass(Booking);
 
 export type UserDocument = GenericDocument<User>;
 export type ProviderDocument = GenericDocument<Provider>;
@@ -222,7 +242,7 @@ export type StopDocument = GenericDocument<Stop>;
 export type ImageTourDocument = GenericDocument<ImageTour>;
 export type AvailabilityDocument = GenericDocument<Availability>;
 export type DiscountDocument = GenericDocument<Discount>;
-
+export type BookingDocument = GenericDocument<Booking>;
 UserSchema.pre<UserDocument>('save', async function () {
   if (!this.isModified('password')) return;
   const salt = await bcrypt.genSalt(10);

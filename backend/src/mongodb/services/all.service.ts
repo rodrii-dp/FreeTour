@@ -19,6 +19,7 @@ import {
   ImageTourDocument,
   Availability,
   AvailabilityDocument,
+  Booking,
 } from '../schemas/all.schema.js';
 
 @Injectable()
@@ -310,5 +311,72 @@ export class AvailabilityService {
 
   async findAll(): Promise<Availability[]> {
     return this.availabilityModel.find().exec();
+  }
+}
+
+@Injectable()
+export class BookingService {
+  constructor(
+    @InjectModel('Booking') private bookingModel: Model<any>, // Replace 'any' with BookingDocument when defined
+  ) {}
+
+  async create(booking: Partial<Booking>): Promise<Booking> {
+    if (!booking.tourId || !booking.date || !booking.hour) {
+      throw new NotFoundException('Faltan datos para la reserva');
+    }
+
+    const tour = await this.bookingModel.db
+      .model('Tour')
+      .findById(booking.tourId)
+      .exec();
+    if (!tour) throw new NotFoundException('Tour no encontrado');
+
+    const nonAvailableDate = tour.nonAvailableDates.find(
+      (d) => d.date === booking.date && d.hours.includes(booking.hour),
+    );
+    if (!nonAvailableDate) throw new NotFoundException('Fecha u no disponible');
+
+    return this.bookingModel.create(booking);
+  }
+
+  async findAll(): Promise<Booking[]> {
+    return this.bookingModel.find().exec();
+  }
+
+  async findById(id: string): Promise<Booking | null> {
+    return this.bookingModel.findById(id).exec();
+  }
+
+  async findByUserId(userId: string): Promise<Booking[]> {
+    if (!Types.ObjectId.isValid(userId)) {
+      throw new NotFoundException('ID de usuario inválido');
+    }
+    return this.bookingModel.find({ userId }).exec();
+  }
+
+  async findByTourId(tourId: string): Promise<Booking[]> {
+    if (!Types.ObjectId.isValid(tourId)) {
+      throw new NotFoundException('ID de tour inválido');
+    }
+    return this.bookingModel.find({ tourId }).exec();
+  }
+
+  async cancelBooking(bookingId: string): Promise<Booking | null> {
+    if (!Types.ObjectId.isValid(bookingId)) {
+      throw new NotFoundException('ID de reserva inválido');
+    }
+    return this.bookingModel.findByIdAndDelete(bookingId).exec();
+  }
+
+  async updateBooking(
+    bookingId: string,
+    update: Partial<Booking>,
+  ): Promise<Booking | null> {
+    if (!Types.ObjectId.isValid(bookingId)) {
+      throw new NotFoundException('ID de reserva inválido');
+    }
+    return this.bookingModel
+      .findByIdAndUpdate(bookingId, update, { new: true })
+      .exec();
   }
 }
