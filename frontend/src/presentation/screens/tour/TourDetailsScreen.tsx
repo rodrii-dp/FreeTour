@@ -61,8 +61,10 @@ export const TourDetailsScreen = ({route}: Props) => {
     handleToggleFavorite();
   }, [handleToggleFavorite]);
 
-  const availableDates = [
-    ...new Set(tour.availableDates.map(availableDate => availableDate.date)),
+  const nonAvailableDates = [
+    ...new Set(
+      tour.nonAvailableDates?.map(nonAvailableDate => nonAvailableDate.date),
+    ),
   ];
 
   const handleDateSelect = (date: string) => {
@@ -243,7 +245,7 @@ export const TourDetailsScreen = ({route}: Props) => {
         visible={isCalendarVisible}
         onClose={() => setIsCalendarVisible(false)}
         onDateSelect={handleDateSelect}
-        availableDates={availableDates}
+        nonAvailableDates={nonAvailableDates}
       />
     </SafeAreaView>
   );

@@ -79,5 +79,14 @@ export interface Tour {
     country: string;
   };
   meetingPoint: string;
-  availableDates: Availability[];
+  nonAvailableDates: Availability[];
+}
+
+export interface Booking {
+  id: string;
+  userId: string;
+  tourId: string;
+  date: string;
+  hour: string;
+  people: number;
 }

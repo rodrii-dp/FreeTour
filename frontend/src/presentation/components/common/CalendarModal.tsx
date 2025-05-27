@@ -13,7 +13,7 @@ interface CalendarModalProps {
   visible: boolean;
   onClose: () => void;
   onDateSelect: (date: string) => void;
-  availableDates: string[];
+  nonAvailableDates: string[];
 }
 
 const today: Date = new Date();
@@ -29,25 +29,33 @@ export const CalendarModal = ({
   visible,
   onClose,
   onDateSelect,
-  availableDates,
+  nonAvailableDates,
 }: CalendarModalProps) => {
   const [currentMonth, setCurrentMonth] = useState<string>(minMonth);
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
 
-  const markedDates: Record<string, {marked: boolean; dotColor: string}> =
-    availableDates.reduce((acc, date) => {
-      acc[date] = {marked: true, dotColor: 'blue'};
-      return acc;
-    }, {} as Record<string, {marked: boolean; dotColor: string}>);
+  const markedDates: Record<
+    string,
+    {
+      disabled: boolean;
+      disableTouchEvent: boolean;
+      marked?: boolean;
+      dotColor?: string;
+    }
+  > = nonAvailableDates.reduce((acc, date) => {
+    acc[date] = {
+      disabled: true,
+      disableTouchEvent: true,
+    };
+    return acc;
+  }, {} as Record<string, {disabled: boolean; disableTouchEvent: boolean; marked?: boolean; dotColor?: string}>);
 
   const handleMonthChange = (month: DateData): void => {
     setCurrentMonth(month.dateString.slice(0, 7));
   };
 
   const handleDayPress = (day: DateData): void => {
-    const isAvailableDate = availableDates.includes(day.dateString);
-
-    if (isAvailableDate) {
+    if (!nonAvailableDates.includes(day.dateString)) {
       setSelectedDate(day.dateString);
       onDateSelect(day.dateString);
       onClose();

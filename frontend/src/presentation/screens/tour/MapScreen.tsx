@@ -16,12 +16,20 @@ export const MapScreen = () => {
   const [mapReady, setMapReady] = useState(false);
   const [key, setKey] = useState(0);
 
-  const initialRegion = {
-    latitude: stops[0].location.lat,
-    longitude: stops[0].location.lng,
-    latitudeDelta: 0.02,
-    longitudeDelta: 0.02,
-  };
+  const initialRegion =
+    stops && stops.length > 0
+      ? {
+          latitude: stops[0].location.lat,
+          longitude: stops[0].location.lng,
+          latitudeDelta: 0.02,
+          longitudeDelta: 0.02,
+        }
+      : {
+          latitude: 0,
+          longitude: 0,
+          latitudeDelta: 0.02,
+          longitudeDelta: 0.02,
+        };
 
   const fitMapToMarkers = useCallback(() => {
     if (mapRef.current && stops.length > 0) {
@@ -92,6 +100,16 @@ export const MapScreen = () => {
       />
     );
   };
+
+  if (!stops || stops.length === 0) {
+    return (
+      <View style={styles.container}>
+        <Text style={styles.title}>
+          No hay paradas disponibles para este tour.
+        </Text>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>

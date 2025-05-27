@@ -1,5 +1,5 @@
 import {apiClient} from './apiClient';
-import type {User} from '../../domain/entities/user';
+import type {User} from '../../domain/entities/tour';
 
 export const userService = {
   createUser: async (user: Partial<User>) => {

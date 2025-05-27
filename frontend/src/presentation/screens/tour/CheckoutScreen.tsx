@@ -34,10 +34,8 @@ export const CheckoutScreen = ({route}: Props) => {
     {type: 'Bebé', ageRange: 'Hasta los 3 años', count: 0},
   ]);
 
-  console.log(tour.availableDates[0]);
-
   const [selectedTime, setSelectedTime] = useState(
-    tour.availableDates[0]?.hours[0] || '',
+    tour.nonAvailableDates[0]?.hours[0] || '',
   );
 
   const formattedDate = new Date(selectedDate).toLocaleDateString('es-ES', {
@@ -163,7 +161,7 @@ export const CheckoutScreen = ({route}: Props) => {
                 })}
               </Text>
               <TimeSlotPicker
-                availableTimes={tour.availableDates}
+                availableTimes={tour.nonAvailableDates}
                 selectedDate={selectedDate}
                 selectedTime={selectedTime}
                 onTimeSelected={setSelectedTime}
