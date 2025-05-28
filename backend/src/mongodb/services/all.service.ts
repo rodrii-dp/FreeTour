@@ -1,5 +1,5 @@
 // src/services/all.services.ts
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import {
@@ -22,6 +22,7 @@ import {
   Booking,
   BookingDocument,
 } from '../schemas/all.schema.js';
+import { MailService } from '../../auth/mail.service';
 
 @Injectable()
 export class UserService {
@@ -318,7 +319,8 @@ export class AvailabilityService {
 @Injectable()
 export class BookingService {
   constructor(
-    @InjectModel('Booking') private bookingModel: Model<BookingDocument>, // Replace 'any' with BookingDocument when defined
+    @InjectModel('Booking') private bookingModel: Model<BookingDocument>,
+    @Inject('MailService') private mailService: MailService,
   ) {}
 
   async create(booking: Partial<Booking>): Promise<Booking> {
@@ -335,15 +337,26 @@ export class BookingService {
     const nonAvailableDate = tour.nonAvailableDates.find(
       (d) => d.date === booking.date && d.hours.includes(booking.hour),
     );
-    console.log(
-      'nonAvailableDates',
-      tour.nonAvailableDates,
-      'bookings:',
-      booking,
-    );
     if (nonAvailableDate)
       throw new NotFoundException('Fecha u hora no disponible');
-    return this.bookingModel.create(booking);
+
+    const createdBooking = await this.bookingModel.create(booking);
+
+    const user = await this.bookingModel.db
+      .model('User')
+      .findById(booking.userId)
+      .exec();
+
+    if (user && user.email) {
+      await this.mailService.sendBookingInformationEmail(user.email, {
+        tourTitle: tour.title,
+        date: booking.date,
+        hour: booking.hour,
+        people: booking.people,
+      });
+    }
+
+    return createdBooking;
   }
 
   async findAll(): Promise<Booking[]> {

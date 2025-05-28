@@ -1,4 +1,3 @@
-// src/modules/general.module.ts
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import {
@@ -31,7 +30,7 @@ import {
   ImageTourService,
   AvailabilityService,
   BookingService,
-} from './services/all.service'; // Servicios
+} from './services/all.service';
 import {
   UserController,
   ProviderController,
@@ -41,7 +40,8 @@ import {
   StopController,
   AvailabilityController,
   BookingController,
-} from './controller/all.controller'; // Controladores
+} from './controller/all.controller';
+import { MailModule } from '../auth/mail.module';
 
 @Module({
   imports: [
@@ -56,6 +56,7 @@ import {
       { name: Provider.name, schema: ProviderSchema },
       { name: Booking.name, schema: BookingSchema },
     ]),
+    MailModule,
   ],
   controllers: [
     UserController,
@@ -66,7 +67,7 @@ import {
     StopController,
     AvailabilityController,
     BookingController,
-  ], // Todos los controladores
+  ],
   providers: [
     UserService,
     ProviderService,
@@ -77,7 +78,7 @@ import {
     ImageTourService,
     AvailabilityService,
     BookingService,
-  ], // Todos los servicios
+  ],
   exports: [UserService],
 })
 export class GeneralModule {}

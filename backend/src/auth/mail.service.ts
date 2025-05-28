@@ -23,11 +23,11 @@ export class MailService {
     console.log('Correo enviado: %s', info.messageId);
   }
 
-  async sendBookingConfirmationEmail(email: string, bookingDetails: any) {
+  async sendBookingInformationEmail(email: string, bookingDetails: any) {
     const info = await this.transporter.sendMail({
       from: `"Mi Proyecto" <${process.env.MAIL_USER}>`,
       to: email,
-      subject: 'Confirmación de reserva',
+      subject: 'Información de reserva',
       html: `
         <h2>¡Reserva confirmada!</h2>
         <p>Gracias por reservar con nosotros.</p>
