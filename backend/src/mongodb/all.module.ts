@@ -1,7 +1,26 @@
 // src/modules/general.module.ts
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { Availability, AvailabilitySchema, ImageTour, ImageTourSchema, Provider, ProviderSchema, Review, ReviewSchema, Category, CategorySchema, Stop, StopSchema, Tour, TourSchema, User, UserSchema } from './schemas/all.schema';
+import {
+  Availability,
+  AvailabilitySchema,
+  ImageTour,
+  ImageTourSchema,
+  Provider,
+  ProviderSchema,
+  Review,
+  ReviewSchema,
+  Category,
+  CategorySchema,
+  Stop,
+  StopSchema,
+  Tour,
+  TourSchema,
+  User,
+  UserSchema,
+  BookingSchema,
+  Booking,
+} from './schemas/all.schema';
 import {
   UserService,
   ProviderService,
@@ -11,6 +30,7 @@ import {
   StopService,
   ImageTourService,
   AvailabilityService,
+  BookingService,
 } from './services/all.service'; // Servicios
 import {
   UserController,
@@ -20,6 +40,7 @@ import {
   CategoryController,
   StopController,
   AvailabilityController,
+  BookingController,
 } from './controller/all.controller'; // Controladores
 
 @Module({
@@ -33,6 +54,7 @@ import {
       { name: ImageTour.name, schema: ImageTourSchema },
       { name: Availability.name, schema: AvailabilitySchema },
       { name: Provider.name, schema: ProviderSchema },
+      { name: Booking.name, schema: BookingSchema },
     ]),
   ],
   controllers: [
@@ -43,6 +65,7 @@ import {
     CategoryController,
     StopController,
     AvailabilityController,
+    BookingController,
   ], // Todos los controladores
   providers: [
     UserService,
@@ -53,6 +76,7 @@ import {
     StopService,
     ImageTourService,
     AvailabilityService,
+    BookingService,
   ], // Todos los servicios
   exports: [UserService],
 })

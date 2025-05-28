@@ -335,8 +335,14 @@ export class BookingService {
     const nonAvailableDate = tour.nonAvailableDates.find(
       (d) => d.date === booking.date && d.hours.includes(booking.hour),
     );
-    if (!nonAvailableDate) throw new NotFoundException('Fecha u no disponible');
-
+    console.log(
+      'nonAvailableDates',
+      tour.nonAvailableDates,
+      'bookings:',
+      booking,
+    );
+    if (nonAvailableDate)
+      throw new NotFoundException('Fecha u hora no disponible');
     return this.bookingModel.create(booking);
   }
 

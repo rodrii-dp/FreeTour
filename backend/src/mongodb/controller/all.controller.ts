@@ -16,6 +16,7 @@ import {
   CategoryService,
   StopService,
   AvailabilityService,
+  BookingService,
 } from '../services/all.service';
 
 import {
@@ -26,6 +27,7 @@ import {
   Category,
   Stop,
   Availability,
+  Booking,
 } from '../schemas/all.schema';
 
 // USER
@@ -237,5 +239,45 @@ export class AvailabilityController {
   @Get()
   findAll() {
     return this.availabilityService.findAll();
+  }
+}
+
+@Controller('bookings')
+export class BookingController {
+  constructor(private readonly bookingService: BookingService) {}
+
+  @Post()
+  create(@Body() booking: Partial<Booking>) {
+    return this.bookingService.create(booking);
+  }
+
+  @Get()
+  findAll() {
+    return this.bookingService.findAll();
+  }
+
+  @Get(':id')
+  findById(@Param('id') id: string) {
+    return this.bookingService.findById(id);
+  }
+
+  @Get('user/:userId')
+  findByUserId(@Param('userId') userId: string) {
+    return this.bookingService.findByUserId(userId);
+  }
+
+  @Get('tour/:tourId')
+  findByTourId(@Param('tourId') tourId: string) {
+    return this.bookingService.findByTourId(tourId);
+  }
+
+  @Delete(':id')
+  cancelBooking(@Param('id') id: string) {
+    return this.bookingService.cancelBooking(id);
+  }
+
+  @Patch(':id')
+  updateBooking(@Param('id') id: string, @Body() update: Partial<Booking>) {
+    return this.bookingService.updateBooking(id, update);
   }
 }
