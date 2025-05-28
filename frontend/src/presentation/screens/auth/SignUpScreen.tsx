@@ -17,15 +17,20 @@ import {useFormValidation} from '../../hooks/useFormValidation.tsx';
 import {useFocus} from '../../hooks/useFocus.tsx';
 import {Text} from 'react-native-paper';
 import {CustomButton} from '../../components/common/CustomButton.tsx';
+import {
+  register,
+  RegisterData,
+} from '../../../infrastructure/api/authService.ts';
 
 const {height} = Dimensions.get('window');
 
 export const SignUpScreen = () => {
-  const {fields, error, handleInputChange, validateForm} = useFormValidation({
-    name: '',
-    email: '',
-    password: '',
-  });
+  const {fields, error, handleInputChange, validateForm} =
+    useFormValidation<RegisterData>({
+      name: '',
+      email: '',
+      password: '',
+    });
   const [showPassword, setShowPassword] = useState(false);
   const {focusedInput, handleFocus, handleBlur} = useFocus<
     'name' | 'email' | 'password'
@@ -33,9 +38,14 @@ export const SignUpScreen = () => {
 
   const navigation = useNavigation<NavigationProp<RootStackParams>>();
 
-  const handleSignUp = () => {
+  const handleSignUp = async () => {
     if (validateForm()) {
-      navigation.navigate('SignupSuccess');
+      try {
+        await register(fields);
+        navigation.navigate('SignupSuccess');
+      } catch (error) {
+        console.error(error);
+      }
     }
   };
 

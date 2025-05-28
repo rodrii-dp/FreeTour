@@ -5,11 +5,13 @@ type InputFields = {
   [key: string]: string;
 };
 
-export const useFormValidation = (initialFields: InputFields) => {
-  const [fields, setFields] = useState(initialFields);
+export const useFormValidation = <T extends Record<string, any>>(
+  initialFields: InputFields,
+) => {
+  const [fields, setFields] = useState<T>(initialFields);
   const [error, setError] = useState('');
 
-  const handleInputChange = (field: string, value: string) => {
+  const handleInputChange = (field: keyof T, value: string) => {
     setFields(prev => ({...prev, [field]: value}));
   };
 

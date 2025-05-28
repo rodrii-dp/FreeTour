@@ -19,6 +19,9 @@ export class User {
 
   @Prop({ enum: ['cliente', 'proveedor'], required: true })
   role: 'cliente' | 'proveedor';
+
+  @Prop({ default: false })
+  verified: boolean;
 }
 export const UserSchema = SchemaFactory.createForClass(User);
 

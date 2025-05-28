@@ -18,6 +18,7 @@ import {ServiceButton} from './ServiceButton';
 import {HeroSlider} from '../../components/common/HeroSlider.tsx';
 import {tourService} from '../../../infrastructure/api/tourService.ts';
 import {apiClient} from '../../../infrastructure/api/apiClient.ts';
+import {useUser} from '../../context/UserContext.tsx';
 
 export const HomeScreen = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -28,10 +29,12 @@ export const HomeScreen = () => {
   const [categoryTours, setCategoryTours] = useState<Tour[]>([]);
   const [loadingCategoryTours, setLoadingCategoryTours] = useState(false);
 
+  const {user, isLoading: isUserLoading} = useUser();
   const tours = useToursStore(state => state.tours);
   const setTours = useToursStore(state => state.setTours);
 
   const navigation = useNavigation<NavigationProp<HomeStackParamList>>();
+  console.log(user);
 
   // Define the hero slides data
   const heroSlides = [
@@ -246,6 +249,7 @@ export const HomeScreen = () => {
         </View>
 
         <View style={styles.section}>
+          <Text>¡Hola, {user?.name}!</Text>
           <Text style={styles.sectionTitle}>Experiencias culturales</Text>
           <ScrollView horizontal showsHorizontalScrollIndicator={false}>
             {tours.map(tour => (

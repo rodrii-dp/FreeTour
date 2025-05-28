@@ -20,6 +20,7 @@ import {
   Availability,
   AvailabilityDocument,
   Booking,
+  BookingDocument,
 } from '../schemas/all.schema.js';
 
 @Injectable()
@@ -317,7 +318,7 @@ export class AvailabilityService {
 @Injectable()
 export class BookingService {
   constructor(
-    @InjectModel('Booking') private bookingModel: Model<any>, // Replace 'any' with BookingDocument when defined
+    @InjectModel('Booking') private bookingModel: Model<BookingDocument>, // Replace 'any' with BookingDocument when defined
   ) {}
 
   async create(booking: Partial<Booking>): Promise<Booking> {

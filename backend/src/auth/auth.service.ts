@@ -16,55 +16,91 @@ export class AuthService {
     private mailService: MailService,
   ) {}
 
-  // 1. Enviar email de verificación
+  // Registro de usuario
+  async register(data: any) {
+    const { email, name, password, role = 'cliente' } = data;
+    const existing = await this.userService.findByEmail(email);
+    if (existing) throw new BadRequestException('Ya registrado');
 
-  async sendVerificationEmail(email: string, name: string, password: string, role = 'cliente') {
-    const token = this.jwtService.sign(
-      { email, name, password, role },
-      { expiresIn: '10m' },
+    // const hashedPassword = await bcrypt.hash(password, 10);
+    const user = await this.userService.create({
+      email,
+      name,
+      password,
+      role,
+      verified: false,
+    });
+
+    const verifyToken = this.jwtService.sign(
+      { sub: user._id, email: user.email },
+      { expiresIn: '1d' },
     );
-    const url = `http://localhost:3000/auth/verify-email?token=${token}`;
-  
-    await this.mailService.sendVerificationEmail(email, url);
-    return { message: 'Correo de verificación enviado' };
-  }  
+    const verifyUrl = `http://localhost:3000/auth/verify?token=${verifyToken}`;
+    await this.mailService.sendVerificationEmail(user.email, verifyUrl);
 
-  // 2. Verificar el email desde el link
+    return {
+      message: 'Usuario registrado. Verifica tu correo para activar la cuenta.',
+      user: { ...user.toObject(), password: undefined },
+    };
+  }
+
   async verifyEmail(token: string) {
     try {
-      const decoded = this.jwtService.verify(token);
-      const existing = await this.userService.findByEmail(decoded.email);
-      if (existing) throw new BadRequestException('Ya registrado');
+      const payload = this.jwtService.verify(token);
+      const user = await this.userService.findByEmail(payload.email);
+      if (!user) throw new BadRequestException('Usuario no encontrado');
+      if (user.verified) return { message: 'Ya verificado' };
 
-      const hashedPassword = await bcrypt.hash(decoded.password, 10);
-
-      const user = await this.userService.create({
-        email: decoded.email,
-        name: decoded.name,
-        password: hashedPassword,
-        role: decoded.role || 'cliente',
-      });
-
-      const plainUser = user.toObject();
-      delete plainUser.password;
-      return { message: 'Usuario verificado y registrado', user: plainUser };
-    } catch (err) {
-      throw new UnauthorizedException('Token inválido o expirado');
+      user.verified = true;
+      await user.save();
+      return { message: 'Cuenta verificada correctamente' };
+    } catch (e) {
+      throw new BadRequestException('Token inválido o expirado');
     }
   }
 
-  // 3. Login normal
+  // Login normal
   async login(data: any) {
     const { email, password } = data;
     const user = await this.userService.findByEmail(email);
-    if (!user) throw new UnauthorizedException('Credenciales inválidas');
+    if (!user) throw new UnauthorizedException('Usuario no encontrado');
+
+    if (!user.verified)
+      throw new UnauthorizedException(
+        'Verifica tu correo antes de iniciar sesión',
+      );
 
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) throw new UnauthorizedException('Credenciales inválidas');
 
-    const payload = { sub: user._id, email: user.email };
+    const payload = { sub: user._id, email: user.email, role: user.role };
     return {
-      access_token: this.jwtService.sign(payload),
+      access_token: this.jwtService.sign(payload, { expiresIn: '15m' }),
+      refresh_token: this.jwtService.sign(payload, { expiresIn: '7d' }),
+      user: { ...user.toObject(), password: undefined },
     };
+  }
+
+  async me(userPayload: any) {
+    const user = await this.userService.findByEmail(userPayload.email);
+    if (!user) throw new UnauthorizedException('Usuario no encontrado');
+    return { ...user.toObject(), password: undefined };
+  }
+
+  // Refrescar token
+  async refreshToken(refreshToken: string) {
+    try {
+      const decoded = this.jwtService.verify(refreshToken);
+      const user = await this.userService.findByEmail(decoded.email);
+      if (!user) throw new UnauthorizedException('Usuario no encontrado');
+
+      const payload = { sub: user._id, email: user.email, role: user.role };
+      return {
+        access_token: this.jwtService.sign(payload, { expiresIn: '15m' }),
+        refresh_token: this.jwtService.sign(payload, { expiresIn: '7d' }),
+      };
+    } catch (err) {
+      throw new UnauthorizedException('Refresh token inválido o expirado');
+    }
   }
 }

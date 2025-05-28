@@ -1,6 +1,13 @@
-import React, {PropsWithChildren} from 'react';
-import {createContext, useContext, useState, useEffect} from 'react';
+import React, {
+  PropsWithChildren,
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+} from 'react';
 import type {User} from '../../domain/entities/tour';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {apiClient} from '../../infrastructure/api/apiClient';
 
 interface UserContextType {
   user: User | null;
@@ -8,50 +15,64 @@ interface UserContextType {
   error: string | null;
   updateUser: (userData: Partial<User>) => Promise<void>;
   deleteAccount: () => Promise<void>;
+  setUser: (user: User | null) => void;
 }
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
 
-const User: User = {
-  id: '1',
-  name: 'Rodrigo',
-  email: 'rrddppl@gmail.com',
-  password: 'Marmota123?',
-  role: 'cliente',
-};
-
 export const UserProvider = ({children}: PropsWithChildren) => {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUserState] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    // TODO: Reemplazar por llamada a API y obtención de token
-    const timer = setTimeout(() => {
-      setUser(User);
-      setIsLoading(false);
-    }, 1000);
+    const autoLogin = async () => {
+      setIsLoading(true);
+      const refreshToken = await AsyncStorage.getItem('refresh_token');
+      if (refreshToken) {
+        try {
+          const {data} = await apiClient.post('/auth/refresh', {
+            refresh_token: refreshToken,
+          });
+          await AsyncStorage.setItem('access_token', data.access_token);
 
-    return () => clearTimeout(timer);
+          const userRes = await apiClient.get('/auth/me', {
+            headers: {Authorization: `Bearer ${data.access_token}`},
+          });
+          setUserState(userRes.data);
+        } catch (e) {
+          await AsyncStorage.removeItem('access_token');
+          await AsyncStorage.removeItem('refresh_token');
+          setUserState(null);
+        }
+      }
+      setIsLoading(false);
+    };
+    autoLogin();
   }, []);
 
   const updateUser = async (userData: Partial<User>) => {
     setIsLoading(true);
     await new Promise(resolve => setTimeout(resolve, 1000));
-    setUser(prevUser => ({...prevUser!, ...userData}));
+    setUserState(prevUser => ({...prevUser!, ...userData}));
     setIsLoading(false);
   };
 
   const deleteAccount = async () => {
     setIsLoading(true);
     await new Promise(resolve => setTimeout(resolve, 1000));
-    setUser(null);
+    setUserState(null);
     setIsLoading(false);
+  };
+
+  // Exponemos setUser para poder actualizar el usuario desde fuera
+  const setUser = (user: User | null) => {
+    setUserState(user);
   };
 
   return (
     <UserContext.Provider
-      value={{user, isLoading, error, updateUser, deleteAccount}}>
+      value={{user, isLoading, error, updateUser, deleteAccount, setUser}}>
       {children}
     </UserContext.Provider>
   );
