@@ -320,7 +320,7 @@ export class AvailabilityService {
 export class BookingService {
   constructor(
     @InjectModel('Booking') private bookingModel: Model<BookingDocument>,
-    private mailService: MailService,
+    private readonly mailService: MailService
   ) {}
 
   async create(booking: Partial<Booking>): Promise<Booking> {
