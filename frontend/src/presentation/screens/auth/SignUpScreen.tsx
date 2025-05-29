@@ -121,7 +121,7 @@ export const SignUpScreen = () => {
 
         <SeparatorWithText text="o" />
 
-        <Pressable
+        {/*<Pressable
           style={[globalStyles.googleButton, {marginTop: 30}]}
           onPress={() => console.log('Pressed')}>
           <View style={globalStyles.googleButtonContent}>
@@ -130,14 +130,14 @@ export const SignUpScreen = () => {
               Continuar con Google
             </Text>
           </View>
-        </Pressable>
+        </Pressable>*/}
 
         {/* Spaced footer that should always be visible */}
         <View
           style={[
             globalStyles.footer,
             {
-              marginTop: 'auto', // Push to bottom of available space
+              marginTop: 'auto',
               marginBottom: 20,
               paddingBottom: 10,
             },

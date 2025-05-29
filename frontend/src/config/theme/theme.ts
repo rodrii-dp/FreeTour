@@ -66,7 +66,7 @@ export const globalStyles = StyleSheet.create({
     color: '#4c5667',
     marginVertical: 10,
   },
-  googleButton: {
+  /*googleButton: {
     backgroundColor: '#e4e7ec',
     borderWidth: 1,
     borderColor: '#ddd',
@@ -78,7 +78,7 @@ export const globalStyles = StyleSheet.create({
   googleButtonContent: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-  },
+  },*/
   googleButtonText: {
     fontSize: 16,
     color: '#444',

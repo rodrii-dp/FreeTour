@@ -112,7 +112,7 @@ export const SignInScreen = () => {
 
           <SeparatorWithText text="o iniciar sesión con" />
 
-          <Pressable
+          {/*<Pressable
             style={globalStyles.googleButton}
             onPress={() => console.log('Pressed')}>
             <View style={globalStyles.googleButtonContent}>
@@ -121,7 +121,7 @@ export const SignInScreen = () => {
                 Continuar con Google
               </Text>
             </View>
-          </Pressable>
+          </Pressable>*/}
           <Pressable
             style={{
               alignSelf: 'center',
