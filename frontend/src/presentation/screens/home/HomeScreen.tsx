@@ -237,7 +237,7 @@ export const HomeScreen = () => {
           <Text style={styles.sectionTitle}>Experiencias culturales</Text>
           <ScrollView horizontal showsHorizontalScrollIndicator={false}>
             {tours.map(tour => (
-              <TourCard key={tour.id} tour={tour} onPress={handleTourPress} />
+              <TourCard key={tour._id} tour={tour} onPress={handleTourPress} />
             ))}
           </ScrollView>
         </View>
@@ -278,7 +278,7 @@ export const HomeScreen = () => {
               {categoryTours.length > 0 ? (
                 categoryTours.map(tour => (
                   <TourCard
-                    key={tour.id}
+                    key={tour._id}
                     tour={tour}
                     onPress={handleTourPress}
                   />
