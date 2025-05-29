@@ -34,34 +34,7 @@ export const HomeScreen = () => {
   const setTours = useToursStore(state => state.setTours);
 
   const navigation = useNavigation<NavigationProp<HomeStackParamList>>();
-  console.log(user);
 
-  // Define the hero slides data
-  const heroSlides = [
-    {
-      id: '1',
-      tourId: '2',
-      imageUrl: require('../../assets/varenna.png'),
-      title: 'Vive experiencias\núnicas en lugares\nmágicos',
-      subtitle: 'Conoce la belleza de Verenna',
-    },
-    {
-      id: '2',
-      tourId: '1',
-      imageUrl: require('../../assets/lago_di_braies.png'),
-      title: 'Descubre paisajes\nimpresionantes',
-      subtitle: 'Explora el Lago di Braies',
-    },
-    {
-      id: '3',
-      tourId: '2',
-      imageUrl: require('../../assets/italian-food.png'),
-      title: 'Saborea la auténtica\ncocina italiana',
-      subtitle: 'Tours gastronómicos',
-    },
-  ];
-
-  // Function to check if a category has tours
   const checkCategoryHasTours = async (
     categoryName: string,
   ): Promise<boolean> => {
@@ -120,6 +93,17 @@ export const HomeScreen = () => {
     };
     fetchData();
   }, [setTours]);
+
+  const heroSlides = tours.map(tour => ({
+    id: tour._id,
+    tourId: tour._id,
+    imageUrl:
+      tour.images && tour.images[0]?.imageUrl
+        ? {uri: tour.images[0].imageUrl}
+        : require('../../assets/no_image.png'),
+    title: tour.title,
+    subtitle: tour.location?.name || '',
+  }));
 
   useEffect(() => {
     const fetchCategories = async () => {
