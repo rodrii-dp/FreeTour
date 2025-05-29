@@ -3,12 +3,13 @@ import {View, Pressable} from 'react-native';
 import {BackArrowButton} from '../../components/common/BackArrowButton.tsx';
 import {globalStyles} from '../../../config/theme/theme.ts';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
-import {RootStackParams} from '../../navigator/Navigator.tsx';
+import {RootStackParams} from '../../navigation/Navigator.tsx';
 import {Message} from '../../components/common/Message.tsx';
 import {Input} from '../../components/common/Input.tsx';
 import {useFormValidation} from '../../hooks/useFormValidation.tsx';
 import {useFocus} from '../../hooks/useFocus.tsx';
 import {Text} from 'react-native-paper';
+import {CustomButton} from '../../components/common/CustomButton.tsx';
 
 export const ForgotPasswordScreen = () => {
   const navigation = useNavigation<NavigationProp<RootStackParams>>();
@@ -51,17 +52,18 @@ export const ForgotPasswordScreen = () => {
         isFocused={focusedInput === 'email'}
         onFocus={() => handleFocus('email')}
         onBlur={handleBlur}
+        keyboardType="email-address"
       />
-      <Pressable style={globalStyles.button} onPress={handleResetPassword}>
-        <Text
-          variant="bodyLarge"
-          style={{
-            color: '#fefeff',
-            fontWeight: '500',
-          }}>
-          Restablecer contraseña
-        </Text>
-      </Pressable>
+
+      <CustomButton
+        style={globalStyles.button}
+        onPress={handleResetPassword}
+        text="Restablecer contraseña"
+        textStyle={{
+          color: '#fefeff',
+          fontWeight: '500',
+        }}
+      />
 
       <Pressable
         style={{
@@ -72,7 +74,7 @@ export const ForgotPasswordScreen = () => {
         onPress={() => navigation.navigate('Signup')}>
         <Text
           variant="bodyLarge"
-          style={{color: '#2f4eff', textAlign: 'center', fontWeight: 'bold'}}>
+          style={{color: '#FF5A5F', textAlign: 'center', fontWeight: 'bold'}}>
           Crear cuenta
         </Text>
       </Pressable>

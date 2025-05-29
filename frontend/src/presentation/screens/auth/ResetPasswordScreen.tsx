@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {View, Pressable} from 'react-native';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
-import {RootStackParams} from '../../navigator/Navigator.tsx';
+import {RootStackParams} from '../../navigation/Navigator.tsx';
 import {globalStyles} from '../../../config/theme/theme.ts';
 import {BackArrowButton} from '../../components/common/BackArrowButton.tsx';
 import {Message} from '../../components/common/Message.tsx';
@@ -9,6 +9,7 @@ import {Input} from '../../components/common/Input.tsx';
 import {useFormValidation} from '../../hooks/useFormValidation.tsx';
 import {useFocus} from '../../hooks/useFocus.tsx';
 import {Text} from 'react-native-paper';
+import {CustomButton} from '../../components/common/CustomButton.tsx';
 
 export const ResetPasswordScreen = () => {
   const {fields, error, handleInputChange, validatePasswords} =
@@ -80,9 +81,12 @@ export const ResetPasswordScreen = () => {
         }
       />
 
-      <Pressable style={globalStyles.button} onPress={handleResetPassword}>
-        <Text style={globalStyles.buttonText}>Reestablecer contraseña</Text>
-      </Pressable>
+      <CustomButton
+        text="Restablecer contraseña"
+        textStyle={globalStyles.buttonText}
+        style={globalStyles.button}
+        onPress={handleResetPassword}
+      />
 
       {error && <Message error={error} />}
 

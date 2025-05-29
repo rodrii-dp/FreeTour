@@ -1,8 +1,8 @@
 import React from 'react';
 import {View, StyleSheet} from 'react-native';
+import {HelperText} from 'react-native-paper';
 import {globalStyles} from '../../../config/theme/theme.ts';
 import {GenericIcon} from '../../icons/GenericIcon.tsx';
-import {Text} from 'react-native-paper';
 
 interface Props {
   error: string | null;
@@ -17,21 +17,34 @@ export const Message = ({error, type = 'error', style = {}}: Props) => {
 
   const icon =
     type === 'error' ? (
-      <GenericIcon name="close-circle-outline" color="#E74C3C" style={style} />
+      <GenericIcon
+        name="close-circle-outline"
+        color="#E74C3C"
+        style={styles.icon}
+      />
     ) : type === 'warning' ? (
-      <GenericIcon name="alert-circle-outline" color="#E74C3C" style={style} />
+      <GenericIcon
+        name="alert-circle-outline"
+        color="#E67E22"
+        style={styles.icon}
+      />
     ) : (
       <GenericIcon
         name="information-circle-outline"
-        color="#E74C3C"
-        style={style}
+        color="#3498DB"
+        style={styles.icon}
       />
     );
 
   return (
     <View style={[styles.container, style]}>
-      <Text style={styles.icon}>{icon}</Text>
-      <Text style={globalStyles.error}>{error}</Text>
+      {icon}
+      <HelperText
+        type="error"
+        visible={!!error}
+        style={[styles.text, styles.boldText]}>
+        {error}
+      </HelperText>
     </View>
   );
 };
@@ -47,6 +60,11 @@ const styles = StyleSheet.create({
   },
   icon: {
     marginRight: 8,
-    color: '#ff4d4d',
+  },
+  text: {
+    flexShrink: 1,
+  },
+  boldText: {
+    fontWeight: '600',
   },
 });

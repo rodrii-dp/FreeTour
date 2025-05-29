@@ -48,12 +48,15 @@ export const Input = ({
     <View style={globalStyles.inputContainer}>
       {label && (
         <View style={styles.labelContainer}>
-          <Text style={globalStyles.label}>{label}</Text>
+          <Text variant="bodyLarge" style={globalStyles.label}>
+            {label}
+          </Text>
           {rightLabel && (
             <Pressable onPress={onPressRightLabel}>
               <Text
+                variant="bodyLarge"
                 style={{
-                  color: '#2f4eff',
+                  color: '#FF5A5F',
                   textAlign: 'center',
                   fontWeight: 'bold',
                 }}>
