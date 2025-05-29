@@ -371,7 +371,7 @@ export class BookingService {
     if (!Types.ObjectId.isValid(userId)) {
       throw new NotFoundException('ID de usuario inválido');
     }
-    return this.bookingModel.find({ userId }).exec();
+    return this.bookingModel.find({ userId }).populate('tourId').exec();
   }
 
   async findByTourId(tourId: string): Promise<Booking[]> {

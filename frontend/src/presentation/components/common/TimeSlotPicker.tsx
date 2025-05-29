@@ -1,10 +1,9 @@
 import React from 'react';
 import {View, Text, StyleSheet} from 'react-native';
 import {Picker} from '@react-native-picker/picker';
-import type {Availability} from '../../../domain/entities/tour';
 
 interface TimeSlotPickerProps {
-  availableTimes: Availability[];
+  availableTimes: string[]; // Array de horas disponibles
   selectedDate: string;
   selectedTime: string;
   onTimeSelected: (time: string) => void;
@@ -16,11 +15,6 @@ export const TimeSlotPicker = ({
   selectedTime,
   onTimeSelected,
 }: TimeSlotPickerProps) => {
-  // Filter times for selected date
-  const timesForDate = availableTimes.filter(
-    slot => slot.date === selectedDate,
-  );
-
   return (
     <View style={styles.container}>
       <Text style={styles.label}>Horarios disponibles</Text>
@@ -29,12 +23,8 @@ export const TimeSlotPicker = ({
           selectedValue={selectedTime}
           onValueChange={itemValue => onTimeSelected(itemValue)}
           style={styles.picker}>
-          {timesForDate.map((slot, index) => (
-            <Picker.Item
-              key={slot.hours[index]}
-              label={slot.hours[index]}
-              value={slot.hours[index]}
-            />
+          {availableTimes.map((hour, index) => (
+            <Picker.Item key={hour + index} label={hour} value={hour} />
           ))}
         </Picker>
       </View>

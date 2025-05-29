@@ -4,6 +4,7 @@ import {SettingRow} from './SettingRow.tsx';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {SettingsStackParamList} from '../../navigation/SettingsStackNavigator.tsx';
 import {RootStackParams} from '../../navigation/Navigator.tsx';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export const MenuSection = () => {
   // Navegación dentro del stack de ajustes
@@ -12,6 +13,12 @@ export const MenuSection = () => {
 
   // Navegación en el stack raíz
   const rootNavigation = useNavigation<NavigationProp<RootStackParams>>();
+
+  const logout = async () => {
+    await AsyncStorage.removeItem('access_token');
+    await AsyncStorage.removeItem('refresh_token');
+    rootNavigation.navigate('Signin');
+  };
 
   return (
     <ScrollView style={styles.container}>
@@ -34,11 +41,7 @@ export const MenuSection = () => {
 
       <Text style={styles.sectionHeader}>Comentarios</Text>
       <SettingRow title="Deja una valoración" onPress={() => {}} />
-      <SettingRow
-        title="Cerrar sesión"
-        onPress={() => rootNavigation.navigate('Signin')} // Navegación en el stack raíz
-        red
-      />
+      <SettingRow title="Cerrar sesión" onPress={logout} red />
     </ScrollView>
   );
 };
