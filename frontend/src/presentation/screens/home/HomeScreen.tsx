@@ -4,31 +4,84 @@ import {
   ScrollView,
   Text,
   StyleSheet,
-  ImageBackground,
   SafeAreaView,
   ActivityIndicator,
+  Dimensions,
 } from 'react-native';
-import YellowUnderline from '../../assets/yellow-underline.svg';
+import {IconButton, Searchbar} from 'react-native-paper';
+import {NavigationProp, useNavigation} from '@react-navigation/native';
+import {Service, Tour} from '../../../domain/entities/tour';
+import {HomeStackParamList} from '../../navigation/HomeStackNavigator.tsx';
+import {useToursStore} from '../../stores/toursStore.tsx';
 import {TourCard} from './TourCard.tsx';
 import {ServiceButton} from './ServiceButton';
+<<<<<<< HEAD
 import {IconButton, Searchbar} from 'react-native-paper';
 import {Service, Tour} from '../../../domain/entities/tour';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {HomeStackParamList} from '../../navigator/HomeStackNavigator.tsx';
+=======
+import {HeroSlider} from '../../components/common/HeroSlider.tsx';
+import {tourService} from '../../../infrastructure/api/tourService.ts';
+import {apiClient} from '../../../infrastructure/api/apiClient.ts';
+import {useUser} from '../../context/UserContext.tsx';
+>>>>>>> develop
 
-// TODO: Cuando estén listos los esquemas de MongoDB, mostrar los tours que vienen de la API
 export const HomeScreen = () => {
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedService, setSelectedService] = useState<string | null>(null);
-  const [tours, setTours] = useState<Tour[]>([]);
-  const [services, setServices] = useState<Service[]>([]);
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [categories, setCategories] = useState<Service[]>([]);
+  const [categoriesWithTours, setCategoriesWithTours] = useState<Service[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [categoryTours, setCategoryTours] = useState<Tour[]>([]);
+  const [loadingCategoryTours, setLoadingCategoryTours] = useState(false);
+
+  const {user, isLoading: isUserLoading} = useUser();
+  const tours = useToursStore(state => state.tours);
+  const setTours = useToursStore(state => state.setTours);
 
   const navigation = useNavigation<NavigationProp<HomeStackParamList>>();
+
+  const checkCategoryHasTours = async (
+    categoryName: string,
+  ): Promise<boolean> => {
+    try {
+      const categoryToursResponse = await tourService.getTours({
+        category: categoryName.toLowerCase(),
+        limit: '1', // Just check if at least one tour exists
+      });
+
+      const toursData = Array.isArray(categoryToursResponse)
+        ? categoryToursResponse
+        : categoryToursResponse.data || [];
+
+      return toursData.length > 0;
+    } catch (error) {
+      console.error(
+        `Error checking tours for category ${categoryName}:`,
+        error,
+      );
+      return false;
+    }
+  };
+
+  const fetchPopularTours = async (category: string) => {
+    try {
+      const popularTours = await tourService.getTours({category, limit: '5'});
+      const toursData = Array.isArray(popularTours)
+        ? popularTours
+        : popularTours.data || [];
+      return toursData;
+    } catch (error) {
+      console.error(`Error fetching popular tours for ${category}:`, error);
+      return [];
+    }
+  };
 
   useEffect(() => {
     const fetchData = async () => {
       try {
+<<<<<<< HEAD
         setTours([
           {
             id: '1',
@@ -180,29 +233,18 @@ export const HomeScreen = () => {
             },
           },
         ]);
+=======
+        const toursResponse = await tourService.getTours({
+          onlyDiscounted: true,
+          limit: '3',
+        });
+        const toursData = Array.isArray(toursResponse)
+          ? toursResponse
+          : toursResponse.data || [];
+>>>>>>> develop
 
-        setServices([
-          {
-            id: '1',
-            name: 'Naturaleza',
-            icon: 'pine-tree',
-          },
-          {
-            id: '2',
-            name: 'Historia',
-            icon: 'castle',
-          },
-          {
-            id: '3',
-            name: 'Comida',
-            icon: 'silverware-fork-knife',
-          },
-          {
-            id: '4',
-            name: 'Aventura',
-            icon: 'parachute',
-          },
-        ]);
+        setTours(toursData);
+        setCategoryTours(toursData);
 
         setIsLoading(false);
       } catch (error) {
@@ -211,10 +253,108 @@ export const HomeScreen = () => {
       }
     };
     fetchData();
+  }, [setTours]);
+
+  const heroSlides = tours.map(tour => ({
+    id: tour._id,
+    tourId: tour._id,
+    imageUrl:
+      tour.images && tour.images[0]?.imageUrl
+        ? {uri: tour.images[0].imageUrl}
+        : require('../../assets/no_image.png'),
+    title: tour.title,
+    subtitle: tour.location?.name || '',
+  }));
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await apiClient.get('/categories');
+        console.log('Fetched categories:', response.data);
+
+        // Filter categories that have tours
+        const categoriesWithToursPromises = response.data.map(
+          async (category: Service) => {
+            const hasTours = await checkCategoryHasTours(category.name);
+            return hasTours ? category : null;
+          },
+        );
+
+        const categoriesResults = await Promise.all(
+          categoriesWithToursPromises,
+        );
+        const filteredCategories = categoriesResults.filter(
+          category => category !== null,
+        );
+
+        setCategories(response.data); // Keep all categories for reference
+        setCategoriesWithTours(filteredCategories); // Only categories with tours
+      } catch (error) {
+        console.error('Error fetching categories:', error);
+      }
+    };
+
+    fetchCategories();
   }, []);
+
+  const handleCategoryPress = async (
+    categoryId: string,
+    categoryName: string,
+  ) => {
+    setSelectedCategory(categoryId);
+    setLoadingCategoryTours(true);
+
+    try {
+      // Call the API to get tours for this specific category
+      const categoryToursResponse = await tourService.getTours({
+        category: categoryName.toLowerCase(),
+        limit: '10', // You can adjust this limit as needed
+      });
+
+      const toursData = Array.isArray(categoryToursResponse)
+        ? categoryToursResponse
+        : categoryToursResponse.data || [];
+
+      console.log(`Tours for category ${categoryName}:`, toursData);
+
+      // Update the categoryTours state with the filtered tours
+      setCategoryTours(toursData);
+    } catch (error) {
+      console.error('Error fetching category tours:', error);
+      // In case of error, show empty array or fallback to all tours
+      setCategoryTours([]);
+    } finally {
+      setLoadingCategoryTours(false);
+    }
+  };
+
+  // Function to reset category selection
+  const resetCategorySelection = () => {
+    setSelectedCategory(null);
+    setCategoryTours(tours); // Show all tours again
+  };
 
   const handleTourPress = (tour: Tour) => {
     navigation.navigate('TourDetails', {tour: tour});
+  };
+
+  const handleSearchSubmit = () => {
+    if (searchQuery.trim()) {
+      navigation.navigate('SearchResults', {query: searchQuery.trim()});
+    }
+  };
+
+  // Function to get the section title based on selected category
+  const getSectionTitle = () => {
+    if (selectedCategory && categoriesWithTours.length > 0) {
+      const category = categoriesWithTours.find(
+        cat => cat.id === selectedCategory,
+      );
+      return category
+        ? category.name.charAt(0).toUpperCase() + category.name.slice(1)
+        : 'Experiencias culturales';
+    }
+    return 'Experiencias culturales';
   };
 
   if (isLoading) {
@@ -229,77 +369,90 @@ export const HomeScreen = () => {
     <SafeAreaView style={{flex: 1}}>
       <ScrollView>
         <View style={styles.heroContainer}>
-          <ImageBackground
-            source={require('../../assets/varenna.png')}
-            style={styles.heroImage}
-            imageStyle={styles.backgroundImage}>
-            <View style={styles.searchContainer}>
-              <View style={styles.searchBarWrapper}>
-                <Searchbar
-                  placeholder="Encuentra tours"
-                  onChangeText={setSearchQuery}
-                  value={searchQuery}
-                  style={styles.searchBar}
-                  inputStyle={styles.searchInput}
-                  iconColor="#666"
-                  placeholderTextColor="#666"
-                />
-              </View>
-              <IconButton
-                icon="bell-outline"
+          <View style={styles.searchContainer}>
+            <View style={styles.searchBarWrapper}>
+              <Searchbar
+                placeholder="Encuentra tours"
+                onChangeText={setSearchQuery}
+                value={searchQuery}
+                onSubmitEditing={handleSearchSubmit}
+                style={styles.searchBar}
+                inputStyle={styles.searchInput}
                 iconColor="#666"
-                size={32}
-                onPress={() => {}}
-                style={styles.notificationButton}
+                placeholderTextColor="#666"
               />
             </View>
-            <View style={styles.heroContent}>
-              <Text style={styles.heroTitle}>
-                Vive experiencias{'\n'}únicas en lugares{'\n'}mágicos
-              </Text>
-              <YellowUnderline />
-              <Text style={styles.heroSubtitle}>
-                Conoce la belleza de Verenna
-              </Text>
-              <Text style={styles.heroMoreInfo}>Más información &rarr;</Text>
-            </View>
-          </ImageBackground>
+            <IconButton
+              icon="bell-outline"
+              iconColor="#666"
+              size={32}
+              onPress={() => {}}
+              style={styles.notificationButton}
+            />
+          </View>
+          <HeroSlider slides={heroSlides} tours={tours} />
         </View>
 
         <View style={styles.section}>
+          <Text>¡Hola, {user?.name}!</Text>
           <Text style={styles.sectionTitle}>Experiencias culturales</Text>
           <ScrollView horizontal showsHorizontalScrollIndicator={false}>
             {tours.map(tour => (
-              <TourCard key={tour.id} tour={tour} onPress={handleTourPress} />
+              <TourCard key={tour._id} tour={tour} onPress={handleTourPress} />
             ))}
           </ScrollView>
         </View>
 
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
-            <Text style={styles.sectionTitle}>Servicios</Text>
-            <Text style={styles.seeAll}>Ver todos</Text>
+            <Text style={styles.sectionTitle}>Categorías</Text>
           </View>
-          <View style={styles.servicesContainer}>
-            {services.map(service => (
+          <View style={styles.categoriesContainer}>
+            <ServiceButton
+              key="all"
+              icon="view-grid"
+              label="Todos"
+              onPress={resetCategorySelection}
+              isSelected={selectedCategory === null}
+            />
+            {categoriesWithTours.map(category => (
               <ServiceButton
-                key={service.id}
-                icon={service.icon}
-                label={service.name}
-                onPress={() => setSelectedService(service.id)}
-                isSelected={selectedService === service.id}
+                key={category.id}
+                icon={category.icon}
+                label={category.name[0].toUpperCase() + category.name.slice(1)}
+                onPress={() => handleCategoryPress(category.id, category.name)}
+                isSelected={selectedCategory === category.id}
               />
             ))}
           </View>
         </View>
 
         <View style={[styles.section, styles.lastSection]}>
-          <Text style={styles.sectionTitle}>Experiencias culturales</Text>
-          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-            {tours.map(tour => (
-              <TourCard key={tour.id} tour={tour} onPress={handleTourPress} />
-            ))}
-          </ScrollView>
+          <Text style={styles.sectionTitle}>{getSectionTitle()}</Text>
+          {loadingCategoryTours ? (
+            <View style={styles.categoryLoadingContainer}>
+              <ActivityIndicator size="small" color="#FF5A5F" />
+              <Text style={styles.loadingText}>Cargando tours...</Text>
+            </View>
+          ) : (
+            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+              {categoryTours.length > 0 ? (
+                categoryTours.map(tour => (
+                  <TourCard
+                    key={tour._id}
+                    tour={tour}
+                    onPress={handleTourPress}
+                  />
+                ))
+              ) : (
+                <View style={styles.emptyStateContainer}>
+                  <Text style={styles.emptyStateText}>
+                    No hay tours disponibles para esta categoría
+                  </Text>
+                </View>
+              )}
+            </ScrollView>
+          )}
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -311,17 +464,48 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
   },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  categoryLoadingContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 20,
+  },
+  loadingText: {
+    marginLeft: 10,
+    fontSize: 14,
+    color: '#666',
+  },
+  emptyStateContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+  },
+  emptyStateText: {
+    fontSize: 16,
+    color: '#666',
+    textAlign: 'center',
+  },
+  heroContainer: {
+    width: '100%',
+    marginBottom: 20,
+  },
   searchContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     padding: 15,
     gap: 10,
-  },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    zIndex: 10,
   },
   searchBarWrapper: {
     flex: 1,
@@ -337,41 +521,6 @@ const styles = StyleSheet.create({
   notificationButton: {
     margin: 0,
     backgroundColor: '#f8f8f8',
-  },
-  heroContainer: {
-    height: 300,
-    width: '100%',
-    marginBottom: 20,
-  },
-  heroImage: {
-    flex: 1,
-    width: '100%',
-    resizeMode: 'cover',
-    justifyContent: 'flex-end',
-  },
-  backgroundImage: {
-    width: '100%',
-    resizeMode: 'cover',
-  },
-  heroContent: {
-    padding: 20,
-    backgroundColor: 'transparent',
-  },
-  heroTitle: {
-    color: 'white',
-    fontSize: 28,
-    fontWeight: 'bold',
-    marginBottom: -5,
-  },
-  heroSubtitle: {
-    color: 'white',
-    fontSize: 16,
-    marginTop: 10,
-  },
-  heroMoreInfo: {
-    color: 'white',
-    fontSize: 14,
-    textDecorationLine: 'underline',
   },
   section: {
     padding: 15,
@@ -391,7 +540,7 @@ const styles = StyleSheet.create({
     color: '#FF5A5F',
     fontSize: 14,
   },
-  servicesContainer: {
+  categoriesContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
   },

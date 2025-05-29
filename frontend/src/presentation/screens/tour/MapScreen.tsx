@@ -10,17 +10,26 @@ const {width, height} = Dimensions.get('window');
 
 export const MapScreen = () => {
   const route = useRoute<MapRouteProp>();
-  const {stops} = route.params;
+  const {stops, meetingPoint} = route.params;
+
   const mapRef = useRef<MapView>(null);
   const [mapReady, setMapReady] = useState(false);
   const [key, setKey] = useState(0); // Key para forzar re-render
 
-  const initialRegion = {
-    latitude: stops[0].location.lat,
-    longitude: stops[0].location.lng,
-    latitudeDelta: 0.02,
-    longitudeDelta: 0.02,
-  };
+  const initialRegion =
+    stops && stops.length > 0
+      ? {
+          latitude: stops[0].location.lat,
+          longitude: stops[0].location.lng,
+          latitudeDelta: 0.02,
+          longitudeDelta: 0.02,
+        }
+      : {
+          latitude: 0,
+          longitude: 0,
+          latitudeDelta: 0.02,
+          longitudeDelta: 0.02,
+        };
 
   const fitMapToMarkers = useCallback(() => {
     if (mapRef.current && stops.length > 0) {
@@ -92,6 +101,19 @@ export const MapScreen = () => {
     );
   };
 
+<<<<<<< HEAD
+=======
+  if (!stops || stops.length === 0) {
+    return (
+      <View style={styles.container}>
+        <Text style={styles.title}>
+          No hay paradas disponibles para este tour.
+        </Text>
+      </View>
+    );
+  }
+
+>>>>>>> develop
   return (
     <View style={styles.container}>
       <MapView
@@ -107,6 +129,10 @@ export const MapScreen = () => {
 
       <ScrollView style={styles.stopsContainer}>
         <Text style={styles.title}>Itinerario del tour</Text>
+        <Text style={styles.meetingPoint}>
+          Punto de encuentro &rarr; {meetingPoint}
+        </Text>
+
         {stops.map((stop, index) => (
           <View key={`stop-${index}`} style={styles.stopItem}>
             <View style={styles.stopNumber}>
@@ -187,6 +213,15 @@ const styles = StyleSheet.create({
     color: '#2C3E50',
     marginBottom: 4,
   },
+<<<<<<< HEAD
+=======
+  meetingPoint: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#2C3E50',
+    marginBottom: 8,
+  },
+>>>>>>> develop
   stopAddress: {
     fontSize: 14,
     color: '#7F8C8D',

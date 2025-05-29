@@ -34,7 +34,7 @@ export interface Resena {
 }
 
 export interface User {
-  id: string;
+  _id?: string;
   name: string;
   email: string;
   password: string;
@@ -46,8 +46,13 @@ export interface ImageTour {
   imageUrl: string;
 }
 
+export interface Availability {
+  date: string;
+  hours: string[];
+}
+
 export interface Tour {
-  id: string;
+  _id: string;
   category: string;
   title: string;
   images: ImageTour[];
@@ -60,6 +65,13 @@ export interface Tour {
   price: {
     value: number;
     basedOnTips: boolean;
+    discount?: {
+      type: 'porcentaje' | 'valor';
+      amount: number; // Ej: 10 (10% o 10€ según el tipo)
+      description?: string;
+      validFrom?: string;
+      validTo?: string;
+    };
   };
   stops: Stop[];
   location: {
@@ -68,7 +80,7 @@ export interface Tour {
   };
   meetingPoint: string;
   availability: {
-    dateStart: Date;
-    dateEnd: Date;
+    dateStart: string; // Date;
+    dateEnd: string; // Date;
   };
 }

@@ -14,9 +14,17 @@ export type HomeStackParamList = {
 const Stack = createStackNavigator<HomeStackParamList>();
 
 export const HomeStackNavigator = () => (
-  <Stack.Navigator screenOptions={{headerShown: false}}>
-    <Stack.Screen name="Home" component={HomeScreen} />
-    <Stack.Screen name="TourDetails" component={TourDetailsScreen} />
-    <Stack.Screen name="Map" component={MapScreen} />
+  <Stack.Navigator>
+    <Stack.Screen
+      name="Home"
+      component={HomeScreen}
+      options={{headerShown: false}}
+    />
+    <Stack.Screen name="Map" component={MapScreen} options={{title: 'Mapa'}} />
+    <Stack.Screen
+      name="TourDetails"
+      component={TourDetailsScreen}
+      options={{title: 'Detalles del Tour'}}
+    />
   </Stack.Navigator>
 );

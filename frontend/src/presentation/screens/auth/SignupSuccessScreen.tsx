@@ -37,7 +37,7 @@ export const SignupSuccessScreen = () => {
             textAlign: 'center',
             fontSize: Math.min(width * 0.07, 28),
           }}>
-          ¡Felicidades!
+          ¡Ya casi hemos terminado!
         </Text>
         <Text
           style={{

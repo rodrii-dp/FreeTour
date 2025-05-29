@@ -1,13 +1,5 @@
-import React, {useEffect, useState} from 'react';
-import {
-  View,
-  Pressable,
-  KeyboardAvoidingView,
-  Platform,
-  ScrollView,
-  Keyboard,
-  Dimensions,
-} from 'react-native';
+import React, {useState} from 'react';
+import {View, Pressable, ScrollView, Dimensions} from 'react-native';
 import {globalStyles} from '../../../config/theme/theme.ts';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {RootStackParams} from '../../navigator/Navigator.tsx';
@@ -20,51 +12,53 @@ import {useFormValidation} from '../../hooks/useFormValidation.tsx';
 import {useFocus} from '../../hooks/useFocus.tsx';
 import {Text} from 'react-native-paper';
 import {CustomButton} from '../../components/common/CustomButton.tsx';
+import {login, LoginData} from '../../../infrastructure/api/authService.ts';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {useUser} from '../../context/UserContext.tsx';
 
 const {width} = Dimensions.get('window');
 
 export const SignInScreen = () => {
   const navigation = useNavigation<NavigationProp<RootStackParams>>();
 
-  const {fields, error, handleInputChange, validateForm} = useFormValidation({
-    email: '',
-    password: '',
-  });
+  const {fields, error, handleInputChange, validateForm} =
+    useFormValidation<LoginData>({
+      email: '',
+      password: '',
+    });
 
-  const [isKeyboardVisible, setIsKeyboardVisible] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [loginError, setLoginError] = useState<string | null>(null);
   const {focusedInput, handleFocus, handleBlur} = useFocus<
     'email' | 'password'
   >();
+
+  const {setUser} = useUser();
 
   const [isCheckedCheckbox, setIsCheckedCheckbox] = useState(false);
 
   const fontSize = width < 360 ? 16 : 18;
 
-  const handleSignIn = () => {
+  const handleSignIn = async () => {
     if (validateForm()) {
-      navigation.navigate('BottomTabs');
+      try {
+        setLoginError(null);
+        const res = await login(fields as LoginData);
+        await AsyncStorage.setItem('access_token', res.access_token);
+        await AsyncStorage.setItem('refresh_token', res.refresh_token);
+        setUser(res.user);
+        navigation.navigate('BottomTabs');
+      } catch (err: any) {
+        console.error('Error during login:', err);
+        setLoginError(
+          err?.response?.data?.message || 'Error al iniciar sesión',
+        );
+      }
     }
   };
 
-  useEffect(() => {
-    const showSubscription = Keyboard.addListener('keyboardDidShow', () => {
-      setIsKeyboardVisible(true);
-    });
-    const hideSubscription = Keyboard.addListener('keyboardDidHide', () => {
-      setIsKeyboardVisible(false);
-    });
-
-    return () => {
-      showSubscription.remove();
-      hideSubscription.remove();
-    };
-  }, []);
-
   return (
-    <KeyboardAvoidingView
-      style={{flex: 1}}
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+    <View style={{flex: 1}}>
       <ScrollView
         contentContainerStyle={{flexGrow: 1}}
         keyboardShouldPersistTaps="handled">
@@ -118,7 +112,7 @@ export const SignInScreen = () => {
 
           <SeparatorWithText text="o iniciar sesión con" />
 
-          <Pressable
+          {/*<Pressable
             style={globalStyles.googleButton}
             onPress={() => console.log('Pressed')}>
             <View style={globalStyles.googleButtonContent}>
@@ -127,13 +121,12 @@ export const SignInScreen = () => {
                 Continuar con Google
               </Text>
             </View>
-          </Pressable>
+          </Pressable>*/}
           <Pressable
             style={{
               alignSelf: 'center',
-              ...(isKeyboardVisible
-                ? {marginBottom: 20}
-                : {position: 'absolute', bottom: 50}),
+              position: 'absolute',
+              bottom: 50,
             }}
             onPress={() => navigation.navigate('Signup')}>
             <Text
@@ -148,8 +141,9 @@ export const SignInScreen = () => {
           </Pressable>
 
           {error && <Message error={error} />}
+          {loginError && <Message error={loginError} />}
         </View>
       </ScrollView>
-    </KeyboardAvoidingView>
+    </View>
   );
 };
