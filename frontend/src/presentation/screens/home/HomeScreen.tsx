@@ -233,7 +233,6 @@ export const HomeScreen = () => {
         </View>
 
         <View style={styles.section}>
-          <Text>¡Hola, {user?.name}!</Text>
           <Text style={styles.sectionTitle}>Experiencias culturales</Text>
           <ScrollView horizontal showsHorizontalScrollIndicator={false}>
             {tours.map(tour => (

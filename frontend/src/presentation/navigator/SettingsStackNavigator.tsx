@@ -3,12 +3,12 @@ import {createStackNavigator} from '@react-navigation/stack';
 import {ProfileDetailsScreen} from '../screens/profile/ProfileDetailsScreen.tsx';
 import {SettingsScreen} from '../screens/settings/SettingsScreen.tsx';
 
-export type SettingsStackParamList = {
+export type ProfileStackParamList = {
   Ajustes: undefined;
-  Perfil: undefined; // {tourId: string};
+  ProfileDetails: undefined; // {tourId: string};
 };
 
-const Stack = createStackNavigator<SettingsStackParamList>();
+const Stack = createStackNavigator<ProfileStackParamList>();
 
 export const SettingsStackNavigator = () => (
   <Stack.Navigator>
@@ -17,6 +17,6 @@ export const SettingsStackNavigator = () => (
       component={SettingsScreen}
       options={{headerLeft: () => null}}
     />
-    <Stack.Screen name="Perfil" component={ProfileDetailsScreen} />
+    <Stack.Screen name="ProfileDetails" component={ProfileDetailsScreen} />
   </Stack.Navigator>
 );
