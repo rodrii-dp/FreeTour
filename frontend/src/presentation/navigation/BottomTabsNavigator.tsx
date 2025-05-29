@@ -1,7 +1,7 @@
 import React from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {FavoritesScreen} from '../screens/favorites/FavoritesScreen.tsx';
-import {ReservationsScreen} from '../screens/reservations/ReservationsScreen.tsx';
+import {BookingsScreen} from '../screens/reservations/BookingsScreen.tsx';
 import {GenericIcon} from '../icons/GenericIcon.tsx';
 import {HomeStackNavigator} from './HomeStackNavigator.tsx';
 import {SettingsStackNavigator} from './SettingsStackNavigator.tsx';
@@ -41,7 +41,7 @@ export const BottomTabsNavigator = () => {
             <GenericIcon name="ticket-outline" color={color} />
           ),
         }}
-        component={ReservationsScreen}
+        component={BookingsScreen}
       />
       <Tab.Screen
         name="Settings"

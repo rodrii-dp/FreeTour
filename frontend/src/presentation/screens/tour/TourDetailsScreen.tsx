@@ -46,12 +46,12 @@ export const TourDetailsScreen = ({route}: Props) => {
   }, [loadFavorites]);
 
   const isFavorite = favoriteTours.some(
-    favoriteTour => favoriteTour.id === tour.id,
+    favoriteTour => favoriteTour._id === tour._id,
   );
 
   const handleToggleFavorite = useCallback(() => {
     if (isFavorite) {
-      removeFavorite(tour.id);
+      removeFavorite(tour._id);
     } else {
       addFavorite(tour);
     }

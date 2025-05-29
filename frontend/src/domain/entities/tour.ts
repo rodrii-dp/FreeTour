@@ -34,7 +34,7 @@ export interface Review {
 }
 
 export interface User {
-  id?: string;
+  _id?: string;
   name: string;
   email: string;
   password: string;
@@ -52,7 +52,7 @@ export interface Availability {
 }
 
 export interface Tour {
-  id: string;
+  _id: string;
   category: string;
   title: string;
   images: ImageTour[];

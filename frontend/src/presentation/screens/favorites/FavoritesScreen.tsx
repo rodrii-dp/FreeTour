@@ -1,23 +1,35 @@
 import React from 'react';
-import {View, Text, FlatList, StyleSheet, Image} from 'react-native';
+import {View, Text, FlatList, StyleSheet, Image, Pressable} from 'react-native';
 import {useFavoritesStore} from '../../stores/favoritesStore';
 import {Tour} from '../../../domain/entities/tour.ts';
+import {NavigationProp, useNavigation} from '@react-navigation/native';
+import {HomeStackParamList} from '../../navigation/HomeStackNavigator.tsx';
 
 export const FavoritesScreen = () => {
   const {favoriteTours} = useFavoritesStore();
+  const navigation = useNavigation<NavigationProp<HomeStackParamList>>();
 
   const renderFavoriteItem = ({item}: {item: Tour}) => (
-    <View style={styles.itemContainer}>
+    <Pressable
+      style={styles.itemContainer}
+      onPress={() => navigation.navigate('TourDetails', {tour: item})}>
       <Image
-        source={{uri: item.images[0]?.imageUrl}}
+        source={
+          item.images && item.images[0]?.imageUrl
+            ? {uri: item.images[0].imageUrl}
+            : require('../../assets/no_image.png')
+        }
         style={styles.image}
-        defaultSource={require('../../assets/no_image.png')}
       />
       <View style={styles.infoContainer}>
         <Text style={styles.title}>{item.title}</Text>
-        <Text style={styles.provider}>Proveedor: {item.provider.name}</Text>
+        <Text style={styles.provider}>
+          {item.provider.name
+            ? item.provider.name
+            : 'Información del proveedor no disponible'}
+        </Text>
       </View>
-    </View>
+    </Pressable>
   );
 
   return (
@@ -25,7 +37,7 @@ export const FavoritesScreen = () => {
       {favoriteTours.length > 0 ? (
         <FlatList
           data={favoriteTours}
-          keyExtractor={item => item.id}
+          keyExtractor={item => item._id}
           renderItem={renderFavoriteItem}
         />
       ) : (

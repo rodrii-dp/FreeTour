@@ -6,12 +6,14 @@ import {
   ScrollView,
   Pressable,
   SafeAreaView,
+  Alert,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import {useNavigation} from '@react-navigation/native';
 import type {Tour} from '../../../domain/entities/tour';
 import {ParticipantsModal} from '../../components/common/ParticipantsModal.tsx';
 import {TimeSlotPicker} from '../../components/common/TimeSlotPicker.tsx';
+import {useUser} from '../../context/UserContext.tsx';
+import {bookingService} from '../../../infrastructure/api/bookingService.ts';
 
 interface Props {
   route: {
@@ -24,7 +26,7 @@ interface Props {
 
 export const CheckoutScreen = ({route}: Props) => {
   const {tour, selectedDate} = route.params;
-  const navigation = useNavigation();
+  // const navigation = useNavigation<NavigationProp<HomeStackParamList>>();
 
   const [participantsModalVisible, setParticipantsModalVisible] =
     useState(false);
@@ -37,6 +39,8 @@ export const CheckoutScreen = ({route}: Props) => {
   const [selectedTime, setSelectedTime] = useState(
     tour.nonAvailableDates[0]?.hours[0] || '',
   );
+
+  const {user} = useUser();
 
   const formattedDate = new Date(selectedDate).toLocaleDateString('es-ES', {
     day: 'numeric',
@@ -81,6 +85,49 @@ export const CheckoutScreen = ({route}: Props) => {
     return participants.reduce((total, participant) => {
       return total + participant.count * pricePerPerson;
     }, 0);
+  };
+
+  const allPossibleHours = [
+    '10:00',
+    '11:00',
+    '12:00',
+    '13:00',
+    '14:00',
+    '15:00',
+    '16:00',
+    '17:00',
+    '18:00',
+    '19:00',
+    '20:00',
+  ];
+
+  const nonAvailable =
+    tour.nonAvailableDates.find(date => date.date === selectedDate)?.hours ||
+    [];
+
+  const availableTimes = allPossibleHours.filter(
+    hour => !nonAvailable.includes(hour),
+  );
+
+  const handleCheckout = async () => {
+    if (!user) {
+      Alert.alert('Debes iniciar sesión para reservar');
+      return;
+    }
+    try {
+      // console.log('TANIA', tour);
+      await bookingService.createBooking({
+        userId: user._id,
+        tourId: tour._id,
+        date: selectedDate,
+        hour: selectedTime,
+        people: participants.reduce((sum, p) => sum + p.count, 0),
+      });
+      Alert.alert('Reserva realizada con éxito');
+      // navigation.navigate('Checkout');
+    } catch (e) {
+      Alert.alert('Error al reservar', e?.message || 'Intenta de nuevo');
+    }
   };
 
   return (
@@ -161,7 +208,7 @@ export const CheckoutScreen = ({route}: Props) => {
                 })}
               </Text>
               <TimeSlotPicker
-                availableTimes={tour.nonAvailableDates}
+                availableTimes={availableTimes}
                 selectedDate={selectedDate}
                 selectedTime={selectedTime}
                 onTimeSelected={setSelectedTime}
@@ -242,7 +289,7 @@ export const CheckoutScreen = ({route}: Props) => {
             </Text>
           </View>
         </View>
-        <Pressable style={styles.bookButton}>
+        <Pressable style={styles.bookButton} onPress={handleCheckout}>
           <Text style={styles.bookButtonText}>Reservar ahora</Text>
         </Pressable>
       </View>

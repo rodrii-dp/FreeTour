@@ -17,7 +17,7 @@ export const bookingService = {
     return response.data;
   },
 
-  getBookingsByUserId: async (userId: string) => {
+  getBookingsByUserId: async (userId: string | undefined) => {
     const response = await apiClient.get(`/bookings/user/${userId}`);
     return response.data;
   },
