@@ -6,12 +6,20 @@ import {
   StyleSheet,
   Image,
   ActivityIndicator,
-  TouchableOpacity,
+  Pressable,
 } from 'react-native';
 import {useUser} from '../../context/UserContext';
 import {bookingService} from '../../../infrastructure/api/bookingService';
 import {Tour} from '../../../domain/entities/tour';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import {
+  CompositeNavigationProp,
+  NavigationProp,
+  useNavigation,
+} from '@react-navigation/native';
+import {HomeStackParamList} from '../../navigator/HomeStackNavigator.tsx';
+import {BottomTabNavigationProp} from '@react-navigation/bottom-tabs';
+import {StackNavigationProp} from '@react-navigation/stack';
 
 // Tipo para las reservas
 interface Booking {
@@ -24,10 +32,15 @@ interface Booking {
   tour?: Tour; // Para cuando se popule el tour
 }
 
+type NavigationProps = CompositeNavigationProp<
+  BottomTabNavigationProp<any, 'Explore'>,
+  StackNavigationProp<HomeStackParamList>
+>;
 export const BookingsScreen = () => {
   const {user} = useUser();
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [loading, setLoading] = useState(true);
+  const navigation = useNavigation<NavigationProps>();
 
   useEffect(() => {
     const fetchBookings = async () => {
@@ -61,7 +74,16 @@ export const BookingsScreen = () => {
     const tour = (item.tourId as Tour) || ({} as Tour);
 
     return (
-      <TouchableOpacity style={styles.itemContainer}>
+      <Pressable
+        style={styles.itemContainer}
+        onPress={() => {
+          if (tour._id) {
+            navigation.navigate('Explore', {
+              screen: 'TourDetails',
+              params: {tour},
+            });
+          }
+        }}>
         <Image
           source={
             tour.images && tour.images[0]?.imageUrl
@@ -109,7 +131,7 @@ export const BookingsScreen = () => {
           color="#BDBDBD"
           style={styles.chevron}
         />
-      </TouchableOpacity>
+      </Pressable>
     );
   };
 
