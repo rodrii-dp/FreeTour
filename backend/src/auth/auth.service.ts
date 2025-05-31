@@ -35,7 +35,7 @@ export class AuthService {
       { sub: user._id, email: user.email },
       { expiresIn: '1d' },
     );
-    const verifyUrl = `http://localhost:3000/auth/verify?token=${verifyToken}`;
+    const verifyUrl = `https://hollow-lucretia-rodrigo-de-prat-9197ad55.koyeb.app/auth/verify?token=${verifyToken}`;
     await this.mailService.sendVerificationEmail(user.email, verifyUrl);
 
     return {
