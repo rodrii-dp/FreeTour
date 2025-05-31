@@ -7,6 +7,7 @@ import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { UserService } from '../mongodb/services/all.service';
 import { MailService } from './mail.service';
+import {isValidEmail, isValidPassword} from "./validations";
 
 @Injectable()
 export class AuthService {
@@ -19,41 +20,40 @@ export class AuthService {
   // Registro de usuario
   async register(data: any) {
     const { email, name, password, role = 'cliente' } = data;
+
+    if (!isValidEmail(email)) throw new BadRequestException('Email inválido');
+    if (!isValidPassword(password)) throw new BadRequestException('La contraseña debe tener al menos 8 caracteres, una mayúscula, una minúscula, un número y un carácter especial');
+
     const existing = await this.userService.findByEmail(email);
     if (existing) throw new BadRequestException('Ya registrado');
 
-    // const hashedPassword = await bcrypt.hash(password, 10);
-    const user = await this.userService.create({
-      email,
-      name,
-      password,
-      role,
-      verified: false,
-    });
-
     const verifyToken = this.jwtService.sign(
-      { sub: user._id, email: user.email },
+      { email, name, password, role },
       { expiresIn: '1d' },
     );
     const verifyUrl = `https://hollow-lucretia-rodrigo-de-prat-9197ad55.koyeb.app/auth/verify?token=${verifyToken}`;
-    await this.mailService.sendVerificationEmail(user.email, verifyUrl);
+    await this.mailService.sendVerificationEmail(email, verifyUrl);
 
     return {
-      message: 'Usuario registrado. Verifica tu correo para activar la cuenta.',
-      user: { ...user.toObject(), password: undefined },
+      message: 'Verifica tu correo para activar la cuenta.'
     };
   }
 
   async verifyEmail(token: string) {
     try {
       const payload = this.jwtService.verify(token);
-      const user = await this.userService.findByEmail(payload.email);
-      if (!user) throw new BadRequestException('Usuario no encontrado');
-      if (user.verified) return { message: 'Ya verificado' };
+      const {email, name, password, role} = payload;
+      const existing = await this.userService.findByEmail(email);
+      if (existing) return {message: 'Ya verificado'};
 
-      user.verified = true;
-      await user.save();
-      return { message: 'Cuenta verificada correctamente' };
+      const user = await this.userService.create({
+        email,
+        name,
+        password,
+        role,
+        verified: false,
+      });
+      return {message: 'Cuenta verificada correctamente'};
     } catch (e) {
       throw new BadRequestException('Token inválido o expirado');
     }
