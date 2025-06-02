@@ -46,7 +46,7 @@ export class AuthService {
       const existing = await this.userService.findByEmail(email);
       if (existing) {
         if (!existing.verified) {
-          await this.userService.update(existing._id, { verified: true });
+          await this.userService.update(existing._id.toString(), { verified: true });
           return { message: 'Cuenta verificada correctamente' };
         }
         return { message: 'Ya verificado' };

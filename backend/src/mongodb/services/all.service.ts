@@ -48,6 +48,10 @@ export class UserService {
   async delete(id: string) {
     return this.userModel.deleteOne({ _id: id });
   }
+
+  async update(id: string, data: Partial<User>) {
+    return this.userModel.findByIdAndUpdate(id, data, { new: true });
+  }
 }
 
 @Injectable()
