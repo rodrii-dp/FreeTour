@@ -42,18 +42,24 @@ export class AuthService {
   async verifyEmail(token: string) {
     try {
       const payload = this.jwtService.verify(token);
-      const {email, name, password, role} = payload;
+      const { email, name, password, role } = payload;
       const existing = await this.userService.findByEmail(email);
-      if (existing) return {message: 'Ya verificado'};
+      if (existing) {
+        if (!existing.verified) {
+          await this.userService.update(existing._id, { verified: true });
+          return { message: 'Cuenta verificada correctamente' };
+        }
+        return { message: 'Ya verificado' };
+      }
 
       const user = await this.userService.create({
         email,
         name,
         password,
         role,
-        verified: false,
+        verified: true,
       });
-      return {message: 'Cuenta verificada correctamente'};
+      return { message: 'Cuenta verificada correctamente' };
     } catch (e) {
       throw new BadRequestException('Token inválido o expirado');
     }
