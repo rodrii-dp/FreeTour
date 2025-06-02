@@ -328,6 +328,17 @@ export class BookingService {
       throw new NotFoundException('Faltan datos para la reserva');
     }
 
+    const existingBooking = await this.bookingModel.findOne({
+      userId: booking.userId,
+      tourId: booking.tourId,
+      date: booking.date,
+      hour: booking.hour,
+    })
+
+    if (existingBooking) {
+      throw new NotFoundException('Ya tienes una reserva para esta fecha y hora');
+    }
+
     const tour = await this.bookingModel.db
       .model('Tour')
       .findById(booking.tourId)

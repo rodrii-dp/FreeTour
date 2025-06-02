@@ -57,7 +57,13 @@ export const BookingsScreen = () => {
       }
       setLoading(false);
     };
-    fetchBookings();
+
+    const unsubscribe = navigation.addListener('focus', () => {
+      if (user) {
+        fetchBookings();
+      }
+    });
+    return unsubscribe;
   }, [user]);
 
   // Función para formatear la fecha
