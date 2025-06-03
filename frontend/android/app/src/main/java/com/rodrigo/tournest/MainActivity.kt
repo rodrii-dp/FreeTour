@@ -1,4 +1,4 @@
-package com.frontend
+package com.rodrigo.tournest
 
 import android.os.Bundle;
 

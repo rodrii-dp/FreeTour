@@ -67,7 +67,12 @@ export const Input = ({
         </View>
       )}
       <TextInput
-        style={[globalStyles.input, isFocused && styles.inputFocused, style]}
+        style={[
+          globalStyles.input,
+          isFocused && styles.inputFocused,
+          style,
+          {color: '#222'},
+        ]}
         placeholder={placeholder}
         placeholderTextColor="#aaa"
         value={value}
