@@ -150,7 +150,10 @@ export class TourController {
       provider: providerId,
     }
 
-    return this.tourService.create(tourWithProvider);
+    const createdTour = await this.tourService.create(tourWithProvider);
+    const createdTourId = (createdTour as any)._id || (createdTour as any).id;
+    await this.providerService.addTourToProvider(providerId, createdTourId);
+    return createdTour;
   }
 
   @Get('recent')

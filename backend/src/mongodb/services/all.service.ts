@@ -92,6 +92,14 @@ export class ProviderService {
   async delete(providerId: string): Promise<Provider | null> {
     return this.providerModel.findByIdAndDelete(providerId).exec();
   }
+
+  async addTourToProvider(providerId: string, tourId: string): Promise<Provider | null> {
+    return this.providerModel.findByIdAndUpdate(
+      providerId,
+      { $addToSet: { tours: tourId } },
+      { new: true }
+    ).exec();
+  }
 }
 
 @Injectable()
