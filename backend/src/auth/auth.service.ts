@@ -37,18 +37,6 @@ export class AuthService {
       verified: false,
     });
 
-    // Si es proveedor y hay providerData, crear el proveedor asociado
-    if (role === 'proveedor' && providerData) {
-      await this.providerService.create({
-        userId: user._id,
-        name: providerData.name,
-        direction: providerData.direction || '',
-        contact: providerData.contact || '',
-        tours: [],
-        verificationStatus: 'pendiente',
-      });
-    }
-
     // Enviar email de verificación
     const token = this.jwtService.sign({ email, name, password, role, providerData });
     const verificationUrl = `https://hollow-lucretia-rodrigo-de-prat-9197ad55.koyeb.app/auth/verify?token=${token}`;
