@@ -73,7 +73,7 @@ export class ProviderService {
   }
 
   async findByUserId(userId: string): Promise<Provider | null> {
-    return this.providerModel.findOne({ userId }).exec();
+    return this.providerModel.findOne({ userId: new Types.ObjectId(userId) }).exec();
   }
 
   async findAllByUserId(userId: string) {
