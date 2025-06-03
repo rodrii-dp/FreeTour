@@ -59,9 +59,12 @@ export class AuthService {
       if (existing) {
         if (!existing.verified) {
           await this.userService.update(existing._id.toString(), { verified: true });
+        }
 
-          // Crear el proveedor si el rol es proveedor
-          if (role === 'proveedor' && providerData) {
+        // Si es proveedor y no tiene provider asociado, créalo
+        if (role === 'proveedor' && providerData) {
+          const existingProvider = await this.providerService.findByUserId(existing._id.toString());
+          if (!existingProvider) {
             await this.providerService.create({
               userId: existing._id,
               name: providerData.name,
@@ -71,13 +74,12 @@ export class AuthService {
               verificationStatus: 'pendiente',
             });
           }
-
-          return { message: 'Cuenta verificada correctamente' };
         }
-        return { message: 'Ya verificado' };
+
+        return { message: 'Cuenta verificada correctamente' };
       }
 
-      // Crear el usuario y el proveedor si no existe
+      // Crear el usuario y el provider si no existe
       const user = await this.userService.create({
         email,
         name,
