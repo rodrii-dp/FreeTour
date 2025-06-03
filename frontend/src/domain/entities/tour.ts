@@ -1,7 +1,7 @@
 // import {ImageSourcePropType} from 'react-native';
 
 export interface Service {
-  id: string;
+  _id: string;
   name: string;
   icon: string;
 }

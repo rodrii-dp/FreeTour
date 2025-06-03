@@ -2,7 +2,7 @@ import React from 'react';
 import {View, Text, StyleSheet, ScrollView} from 'react-native';
 import {SettingRow} from './SettingRow.tsx';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
-import {SettingsStackParamList} from '../../navigator/SettingsStackNavigator.tsx';
+import {ProfileStackParamList} from '../../navigator/SettingsStackNavigator.tsx';
 import {RootStackParams} from '../../navigator/Navigator';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useUser} from '../../context/UserContext.tsx';
@@ -10,7 +10,7 @@ import {useUser} from '../../context/UserContext.tsx';
 export const MenuSection = () => {
   // Navegación dentro del stack de ajustes
   const settingsNavigation =
-    useNavigation<NavigationProp<SettingsStackParamList>>();
+    useNavigation<NavigationProp<ProfileStackParamList>>();
 
   const {user} = useUser();
 
@@ -34,7 +34,7 @@ export const MenuSection = () => {
       <SettingRow
         title="Perfil"
         value="Detalles"
-        onPress={() => settingsNavigation.navigate('Perfil')} // Navegación dentro del stack de ajustes
+        onPress={() => settingsNavigation.navigate('ProfileDetails')} // Navegación dentro del stack de ajustes
       />
       <SettingRow title="Notificaciones" onPress={() => {}} />
 
