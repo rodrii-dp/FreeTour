@@ -2,17 +2,33 @@ import React from 'react';
 import {View, Text, FlatList, StyleSheet, Image, Pressable} from 'react-native';
 import {useFavoritesStore} from '../../stores/favoritesStore';
 import {Tour} from '../../../domain/entities/tour.ts';
-import {NavigationProp, useNavigation} from '@react-navigation/native';
-import {HomeStackParamList} from '../../navigation/HomeStackNavigator.tsx';
+import {
+  CompositeNavigationProp,
+  NavigationProp,
+  useNavigation,
+} from '@react-navigation/native';
+import {HomeStackParamList} from '../../navigator/HomeStackNavigator';
+import {BottomTabNavigationProp} from '@react-navigation/bottom-tabs';
+import {StackNavigationProp} from '@react-navigation/stack';
+
+type NavigationProps = CompositeNavigationProp<
+  BottomTabNavigationProp<any, 'Explore'>,
+  StackNavigationProp<HomeStackParamList>
+>;
 
 export const FavoritesScreen = () => {
   const {favoriteTours} = useFavoritesStore();
-  const navigation = useNavigation<NavigationProp<HomeStackParamList>>();
+  const navigation = useNavigation<NavigationProps>();
 
   const renderFavoriteItem = ({item}: {item: Tour}) => (
     <Pressable
       style={styles.itemContainer}
-      onPress={() => navigation.navigate('TourDetails', {tour: item})}>
+      onPress={() =>
+        navigation.navigate('Explore', {
+          screen: 'TourDetails',
+          params: {tour: item},
+        })
+      }>
       <Image
         source={
           item.images && item.images[0]?.imageUrl

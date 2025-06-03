@@ -2,8 +2,8 @@ import React from 'react';
 import {View, Text, StyleSheet, ScrollView} from 'react-native';
 import {SettingRow} from './SettingRow.tsx';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
-import {SettingsStackParamList} from '../../navigation/SettingsStackNavigator.tsx';
-import {RootStackParams} from '../../navigation/Navigator.tsx';
+import {SettingsStackParamList} from '../../navigator/SettingsStackNavigator.tsx';
+import {RootStackParams} from '../../navigator/Navigator';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export const MenuSection = () => {
