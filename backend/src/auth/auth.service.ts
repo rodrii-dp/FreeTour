@@ -28,10 +28,6 @@ export class AuthService {
     const existing = await this.userService.findByEmail(email);
     if (existing) throw new BadRequestException('Ya registrado');
 
-    if (role === 'proveedor' && !providerData) {
-      throw new BadRequestException('Los datos del proveedor son requeridos para el rol de proveedor');
-    }
-
     // Crear el usuario sin marcarlo como verificado
     const user = await this.userService.create({
       email,
@@ -40,6 +36,18 @@ export class AuthService {
       role,
       verified: false,
     });
+
+    // Si es proveedor y hay providerData, crear el proveedor asociado
+    if (role === 'proveedor' && providerData) {
+      await this.providerService.create({
+        userId: user._id,
+        name: providerData.name,
+        direction: providerData.direction || '',
+        contact: providerData.contact || '',
+        tours: [],
+        verificationStatus: 'pendiente',
+      });
+    }
 
     // Enviar email de verificación
     const token = this.jwtService.sign({ email, name, password, role, providerData });
