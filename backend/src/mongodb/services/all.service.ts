@@ -175,6 +175,10 @@ export class TourService {
     }
   }
 
+  async findByProvider(providerId: string): Promise<Tour[]> {
+    return this.tourModel.find({ provider: providerId }).exec();
+  }
+
   async findWithFilters(filters: {
     title?: string;
     category?: string;

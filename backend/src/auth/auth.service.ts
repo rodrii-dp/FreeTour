@@ -79,6 +79,7 @@ export class AuthService {
 
       if (role === 'proveedor' && providerData) {
         await this.providerService.create({
+          userId: user._id,
           name: providerData.name,
           direction: providerData.direction || '',
           contact: providerData.contact || '',

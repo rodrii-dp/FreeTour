@@ -164,9 +164,9 @@ export class TourController {
   @Patch(':id')
   update(
     @Param('id') tourId: string,
-    @Body() providerId: string,
-    tour: Partial<Tour>,
+    @Body() body: { providerId: string; tour: Partial<Tour> },
   ) {
+    const { providerId, tour } = body;
     return this.tourService.update(tourId, providerId, tour);
   }
 
