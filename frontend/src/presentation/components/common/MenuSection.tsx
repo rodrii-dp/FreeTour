@@ -5,11 +5,14 @@ import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {SettingsStackParamList} from '../../navigator/SettingsStackNavigator.tsx';
 import {RootStackParams} from '../../navigator/Navigator';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {useUser} from '../../context/UserContext.tsx';
 
 export const MenuSection = () => {
   // Navegación dentro del stack de ajustes
   const settingsNavigation =
     useNavigation<NavigationProp<SettingsStackParamList>>();
+
+  const {user} = useUser();
 
   // Navegación en el stack raíz
   const rootNavigation = useNavigation<NavigationProp<RootStackParams>>();
@@ -23,8 +26,8 @@ export const MenuSection = () => {
   return (
     <ScrollView style={styles.container}>
       <View style={styles.profileSection}>
-        <Text style={styles.profileName}>Rodrigo De Prat</Text>
-        <Text style={styles.profileEmail}>rrddppl@gmail.com</Text>
+        <Text style={styles.profileName}>{user?.name ?? ''}</Text>
+        <Text style={styles.profileEmail}>{user?.email ?? ''}</Text>
       </View>
 
       <Text style={styles.sectionHeader}>Ajustes</Text>
