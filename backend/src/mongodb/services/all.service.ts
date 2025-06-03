@@ -76,6 +76,10 @@ export class ProviderService {
     return this.providerModel.findOne({ userId }).exec();
   }
 
+  async findAllByUserId(userId: string) {
+    return this.providerModel.find({ userId });
+  }
+
   async update(
     providerId,
     provider: Partial<Provider>,

@@ -70,10 +70,10 @@ export class AuthService {
           await this.userService.update(existing._id.toString(), { verified: true });
         }
 
-        // Si es proveedor y no tiene provider asociado, créalo
+        // Cambia aquí: busca todos los proveedores
         if (role === 'proveedor' && providerData) {
-          const existingProvider = await this.providerService.findByUserId(existing._id.toString());
-          if (!existingProvider) {
+          const existingProviders = await this.providerService.findAllByUserId(existing._id.toString());
+          if (!existingProviders || existingProviders.length === 0) {
             await this.providerService.create({
               userId: existing._id,
               name: providerData.name,
