@@ -117,9 +117,7 @@ export class AuthService {
 
     let provider = undefined;
     if (user.role === 'proveedor') {
-      provider = await this.providerService.findById(
-        (await this.providerService.findAll()).find(p => p.userId.toString() === user._id.toString())?._id
-      )
+      provider = await this.providerService.findByUserId(user._id.toString());
     }
 
     return {

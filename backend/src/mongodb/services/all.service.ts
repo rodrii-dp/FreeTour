@@ -72,6 +72,10 @@ export class ProviderService {
     return this.providerModel.findById(id).exec();
   }
 
+  async findByUserId(userId: string): Promise<Provider | null> {
+    return this.providerModel.findOne({ userId }).exec();
+  }
+
   async update(
     providerId,
     provider: Partial<Provider>,
