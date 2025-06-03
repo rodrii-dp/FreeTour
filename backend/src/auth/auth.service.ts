@@ -114,10 +114,19 @@ export class AuthService {
     if (!isMatch) throw new UnauthorizedException('Credenciales inválidas');
 
     const payload = { sub: user._id, email: user.email, role: user.role };
+
+    let provider = undefined;
+    if (user.role === 'proveedor') {
+      provider = await this.providerService.findById(
+        (await this.providerService.findAll()).find(p => p.userId.toString() === user._id.toString())?._id
+      )
+    }
+
     return {
       access_token: this.jwtService.sign(payload, { expiresIn: '15m' }),
       refresh_token: this.jwtService.sign(payload, { expiresIn: '7d' }),
       user: { ...user.toObject(), password: undefined },
+      provider,
     };
   }
 
