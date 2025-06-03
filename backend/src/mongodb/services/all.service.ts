@@ -48,6 +48,10 @@ export class UserService {
   async delete(id: string) {
     return this.userModel.deleteOne({ _id: id });
   }
+
+  async update(id: string, data: Partial<User>) {
+    return this.userModel.findByIdAndUpdate(id, data, { new: true });
+  }
 }
 
 @Injectable()
@@ -68,6 +72,14 @@ export class ProviderService {
     return this.providerModel.findById(id).exec();
   }
 
+  async findByUserId(userId: string): Promise<Provider | null> {
+    return this.providerModel.findOne({ userId: new Types.ObjectId(userId) }).exec();
+  }
+
+  async findAllByUserId(userId: string) {
+    return this.providerModel.find({ userId });
+  }
+
   async update(
     providerId,
     provider: Partial<Provider>,
@@ -79,6 +91,14 @@ export class ProviderService {
 
   async delete(providerId: string): Promise<Provider | null> {
     return this.providerModel.findByIdAndDelete(providerId).exec();
+  }
+
+  async addTourToProvider(providerId: string, tourId: string): Promise<Provider | null> {
+    return this.providerModel.findByIdAndUpdate(
+      providerId,
+      { $addToSet: { tours: tourId } },
+      { new: true }
+    ).exec();
   }
 }
 
@@ -169,6 +189,10 @@ export class TourService {
       console.log('entro');
       return await this.tourModel.findById(id).exec();
     }
+  }
+
+  async findByProvider(providerId: string): Promise<Tour[]> {
+    return this.tourModel.find({ provider: providerId }).exec();
   }
 
   async findWithFilters(filters: {
@@ -326,6 +350,17 @@ export class BookingService {
   async create(booking: Partial<Booking>): Promise<Booking> {
     if (!booking.tourId || !booking.date || !booking.hour) {
       throw new NotFoundException('Faltan datos para la reserva');
+    }
+
+    const existingBooking = await this.bookingModel.findOne({
+      userId: booking.userId,
+      tourId: booking.tourId,
+      date: booking.date,
+      hour: booking.hour,
+    })
+
+    if (existingBooking) {
+      throw new NotFoundException('Ya tienes una reserva para esta fecha y hora');
     }
 
     const tour = await this.bookingModel.db

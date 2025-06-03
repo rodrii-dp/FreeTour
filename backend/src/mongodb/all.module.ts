@@ -79,6 +79,6 @@ import { MailModule } from '../auth/mail.module';
     AvailabilityService,
     BookingService,
   ],
-  exports: [UserService],
+  exports: [UserService, ProviderService],
 })
 export class GeneralModule {}

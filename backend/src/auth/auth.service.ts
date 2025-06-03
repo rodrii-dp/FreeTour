@@ -5,24 +5,30 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
-import { UserService } from '../mongodb/services/all.service';
+import { ProviderService, UserService } from '../mongodb/services/all.service';
 import { MailService } from './mail.service';
+import { isValidEmail, isValidPassword } from './validations';
 
 @Injectable()
 export class AuthService {
   constructor(
     private userService: UserService,
+    private providerService: ProviderService,
     private jwtService: JwtService,
     private mailService: MailService,
   ) {}
 
   // Registro de usuario
   async register(data: any) {
-    const { email, name, password, role = 'cliente' } = data;
+    const { email, name, password, role = 'cliente', providerData } = data;
+
+    if (!isValidEmail(email)) throw new BadRequestException('Email inválido');
+    if (!isValidPassword(password)) throw new BadRequestException('La contraseña debe tener al menos 8 caracteres, una mayúscula, una minúscula, un número y un carácter especial');
+
     const existing = await this.userService.findByEmail(email);
     if (existing) throw new BadRequestException('Ya registrado');
 
-    // const hashedPassword = await bcrypt.hash(password, 10);
+    // Crear el usuario sin marcarlo como verificado
     const user = await this.userService.create({
       email,
       name,
@@ -31,32 +37,75 @@ export class AuthService {
       verified: false,
     });
 
-    const verifyToken = this.jwtService.sign(
-      { sub: user._id, email: user.email },
-      { expiresIn: '1d' },
-    );
-    const verifyUrl = `http://localhost:3000/auth/verify?token=${verifyToken}`;
-    await this.mailService.sendVerificationEmail(user.email, verifyUrl);
+    // Enviar email de verificación
+    const token = this.jwtService.sign({ email, name, password, role, providerData });
+    const verificationUrl = `https://hollow-lucretia-rodrigo-de-prat-9197ad55.koyeb.app/auth/verify?token=${token}`;
+    await this.mailService.sendVerificationEmail(email, verificationUrl);
 
     return {
-      message: 'Usuario registrado. Verifica tu correo para activar la cuenta.',
-      user: { ...user.toObject(), password: undefined },
+      message: 'Registro exitoso. Verifica tu correo para completar el proceso.',
     };
   }
 
   async verifyEmail(token: string) {
     try {
       const payload = this.jwtService.verify(token);
-      const user = await this.userService.findByEmail(payload.email);
-      if (!user) throw new BadRequestException('Usuario no encontrado');
-      if (user.verified) return { message: 'Ya verificado' };
+      const { email, name, password, role, providerData } = payload;
 
-      user.verified = true;
-      await user.save();
+      const existing = await this.userService.findByEmail(email);
+      if (existing) {
+        if (!existing.verified) {
+          await this.userService.update(existing._id.toString(), { verified: true });
+        }
+
+        // Cambia aquí: busca todos los proveedores
+        if (role === 'proveedor' && providerData) {
+          const existingProviders = await this.providerService.findAllByUserId(existing._id.toString());
+          if (!existingProviders || existingProviders.length === 0) {
+            await this.providerService.create({
+              userId: existing._id,
+              name: providerData.name,
+              direction: providerData.direction || '',
+              contact: providerData.contact || '',
+              tours: [],
+              verificationStatus: 'pendiente',
+            });
+          }
+        }
+
+        return { message: 'Cuenta verificada correctamente' };
+      }
+
+      // Crear el usuario y el provider si no existe
+      const user = await this.userService.create({
+        email,
+        name,
+        password,
+        role,
+        verified: true,
+      });
+
+      if (role === 'proveedor' && providerData) {
+        await this.providerService.create({
+          userId: user._id,
+          name: providerData.name,
+          direction: providerData.direction || '',
+          contact: providerData.contact || '',
+          tours: [],
+          verificationStatus: 'pendiente',
+        });
+      }
+
       return { message: 'Cuenta verificada correctamente' };
     } catch (e) {
       throw new BadRequestException('Token inválido o expirado');
     }
+  }
+
+  private isValidContact(contact: string): boolean {
+    const phoneRegex = /^[\+]?[1-9][\d]{0,15}$/;
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return phoneRegex.test(contact) || emailRegex.test(contact);
   }
 
   // Login normal
@@ -74,10 +123,17 @@ export class AuthService {
     if (!isMatch) throw new UnauthorizedException('Credenciales inválidas');
 
     const payload = { sub: user._id, email: user.email, role: user.role };
+
+    let provider = undefined;
+    if (user.role === 'proveedor') {
+      provider = await this.providerService.findByUserId(user._id.toString());
+    }
+
     return {
       access_token: this.jwtService.sign(payload, { expiresIn: '15m' }),
       refresh_token: this.jwtService.sign(payload, { expiresIn: '7d' }),
       user: { ...user.toObject(), password: undefined },
+      provider,
     };
   }
 

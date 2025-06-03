@@ -6,7 +6,7 @@ import {
   Param,
   Patch,
   Post,
-  Query,
+  Query, UseGuards, Request, BadRequestException
 } from '@nestjs/common';
 import {
   UserService,
@@ -29,16 +29,12 @@ import {
   Availability,
   Booking,
 } from '../schemas/all.schema';
+import {JwtAuthGuard} from "../../auth/jwt-auth.guard";
 
 // USER
 @Controller('users')
 export class UserController {
   constructor(private readonly userService: UserService) {}
-
-  @Post()
-  create(@Body() user: Partial<User>) {
-    return this.userService.create(user);
-  }
 
   @Get()
   findAll() {
@@ -134,11 +130,30 @@ export class ReviewController {
 // TOUR
 @Controller('tours')
 export class TourController {
-  constructor(private readonly tourService: TourService) {}
+  constructor(private readonly tourService: TourService, private readonly providerService: ProviderService) {}
 
   @Post()
-  create(@Body() tour: Partial<Tour>) {
-    return this.tourService.create(tour);
+  @UseGuards(JwtAuthGuard)
+  async create(@Body() tour: Partial<Tour>, @Request() req) {
+    const userId = req.user.userId;
+
+    const provider = await this.providerService.findByUserId(userId);
+
+    if (!provider) {
+      throw new BadRequestException("No se encontró un proveedor asociado a este usuario")
+    }
+
+    const providerId = (provider as any)._id || provider.toString();
+
+    const tourWithProvider = {
+      ...tour,
+      provider: providerId,
+    }
+
+    const createdTour = await this.tourService.create(tourWithProvider);
+    const createdTourId = (createdTour as any)._id || (createdTour as any).id;
+    await this.providerService.addTourToProvider(providerId, createdTourId);
+    return createdTour;
   }
 
   @Get('recent')
@@ -169,9 +184,9 @@ export class TourController {
   @Patch(':id')
   update(
     @Param('id') tourId: string,
-    @Body() providerId: string,
-    tour: Partial<Tour>,
+    @Body() body: { providerId: string; tour: Partial<Tour> },
   ) {
+    const { providerId, tour } = body;
     return this.tourService.update(tourId, providerId, tour);
   }
 

@@ -69,6 +69,9 @@ export const StopSchema = SchemaFactory.createForClass(Stop);
 // Provider
 @Schema()
 export class Provider {
+  @Prop({ type: Types.ObjectId, ref: 'User', required: true, unique: true })
+  userId: Types.ObjectId;
+
   @Prop({ required: true })
   name: string;
 
