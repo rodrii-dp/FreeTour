@@ -1,6 +1,6 @@
 import React, {useEffect, useRef, useState, useCallback} from 'react';
 import {RouteProp, useRoute, useFocusEffect} from '@react-navigation/native';
-import {HomeStackParamList} from '../../navigator/HomeStackNavigator.tsx';
+import {HomeStackParamList} from '../../navigation/HomeStackNavigator.tsx';
 import MapView, {Marker, Polyline, PROVIDER_GOOGLE} from 'react-native-maps';
 import {StyleSheet, ScrollView, Text, View, Dimensions} from 'react-native';
 
@@ -14,7 +14,7 @@ export const MapScreen = () => {
 
   const mapRef = useRef<MapView>(null);
   const [mapReady, setMapReady] = useState(false);
-  const [key, setKey] = useState(0); // Key para forzar re-render
+  const [key, setKey] = useState(0);
 
   const initialRegion =
     stops && stops.length > 0
@@ -102,7 +102,10 @@ export const MapScreen = () => {
   };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> 7f1382538ad45e2c7f880fe858193e24035322ad
   if (!stops || stops.length === 0) {
     return (
       <View style={styles.container}>
@@ -113,7 +116,10 @@ export const MapScreen = () => {
     );
   }
 
+<<<<<<< HEAD
 >>>>>>> develop
+=======
+>>>>>>> 7f1382538ad45e2c7f880fe858193e24035322ad
   return (
     <View style={styles.container}>
       <MapView
@@ -214,14 +220,20 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> 7f1382538ad45e2c7f880fe858193e24035322ad
   meetingPoint: {
     fontSize: 16,
     fontWeight: 'bold',
     color: '#2C3E50',
     marginBottom: 8,
   },
+<<<<<<< HEAD
 >>>>>>> develop
+=======
+>>>>>>> 7f1382538ad45e2c7f880fe858193e24035322ad
   stopAddress: {
     fontSize: 14,
     color: '#7F8C8D',

@@ -24,11 +24,11 @@ export interface Provider {
   verificationStatus: 'verificado' | 'pendiente' | 'no verificado';
 }
 
-export interface Resena {
+export interface Review {
   id: string;
   title: string;
   userId: string;
-  date: Date;
+  date: string; // Date;
   rating: number; // 0-5
   comment: string;
 }
@@ -58,7 +58,7 @@ export interface Tour {
   images: ImageTour[];
   provider: Provider;
   rating: number;
-  reviews: Resena[];
+  reviews: Review[];
   description: string;
   duration: string;
   language: string[];
@@ -79,8 +79,21 @@ export interface Tour {
     country: string;
   };
   meetingPoint: string;
+<<<<<<<<< Temporary merge branch 1
   availability: {
-    dateStart: string; // Date;
-    dateEnd: string; // Date;
+    dateStart: Date;
+    dateEnd: Date;
   };
+=========
+  nonAvailableDates: Availability[];
+}
+
+export interface Booking {
+  id: string;
+  userId: string;
+  tourId: string;
+  date: string;
+  hour: string;
+  people: number;
+>>>>>>>>> Temporary merge branch 2
 }

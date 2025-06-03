@@ -26,5 +26,19 @@ export const HomeStackNavigator = () => (
       component={TourDetailsScreen}
       options={{title: 'Detalles del Tour'}}
     />
+<<<<<<< HEAD
+=======
+    <Stack.Screen name="Map" component={MapScreen} options={{title: 'Mapa'}} />
+    <Stack.Screen
+      name="Checkout"
+      component={CheckoutScreen}
+      options={{title: 'Checkout'}}
+    />
+    <Stack.Screen
+      name="SearchResults"
+      component={SearchResultsScreen}
+      options={{title: 'Resultados de Búsqueda', headerShown: false}}
+    />
+>>>>>>> 7f1382538ad45e2c7f880fe858193e24035322ad
   </Stack.Navigator>
 );

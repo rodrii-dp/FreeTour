@@ -16,16 +16,22 @@ import {useToursStore} from '../../stores/toursStore.tsx';
 import {TourCard} from './TourCard.tsx';
 import {ServiceButton} from './ServiceButton';
 <<<<<<< HEAD
+<<<<<<< HEAD
 import {IconButton, Searchbar} from 'react-native-paper';
 import {Service, Tour} from '../../../domain/entities/tour';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {HomeStackParamList} from '../../navigator/HomeStackNavigator.tsx';
 =======
+=======
+>>>>>>> 7f1382538ad45e2c7f880fe858193e24035322ad
 import {HeroSlider} from '../../components/common/HeroSlider.tsx';
 import {tourService} from '../../../infrastructure/api/tourService.ts';
 import {apiClient} from '../../../infrastructure/api/apiClient.ts';
 import {useUser} from '../../context/UserContext.tsx';
+<<<<<<< HEAD
 >>>>>>> develop
+=======
+>>>>>>> 7f1382538ad45e2c7f880fe858193e24035322ad
 
 export const HomeScreen = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -81,6 +87,7 @@ export const HomeScreen = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
+<<<<<<< HEAD
 <<<<<<< HEAD
         setTours([
           {
@@ -234,6 +241,8 @@ export const HomeScreen = () => {
           },
         ]);
 =======
+=======
+>>>>>>> 7f1382538ad45e2c7f880fe858193e24035322ad
         const toursResponse = await tourService.getTours({
           onlyDiscounted: true,
           limit: '3',
@@ -241,7 +250,10 @@ export const HomeScreen = () => {
         const toursData = Array.isArray(toursResponse)
           ? toursResponse
           : toursResponse.data || [];
+<<<<<<< HEAD
 >>>>>>> develop
+=======
+>>>>>>> 7f1382538ad45e2c7f880fe858193e24035322ad
 
         setTours(toursData);
         setCategoryTours(toursData);
@@ -394,7 +406,6 @@ export const HomeScreen = () => {
         </View>
 
         <View style={styles.section}>
-          <Text>¡Hola, {user?.name}!</Text>
           <Text style={styles.sectionTitle}>Experiencias culturales</Text>
           <ScrollView horizontal showsHorizontalScrollIndicator={false}>
             {tours.map(tour => (

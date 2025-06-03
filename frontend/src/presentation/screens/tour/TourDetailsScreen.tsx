@@ -1,14 +1,15 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 import React, {useState} from 'react';
 =======
 import React, {useCallback, useEffect, useLayoutEffect, useState} from 'react';
 >>>>>>> develop
+=======
+import React, {useCallback, useEffect, useLayoutEffect, useState} from 'react';
+>>>>>>> 7f1382538ad45e2c7f880fe858193e24035322ad
 import {
-  Dimensions,
   FlatList,
   Image,
-  NativeScrollEvent,
-  NativeSyntheticEvent,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -16,11 +17,11 @@ import {
   View,
 } from 'react-native';
 import {
-  NavigationProp,
-  RouteProp,
+  type NavigationProp,
+  type RouteProp,
   useNavigation,
-  useRoute,
 } from '@react-navigation/native';
+<<<<<<< HEAD
 <<<<<<< HEAD
 import {HomeStackParamList} from '../../navigator/HomeStackNavigator.tsx';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -29,6 +30,8 @@ import {StarRating} from '../../components/common/StarRating.tsx';
 import {SettingRow} from '../../components/common/SettingRow.tsx';
 import {useScroll} from '../../hooks/useScroll.tsx';
 =======
+=======
+>>>>>>> 7f1382538ad45e2c7f880fe858193e24035322ad
 import type {HomeStackParamList} from '../../navigation/HomeStackNavigator';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {PaginationDots} from '../../components/common/PaginationDots';
@@ -39,10 +42,16 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import {useWindowDimensions} from 'react-native';
 import {CalendarModal} from '../../components/common/CalendarModal';
 import {useFavoritesStore} from '../../stores/favoritesStore';
+<<<<<<< HEAD
 >>>>>>> develop
+=======
+>>>>>>> 7f1382538ad45e2c7f880fe858193e24035322ad
 
-const {width: SCREEN_WIDTH} = Dimensions.get('window');
+interface Props {
+  route: RouteProp<HomeStackParamList, 'TourDetails'>;
+}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 type TourDetailsRouteProp = RouteProp<HomeStackParamList, 'TourDetails'>;
 
@@ -66,6 +75,8 @@ export const TourDetailsScreen = () => {
         renderItem={({item}) => (
           <Image source={{uri: item.imageUrl}} style={styles.image} />
 =======
+=======
+>>>>>>> 7f1382538ad45e2c7f880fe858193e24035322ad
 const DEFAULT_IMAGE = require('../../assets/no_image.png');
 
 export const TourDetailsScreen = ({route}: Props) => {
@@ -190,29 +201,28 @@ export const TourDetailsScreen = ({route}: Props) => {
               totalDots={tour.images.length}
             />
           </View>
+<<<<<<< HEAD
 >>>>>>> develop
+=======
+>>>>>>> 7f1382538ad45e2c7f880fe858193e24035322ad
         )}
       </View>
     );
   };
 
   return (
-    <ScrollView style={styles.container}>
-      {renderImageCarousel()}
-      <View style={styles.content}>
-        <Text style={styles.category}>{tour.category.toUpperCase()}</Text>
-        <Text style={styles.title}>{tour.title}</Text>
-        <Text style={styles.provider}>Proovedor: {tour.provider.name}</Text>
-        <View style={styles.ratingContainer}>
-          <StarRating rating={tour.rating} />
-          <Text style={styles.reviews}> {tour.reviews.length} reseñas</Text>
-        </View>
-
-        <View style={styles.infoContainer}>
-          <View style={styles.infoItem}>
-            <Icon name="time-outline" size={24} color="#34495E" />
-            <Text style={styles.infoText}>{tour.duration}</Text>
+    <SafeAreaView style={styles.safeArea}>
+      <ScrollView style={styles.container}>
+        {renderImageCarousel()}
+        <View style={styles.content}>
+          <Text style={styles.category}>{tour.category.toUpperCase()}</Text>
+          <Text style={styles.title}>{tour.title}</Text>
+          <Text style={styles.provider}>Proveedor: {tour.provider.name}</Text>
+          <View style={styles.ratingContainer}>
+            <StarRating rating={tour.rating} />
+            <Text style={styles.reviews}> {tour.reviews.length} reseñas</Text>
           </View>
+<<<<<<< HEAD
 <<<<<<< HEAD
           <View style={styles.infoItem}>
             <Icon name="language-outline" size={24} color="#34495E" />
@@ -267,6 +277,8 @@ export const TourDetailsScreen = ({route}: Props) => {
       </View>
     </ScrollView>
 =======
+=======
+>>>>>>> 7f1382538ad45e2c7f880fe858193e24035322ad
 
           <View style={styles.infoContainer}>
             <View style={styles.infoItem}>
@@ -346,7 +358,10 @@ export const TourDetailsScreen = ({route}: Props) => {
         nonAvailableDates={nonAvailableDates}
       />
     </SafeAreaView>
+<<<<<<< HEAD
 >>>>>>> develop
+=======
+>>>>>>> 7f1382538ad45e2c7f880fe858193e24035322ad
   );
 };
 
@@ -364,32 +379,26 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
   },
   image: {
-    width: SCREEN_WIDTH,
-    height: 250,
     resizeMode: 'cover',
   },
   content: {
-    padding: 16,
+    padding: '4%',
   },
   category: {
     fontSize: 14,
     color: '#7F8C8D',
-    marginBottom: 4,
+    marginBottom: '1%',
   },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
     color: '#2C3E50',
-    marginBottom: 8,
+    marginBottom: '2%',
   },
   ratingContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 8,
-  },
-  stars: {
-    flexDirection: 'row',
-    marginRight: 8,
+    marginBottom: '2%',
   },
   reviews: {
     fontSize: 14,
@@ -398,19 +407,19 @@ const styles = StyleSheet.create({
   provider: {
     fontSize: 16,
     color: '#34495E',
-    marginBottom: 16,
+    marginBottom: '4%',
   },
   infoContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: 16,
+    marginBottom: '4%',
   },
   infoItem: {
     flexDirection: 'row',
     alignItems: 'center',
   },
   infoText: {
-    marginLeft: 8,
+    marginLeft: '2%',
     fontSize: 16,
     color: '#34495E',
   },
@@ -418,20 +427,21 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     color: '#2C3E50',
-    marginTop: 16,
-    marginBottom: 8,
+    marginTop: '4%',
+    marginBottom: '2%',
   },
   description: {
     fontSize: 16,
     color: '#34495E',
     lineHeight: 24,
-    marginBottom: 16,
+    marginBottom: '4%',
   },
   meetingPoint: {
     fontSize: 16,
     color: '#34495E',
-    marginBottom: 16,
+    marginBottom: '4%',
   },
+<<<<<<< HEAD
 <<<<<<< HEAD
   availability: {
     fontSize: 16,
@@ -440,11 +450,13 @@ const styles = StyleSheet.create({
   },
 =======
 >>>>>>> develop
+=======
+>>>>>>> 7f1382538ad45e2c7f880fe858193e24035322ad
   priceContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 16,
+    marginBottom: '4%',
   },
   priceLabel: {
     fontSize: 18,
@@ -482,7 +494,7 @@ const styles = StyleSheet.create({
   },
   bookButton: {
     backgroundColor: '#FF5A5F',
-    paddingVertical: 12,
+    paddingVertical: '4%',
     borderRadius: 8,
     alignItems: 'center',
   },
@@ -492,7 +504,10 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> 7f1382538ad45e2c7f880fe858193e24035322ad
   safeArea: {
     flex: 1,
     backgroundColor: '#FFFFFF',
@@ -503,5 +518,8 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderTopColor: '#E0E0E0',
   },
+<<<<<<< HEAD
 >>>>>>> develop
+=======
+>>>>>>> 7f1382538ad45e2c7f880fe858193e24035322ad
 });

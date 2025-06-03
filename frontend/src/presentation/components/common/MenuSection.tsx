@@ -31,7 +31,7 @@ export const MenuSection = () => {
       <SettingRow
         title="Perfil"
         value="Detalles"
-        onPress={() => navigation.navigate('ProfileDetails')}
+        onPress={() => settingsNavigation.navigate('Perfil')} // Navegación dentro del stack de ajustes
       />
       <SettingRow title="Notificaciones" onPress={() => {}} />
 
@@ -40,13 +40,16 @@ export const MenuSection = () => {
       <SettingRow title="Escríbenos" onPress={() => {}} />
 
       <Text style={styles.sectionHeader}>Comentarios</Text>
-      {/* Todo: Redirigir usuario a playstore / appstore. Ver enlace: https://reactnative.dev/docs/linking*/}
       <SettingRow title="Deja una valoración" onPress={() => {}} />
+<<<<<<< HEAD
       <SettingRow
         title="Cerrar sesión"
         onPress={() => rootNavigation.navigate('Signin')} // Navegación en el stack raíz
         red
       />
+=======
+      <SettingRow title="Cerrar sesión" onPress={logout} red />
+>>>>>>> 7f1382538ad45e2c7f880fe858193e24035322ad
     </ScrollView>
   );
 };
