@@ -51,7 +51,8 @@ export class AuthService {
 
     // Enviar email de verificación
     const token = this.jwtService.sign({ email, name, password, role, providerData });
-    await this.mailService.sendVerificationEmail(email, token);
+    const verificationUrl = `https://hollow-lucretia-rodrigo-de-prat-9197ad55.koyeb.app/verify?token=${token}`;
+    await this.mailService.sendVerificationEmail(email, verificationUrl);
 
     return {
       message: 'Registro exitoso. Verifica tu correo para completar el proceso.',
