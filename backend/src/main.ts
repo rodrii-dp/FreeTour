@@ -5,7 +5,7 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   app.enableCors({
-    origin: 'https://desperate-joan-freetour-ab6f618a.koyeb.app/',
+    origin: 'https://desperate-joan-freetour-ab6f618a.koyeb.app',
     credentials: true, // si usas cookies
   });
 
