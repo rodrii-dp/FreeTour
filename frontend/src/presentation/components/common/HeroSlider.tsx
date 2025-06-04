@@ -69,7 +69,7 @@ export const HeroSlider = ({
   const navigateToTourDetails = (slide: HeroSlide) => {
     // If the slide has a tourId, find the corresponding tour
     if (slide.tourId) {
-      const tour = tours.find(t => t.id === slide.tourId);
+      const tour = tours.find(t => t._id === slide.tourId);
       if (tour) {
         navigation.navigate('TourDetails', {tour});
         return;
@@ -98,7 +98,7 @@ export const HeroSlider = ({
   const getCurrentTour = () => {
     const currentSlide = slides[activeIndex];
     if (currentSlide.tourId) {
-      return tours.find(t => t.id === currentSlide.tourId);
+      return tours.find(t => t._id === currentSlide.tourId);
     }
     return null;
   };
