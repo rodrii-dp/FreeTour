@@ -11,7 +11,7 @@ import {
 import {IconButton, Searchbar} from 'react-native-paper';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {Service, Tour} from '../../../domain/entities/tour';
-import {HomeStackParamList} from '../../navigation/HomeStackNavigator.tsx';
+import {HomeStackParamList} from '../../navigator/HomeStackNavigator';
 import {useToursStore} from '../../stores/toursStore.tsx';
 import {TourCard} from './TourCard.tsx';
 import {ServiceButton} from './ServiceButton';
@@ -360,7 +360,7 @@ export const HomeScreen = () => {
   const getSectionTitle = () => {
     if (selectedCategory && categoriesWithTours.length > 0) {
       const category = categoriesWithTours.find(
-        cat => cat.id === selectedCategory,
+        cat => cat._id === selectedCategory,
       );
       return category
         ? category.name.charAt(0).toUpperCase() + category.name.slice(1)
@@ -376,6 +376,8 @@ export const HomeScreen = () => {
       </View>
     );
   }
+
+  console.log('CATEGORIES WITH TOURS:', categoriesWithTours);
 
   return (
     <SafeAreaView style={{flex: 1}}>
@@ -426,13 +428,13 @@ export const HomeScreen = () => {
               onPress={resetCategorySelection}
               isSelected={selectedCategory === null}
             />
-            {categoriesWithTours.map(category => (
+            {categoriesWithTours.map((category, index) => (
               <ServiceButton
-                key={category.id}
+                key={category._id}
                 icon={category.icon}
                 label={category.name[0].toUpperCase() + category.name.slice(1)}
-                onPress={() => handleCategoryPress(category.id, category.name)}
-                isSelected={selectedCategory === category.id}
+                onPress={() => handleCategoryPress(category._id, category.name)}
+                isSelected={String(selectedCategory) === String(category._id)}
               />
             ))}
           </View>

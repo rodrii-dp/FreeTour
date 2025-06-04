@@ -2,14 +2,17 @@ import React from 'react';
 import {View, Text, StyleSheet, ScrollView} from 'react-native';
 import {SettingRow} from './SettingRow.tsx';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
-import {SettingsStackParamList} from '../../navigation/SettingsStackNavigator.tsx';
-import {RootStackParams} from '../../navigation/Navigator.tsx';
+import {ProfileStackParamList} from '../../navigator/SettingsStackNavigator.tsx';
+import {RootStackParams} from '../../navigator/Navigator';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {useUser} from '../../context/UserContext.tsx';
 
 export const MenuSection = () => {
   // Navegación dentro del stack de ajustes
   const settingsNavigation =
-    useNavigation<NavigationProp<SettingsStackParamList>>();
+    useNavigation<NavigationProp<ProfileStackParamList>>();
+
+  const {user} = useUser();
 
   // Navegación en el stack raíz
   const rootNavigation = useNavigation<NavigationProp<RootStackParams>>();
@@ -23,15 +26,15 @@ export const MenuSection = () => {
   return (
     <ScrollView style={styles.container}>
       <View style={styles.profileSection}>
-        <Text style={styles.profileName}>Rodrigo De Prat</Text>
-        <Text style={styles.profileEmail}>rrddppl@gmail.com</Text>
+        <Text style={styles.profileName}>{user?.name ?? ''}</Text>
+        <Text style={styles.profileEmail}>{user?.email ?? ''}</Text>
       </View>
 
       <Text style={styles.sectionHeader}>Ajustes</Text>
       <SettingRow
         title="Perfil"
         value="Detalles"
-        onPress={() => settingsNavigation.navigate('Perfil')} // Navegación dentro del stack de ajustes
+        onPress={() => settingsNavigation.navigate('ProfileDetails')} // Navegación dentro del stack de ajustes
       />
       <SettingRow title="Notificaciones" onPress={() => {}} />
 

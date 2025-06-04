@@ -64,7 +64,7 @@ export const BookingsScreen = () => {
       }
     });
     return unsubscribe;
-  }, [user]);
+  }, [user, navigation]);
 
   // Función para formatear la fecha
   const formatDate = (dateString: string) => {
