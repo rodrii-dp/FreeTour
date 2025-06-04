@@ -25,6 +25,11 @@ export const HomeScreen = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [categoryTours, setCategoryTours] = useState<Tour[]>([]);
   const [loadingCategoryTours, setLoadingCategoryTours] = useState(false);
+  const [heroTours, setHeroTours] = useState<Tour[]>([]);
+  const [culturalTours, setCulturalTours] = useState<Tour[]>([]);
+  const [featuredCategoryTours, setFeaturedCategoryTours] = useState<Tour[]>(
+    [],
+  );
 
   const tours = useToursStore(state => state.tours);
   const setTours = useToursStore(state => state.setTours);
@@ -57,9 +62,27 @@ export const HomeScreen = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        // Tours para el HeroSlider (más recientes)
         const toursData = await tourService.getMostRecent(3);
-        setTours(toursData);
-        setCategoryTours(toursData);
+        setHeroTours(toursData);
+        setTours(toursData); // Si otros componentes dependen de esto
+
+        // Obtener categorías
+        const categoriesResponse = await apiClient.get('/categories');
+        const categories: Service[] = categoriesResponse.data;
+        // Para cada categoría, obtener el primer tour (si existe)
+        const firstToursPromises = categories.map(async category => {
+          const tours = await tourService.getTours({
+            category: category.name.toLowerCase(),
+            limit: '1',
+          });
+          const toursArr = Array.isArray(tours) ? tours : tours.data || [];
+          return toursArr.length > 0 ? toursArr[0] : null;
+        });
+        const firstTours = (await Promise.all(firstToursPromises)).filter(
+          Boolean,
+        );
+        setFeaturedCategoryTours(firstTours);
         setIsLoading(false);
       } catch (error) {
         console.error(error);
@@ -69,7 +92,7 @@ export const HomeScreen = () => {
     fetchData();
   }, [setTours]);
 
-  const heroSlides = tours.map(tour => ({
+  const heroSlides = heroTours.map(tour => ({
     id: tour._id,
     tourId: tour._id,
     imageUrl:
@@ -84,7 +107,6 @@ export const HomeScreen = () => {
     const fetchCategories = async () => {
       try {
         const response = await apiClient.get('/categories');
-        console.log('Fetched categories:', response.data);
 
         // Filter categories that have tours
         const categoriesWithToursPromises = response.data.map(
@@ -128,13 +150,9 @@ export const HomeScreen = () => {
         ? categoryToursResponse
         : categoryToursResponse.data || [];
 
-      console.log(`Tours for category ${categoryName}:`, toursData);
-
-      // Update the categoryTours state with the filtered tours
       setCategoryTours(toursData);
     } catch (error) {
       console.error('Error fetching category tours:', error);
-      // In case of error, show empty array or fallback to all tours
       setCategoryTours([]);
     } finally {
       setLoadingCategoryTours(false);
@@ -178,8 +196,6 @@ export const HomeScreen = () => {
     );
   }
 
-  console.log('CATEGORIES WITH TOURS:', categoriesWithTours);
-
   return (
     <SafeAreaView style={{flex: 1}}>
       <ScrollView>
@@ -198,10 +214,10 @@ export const HomeScreen = () => {
               />
             </View>
             <IconButton
-              icon="bell-outline"
+              icon="magnify"
               iconColor="#666"
               size={32}
-              onPress={() => {}}
+              onPress={handleSearchSubmit}
               style={styles.notificationButton}
             />
           </View>
@@ -209,9 +225,9 @@ export const HomeScreen = () => {
         </View>
 
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Experiencias culturales</Text>
+          <Text style={styles.sectionTitle}>Experiencias por categoría</Text>
           <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-            {tours.map(tour => (
+            {featuredCategoryTours.map(tour => (
               <TourCard key={tour._id} tour={tour} onPress={handleTourPress} />
             ))}
           </ScrollView>
@@ -222,13 +238,6 @@ export const HomeScreen = () => {
             <Text style={styles.sectionTitle}>Categorías</Text>
           </View>
           <View style={styles.categoriesContainer}>
-            <ServiceButton
-              key="all"
-              icon="view-grid"
-              label="Todos"
-              onPress={resetCategorySelection}
-              isSelected={selectedCategory === null}
-            />
             {categoriesWithTours.map(category => (
               <ServiceButton
                 key={category._id}

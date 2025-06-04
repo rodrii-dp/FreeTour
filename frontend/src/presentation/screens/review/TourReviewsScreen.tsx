@@ -50,7 +50,6 @@ export const TourReviewsScreen = () => {
       }
       try {
         const bookings = await bookingService.getBookingsByUserId(user._id);
-        console.log('Reservas', bookings);
         const hasBooking = bookings.some((b: any) => {
           // b.tourId puede ser string o un objeto
           if (typeof b.tourId === 'string') {
@@ -60,7 +59,6 @@ export const TourReviewsScreen = () => {
           }
           return false;
         });
-        console.log('Tiene reserva:', hasBooking);
         setCanReview(hasBooking);
       } catch {
         setCanReview(false);

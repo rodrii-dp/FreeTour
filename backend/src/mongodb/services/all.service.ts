@@ -186,7 +186,6 @@ export class TourService {
     try {
       return await this.tourModel.findById(id).populate('provider').exec();
     } catch (error) {
-      console.log('entro');
       return await this.tourModel.findById(id).exec();
     }
   }
@@ -404,7 +403,7 @@ export class BookingService {
 
   async findByUserId(userId: string): Promise<Booking[]> {
     if (!Types.ObjectId.isValid(userId)) {
-      throw new NotFoundException('ID de usuario inválido');
+      return [];
     }
     return this.bookingModel.find({ userId }).populate('tourId').exec();
   }

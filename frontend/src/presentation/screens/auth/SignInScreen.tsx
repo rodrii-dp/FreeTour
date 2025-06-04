@@ -84,8 +84,8 @@ export const SignInScreen = () => {
 
           <Input
             label="Contraseña"
-            rightLabel="Olvidaste tu contraseña?"
-            onPressRightLabel={() => navigation.navigate('ForgotPassword')}
+            // rightLabel="Olvidaste tu contraseña?"
+            // onPressRightLabel={() => navigation.navigate('ForgotPassword')}
             placeholder="Password"
             value={fields.password}
             onChangeText={value => handleInputChange('password', value)}
@@ -97,11 +97,11 @@ export const SignInScreen = () => {
             togglePasswordVisibility={() => setShowPassword(!showPassword)}
           />
 
-          <Checkbox
+          {/*<Checkbox
             title="Mantener mi sesión iniciada"
             isChecked={isCheckedCheckbox}
             toggle={() => setIsCheckedCheckbox(!isCheckedCheckbox)}
-          />
+          />*/}
 
           <CustomButton
             text="Iniciar sesión"

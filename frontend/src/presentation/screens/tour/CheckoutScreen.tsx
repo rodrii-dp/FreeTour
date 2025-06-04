@@ -114,8 +114,16 @@ export const CheckoutScreen = ({route}: Props) => {
       Alert.alert('Debes iniciar sesión para reservar');
       return;
     }
+    // LOGS PARA DEPURAR DATOS DE LA RESERVA
+    console.log('Checkout - userId:', user._id);
+    console.log('Checkout - tourId:', tour._id);
+    console.log('Checkout - date:', selectedDate);
+    console.log('Checkout - hour:', selectedTime);
+    console.log(
+      'Checkout - people:',
+      participants.reduce((sum, p) => sum + p.count, 0),
+    );
     try {
-      // console.log('TANIA', tour);
       await bookingService.createBooking({
         userId: user._id,
         tourId: tour._id,
@@ -126,6 +134,7 @@ export const CheckoutScreen = ({route}: Props) => {
       Alert.alert('Reserva realizada con éxito');
       // navigation.navigate('Checkout');
     } catch (e) {
+      console.log('Error al reservar:', e, e?.response?.data);
       Alert.alert('Error al reservar', e?.message || 'Intenta de nuevo');
     }
   };

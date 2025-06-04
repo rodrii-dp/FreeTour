@@ -49,7 +49,6 @@ export const BookingsScreen = () => {
       }
       setLoading(true);
       try {
-        console.log(user._id);
         const data = await bookingService.getBookingsByUserId(user._id);
         setBookings(data);
       } catch (e) {
