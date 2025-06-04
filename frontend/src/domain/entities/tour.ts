@@ -16,7 +16,7 @@ export interface Stop {
 }
 
 export interface Provider {
-  id: string;
+  _id: string;
   name: string;
   tours: string[]; // Array of tour IDs
   direction: string;
@@ -87,7 +87,7 @@ export interface Tour {
 }
 
 export interface Booking {
-  id: string;
+  _id: string;
   userId: string;
   tourId: string;
   date: string;

@@ -6,6 +6,7 @@ import {TourDetailsScreen} from '../screens/tour/TourDetailsScreen.tsx';
 import {MapScreen} from '../screens/tour/MapScreen.tsx';
 import {CheckoutScreen} from '../screens/tour/CheckoutScreen.tsx';
 import {SearchResultsScreen} from '../screens/search/SearchResultsScreen.tsx';
+import {ProviderDetailsScreen} from '../screens/provider/ProviderDetailsScreen';
 
 export type HomeStackParamList = {
   Home: undefined;
@@ -13,6 +14,7 @@ export type HomeStackParamList = {
   Map: {stops: Stop[]};
   Checkout: {tour: Tour; selectedDate: string};
   SearchResults: any;
+  ProviderDetails: {providerId: string};
 };
 
 const Stack = createStackNavigator<HomeStackParamList>();
@@ -39,6 +41,11 @@ export const HomeStackNavigator = () => (
       name="SearchResults"
       component={SearchResultsScreen}
       options={{title: 'Resultados de Búsqueda', headerShown: false}}
+    />
+    <Stack.Screen
+      name="ProviderDetails"
+      component={ProviderDetailsScreen}
+      options={{title: 'Proveedor'}}
     />
   </Stack.Navigator>
 );

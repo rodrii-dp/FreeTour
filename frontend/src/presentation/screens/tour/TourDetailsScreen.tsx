@@ -167,6 +167,17 @@ export const TourDetailsScreen = ({route}: Props) => {
           <Text style={styles.category}>{tour.category.toUpperCase()}</Text>
           <Text style={styles.title}>{tour.title}</Text>
           <Text style={styles.provider}>Proveedor: {tour.provider.name}</Text>
+          <Pressable
+            style={styles.providerButton}
+            onPress={() =>
+              navigation.navigate('ProviderDetails', {
+                providerId: tour.provider._id,
+              })
+            }>
+            <Text style={styles.providerButtonText}>
+              Ver información del proveedor
+            </Text>
+          </Pressable>
           <View style={styles.ratingContainer}>
             <StarRating rating={tour.rating} />
             <Text style={styles.reviews}> {tour.reviews.length} reseñas</Text>
@@ -295,6 +306,19 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#34495E',
     marginBottom: '4%',
+  },
+  providerButton: {
+    backgroundColor: '#FF5A5F',
+    paddingVertical: 6,
+    paddingHorizontal: 16,
+    borderRadius: 6,
+    alignSelf: 'flex-start',
+    marginBottom: 12,
+  },
+  providerButtonText: {
+    color: '#fff',
+    fontWeight: 'bold',
+    fontSize: 14,
   },
   infoContainer: {
     flexDirection: 'row',
