@@ -51,7 +51,15 @@ export const TourReviewsScreen = () => {
       try {
         const bookings = await bookingService.getBookingsByUserId(user._id);
         console.log('Reservas', bookings);
-        const hasBooking = bookings.some((b: any) => b.tourId._id === tourId);
+        const hasBooking = bookings.some((b: any) => {
+          // b.tourId puede ser string o un objeto
+          if (typeof b.tourId === 'string') {
+            return b.tourId === tourId;
+          } else if (b.tourId && b.tourId._id) {
+            return b.tourId._id === tourId;
+          }
+          return false;
+        });
         console.log('Tiene reserva:', hasBooking);
         setCanReview(hasBooking);
       } catch {
@@ -110,16 +118,9 @@ export const TourReviewsScreen = () => {
     );
   }
 
-  if (!reviews.length) {
-    return (
-      <View style={styles.centered}>
-        <Text>No hay reseñas para este tour.</Text>
-      </View>
-    );
-  }
-
   return (
     <View style={{flex: 1}}>
+      {/* Formulario o mensajes de validación arriba */}
       {!user || !user._id ? (
         <View style={styles.centered}>
           <Text>Debes iniciar sesión para dejar una reseña.</Text>
@@ -154,18 +155,14 @@ export const TourReviewsScreen = () => {
             disabled={submitting}
           />
         </View>
-      ) : (
-        <View style={styles.centered}>
-          <Text>
-            Solo puedes dejar una reseña si tienes una reserva para este tour.
-          </Text>
-        </View>
-      )}
+      ) : null}
+
+      {/* Lista de reseñas o mensaje */}
       {loading ? (
         <View style={styles.centered}>
           <ActivityIndicator size="large" color="#FF5A5F" />
         </View>
-      ) : !reviews.length ? (
+      ) : reviews.length === 0 ? (
         <View style={styles.centered}>
           <Text>No hay reseñas para este tour.</Text>
         </View>

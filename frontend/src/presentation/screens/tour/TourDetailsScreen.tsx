@@ -16,13 +16,14 @@ import {
 import {HomeStackParamList} from '../../navigator/HomeStackNavigator.tsx';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {PaginationDots} from '../../components/common/PaginationDots';
-import {StarRating} from '../../components/common/StarRating';
 import {SettingRow} from '../../components/common/SettingRow';
 import {useScroll} from '../../hooks/useScroll';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useWindowDimensions} from 'react-native';
 import {CalendarModal} from '../../components/common/CalendarModal';
 import {useFavoritesStore} from '../../stores/favoritesStore';
+import {useFocusEffect} from '@react-navigation/native';
+import {tourService} from '../../../infrastructure/api/tourService';
 
 interface Props {
   route: RouteProp<HomeStackParamList, 'TourDetails'>;
@@ -37,6 +38,7 @@ export const TourDetailsScreen = ({route}: Props) => {
   const {tour} = route.params;
 
   const [isCalendarVisible, setIsCalendarVisible] = useState(false);
+  const [tourData, setTourData] = useState(tour);
 
   const {activeIndex, onScroll} = useScroll();
   const {width} = useWindowDimensions();
@@ -157,34 +159,48 @@ export const TourDetailsScreen = ({route}: Props) => {
     );
   };
 
+  useFocusEffect(
+    React.useCallback(() => {
+      const fetchTour = async () => {
+        try {
+          const updatedTour = await tourService.getTourById(tour._id);
+          setTourData(updatedTour);
+        } catch (e) {
+          // opcional: manejar error
+        }
+      };
+      fetchTour();
+    }, [tour._id]),
+  );
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <ScrollView style={styles.container}>
         {renderImageCarousel()}
         <View style={styles.content}>
-          <Text style={styles.category}>{tour.category.toUpperCase()}</Text>
-          <Text style={styles.title}>{tour.title}</Text>
-          <Text style={styles.provider}>Proveedor: {tour.provider.name}</Text>
+          <Text style={styles.category}>{tourData.category.toUpperCase()}</Text>
+          <Text style={styles.title}>{tourData.title}</Text>
+          <Text style={styles.provider}>
+            Proveedor: {tourData.provider.name}
+          </Text>
           <Pressable
             style={styles.providerButton}
             onPress={() =>
               navigation.navigate('ProviderDetails', {
-                providerId: tour.provider._id,
+                providerId: tourData.provider._id,
               })
             }>
             <Text style={styles.providerButtonText}>
               Ver información del proveedor
             </Text>
           </Pressable>
-          <View style={styles.ratingContainer}>
-            <StarRating rating={tour.rating} />
-            <Pressable
-              onPress={() =>
-                navigation.navigate('TourReviews', {tourId: tour._id})
-              }>
-              <Text style={styles.reviews}> {tour.reviews.length} reseñas</Text>
-            </Pressable>
-          </View>
+          <Pressable
+            style={styles.providerButton}
+            onPress={() =>
+              navigation.navigate('TourReviews', {tourId: tourData._id})
+            }>
+            <Text style={styles.providerButtonText}>Ver reseñas</Text>
+          </Pressable>
 
           <View style={styles.infoContainer}>
             <View style={styles.infoItem}>
