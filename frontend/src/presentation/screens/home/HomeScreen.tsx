@@ -6,7 +6,6 @@ import {
   StyleSheet,
   SafeAreaView,
   ActivityIndicator,
-  Dimensions,
 } from 'react-native';
 import {IconButton, Searchbar} from 'react-native-paper';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
@@ -18,18 +17,15 @@ import {ServiceButton} from './ServiceButton';
 import {HeroSlider} from '../../components/common/HeroSlider.tsx';
 import {tourService} from '../../../infrastructure/api/tourService.ts';
 import {apiClient} from '../../../infrastructure/api/apiClient.ts';
-import {useUser} from '../../context/UserContext.tsx';
 
 export const HomeScreen = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-  const [categories, setCategories] = useState<Service[]>([]);
   const [categoriesWithTours, setCategoriesWithTours] = useState<Service[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [categoryTours, setCategoryTours] = useState<Tour[]>([]);
   const [loadingCategoryTours, setLoadingCategoryTours] = useState(false);
 
-  const {user, isLoading: isUserLoading} = useUser();
   const tours = useToursStore(state => state.tours);
   const setTours = useToursStore(state => state.setTours);
 
@@ -58,33 +54,12 @@ export const HomeScreen = () => {
     }
   };
 
-  const fetchPopularTours = async (category: string) => {
-    try {
-      const popularTours = await tourService.getTours({category, limit: '5'});
-      const toursData = Array.isArray(popularTours)
-        ? popularTours
-        : popularTours.data || [];
-      return toursData;
-    } catch (error) {
-      console.error(`Error fetching popular tours for ${category}:`, error);
-      return [];
-    }
-  };
-
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const toursResponse = await tourService.getTours({
-          onlyDiscounted: true,
-          limit: '3',
-        });
-        const toursData = Array.isArray(toursResponse)
-          ? toursResponse
-          : toursResponse.data || [];
-
+        const toursData = await tourService.getMostRecent(3);
         setTours(toursData);
         setCategoryTours(toursData);
-
         setIsLoading(false);
       } catch (error) {
         console.error(error);
@@ -126,7 +101,6 @@ export const HomeScreen = () => {
           category => category !== null,
         );
 
-        setCategories(response.data); // Keep all categories for reference
         setCategoriesWithTours(filteredCategories); // Only categories with tours
       } catch (error) {
         console.error('Error fetching categories:', error);
@@ -255,7 +229,7 @@ export const HomeScreen = () => {
               onPress={resetCategorySelection}
               isSelected={selectedCategory === null}
             />
-            {categoriesWithTours.map((category, index) => (
+            {categoriesWithTours.map(category => (
               <ServiceButton
                 key={category._id}
                 icon={category.icon}
