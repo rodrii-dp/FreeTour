@@ -6,9 +6,6 @@ async function bootstrap() {
 
   await app.listen(3000);
 
-  console.log(app.getHttpServer()._events.request._router.stack
-    .filter(r => r.route)
-    .map(r => r.route.path));
   app.enableCors({
     origin: 'https://desperate-joan-freetour-ab6f618a.koyeb.app',
     credentials: true, // si usas cookies
