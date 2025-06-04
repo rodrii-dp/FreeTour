@@ -44,15 +44,7 @@ export const MenuSection = () => {
 
       <Text style={styles.sectionHeader}>Comentarios</Text>
       <SettingRow title="Deja una valoración" onPress={() => {}} />
-<<<<<<< HEAD
-      <SettingRow
-        title="Cerrar sesión"
-        onPress={() => rootNavigation.navigate('Signin')} // Navegación en el stack raíz
-        red
-      />
-=======
       <SettingRow title="Cerrar sesión" onPress={logout} red />
->>>>>>> 7f1382538ad45e2c7f880fe858193e24035322ad
     </ScrollView>
   );
 };

@@ -79,12 +79,10 @@ export interface Tour {
     country: string;
   };
   meetingPoint: string;
-<<<<<<<<< Temporary merge branch 1
   availability: {
     dateStart: Date;
     dateEnd: Date;
   };
-=========
   nonAvailableDates: Availability[];
 }
 
@@ -95,5 +93,4 @@ export interface Booking {
   date: string;
   hour: string;
   people: number;
->>>>>>>>> Temporary merge branch 2
 }

@@ -1,12 +1,4 @@
-<<<<<<< HEAD
-<<<<<<< HEAD
-import React, {useState} from 'react';
-=======
 import React, {useCallback, useEffect, useLayoutEffect, useState} from 'react';
->>>>>>> develop
-=======
-import React, {useCallback, useEffect, useLayoutEffect, useState} from 'react';
->>>>>>> 7f1382538ad45e2c7f880fe858193e24035322ad
 import {
   FlatList,
   Image,
@@ -21,18 +13,7 @@ import {
   type RouteProp,
   useNavigation,
 } from '@react-navigation/native';
-<<<<<<< HEAD
-<<<<<<< HEAD
 import {HomeStackParamList} from '../../navigator/HomeStackNavigator.tsx';
-import Icon from 'react-native-vector-icons/Ionicons';
-import {PaginationDots} from '../../components/common/PaginationDots.tsx';
-import {StarRating} from '../../components/common/StarRating.tsx';
-import {SettingRow} from '../../components/common/SettingRow.tsx';
-import {useScroll} from '../../hooks/useScroll.tsx';
-=======
-=======
->>>>>>> 7f1382538ad45e2c7f880fe858193e24035322ad
-import type {HomeStackParamList} from '../../navigation/HomeStackNavigator';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {PaginationDots} from '../../components/common/PaginationDots';
 import {StarRating} from '../../components/common/StarRating';
@@ -42,41 +23,13 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import {useWindowDimensions} from 'react-native';
 import {CalendarModal} from '../../components/common/CalendarModal';
 import {useFavoritesStore} from '../../stores/favoritesStore';
-<<<<<<< HEAD
->>>>>>> develop
-=======
->>>>>>> 7f1382538ad45e2c7f880fe858193e24035322ad
 
 interface Props {
   route: RouteProp<HomeStackParamList, 'TourDetails'>;
 }
 
-<<<<<<< HEAD
-<<<<<<< HEAD
 type TourDetailsRouteProp = RouteProp<HomeStackParamList, 'TourDetails'>;
 
-export const TourDetailsScreen = () => {
-  const route = useRoute<TourDetailsRouteProp>();
-  const {tour} = route.params;
-
-  const navigation = useNavigation<NavigationProp<HomeStackParamList>>();
-
-  const {activeIndex, onScroll} = useScroll();
-
-  const renderImageCarousel = () => (
-    <View>
-      <FlatList
-        horizontal
-        pagingEnabled
-        showsHorizontalScrollIndicator={false}
-        data={tour.images}
-        keyExtractor={item => item.id}
-        onScroll={onScroll}
-        renderItem={({item}) => (
-          <Image source={{uri: item.imageUrl}} style={styles.image} />
-=======
-=======
->>>>>>> 7f1382538ad45e2c7f880fe858193e24035322ad
 const DEFAULT_IMAGE = require('../../assets/no_image.png');
 
 export const TourDetailsScreen = ({route}: Props) => {
@@ -201,10 +154,6 @@ export const TourDetailsScreen = ({route}: Props) => {
               totalDots={tour.images.length}
             />
           </View>
-<<<<<<< HEAD
->>>>>>> develop
-=======
->>>>>>> 7f1382538ad45e2c7f880fe858193e24035322ad
         )}
       </View>
     );
@@ -222,63 +171,6 @@ export const TourDetailsScreen = ({route}: Props) => {
             <StarRating rating={tour.rating} />
             <Text style={styles.reviews}> {tour.reviews.length} reseñas</Text>
           </View>
-<<<<<<< HEAD
-<<<<<<< HEAD
-          <View style={styles.infoItem}>
-            <Icon name="language-outline" size={24} color="#34495E" />
-            <Text style={styles.infoText}>{tour.language.join(', ')}</Text>
-          </View>
-        </View>
-
-        <Text style={styles.sectionTitle}>Acerca de este tour</Text>
-        <Text style={styles.description}>{tour.description}</Text>
-
-        <Text style={styles.sectionTitle}>Itinerario</Text>
-        {/*tour.stops.map((stop, index) => (
-          <View key={index} style={styles.stopItem}>
-            <Text style={styles.stopNumber}>{index + 1}</Text>
-            <Text style={styles.stopText}>{stop.stopName}</Text>
-          </View>
-        ))*/}
-        <SettingRow
-          title="Ver itinerario"
-          onPress={() => navigation.navigate('Map', {stops: tour.stops})}
-          style={{
-            borderWidth: 1,
-            borderColor: '#E0E0E0',
-            borderRadius: 8,
-          }}
-        />
-
-        <Text style={styles.sectionTitle}>Punto de encuentro</Text>
-        <Text style={styles.meetingPoint}>{tour.meetingPoint}</Text>
-
-        <Text style={styles.sectionTitle}>Disponibilidad</Text>
-        <Text style={styles.availability}>
-          {`Del ${new Date(
-            tour.availability.dateStart,
-          ).toLocaleDateString()} al ${new Date(
-            tour.availability.dateEnd,
-          ).toLocaleDateString()}`}
-        </Text>
-
-        <View style={styles.priceContainer}>
-          <Text style={styles.priceLabel}>Precio</Text>
-          {tour.price.basedOnTips ? (
-            <Text style={styles.price}>Basado en propinas</Text>
-          ) : (
-            <Text style={styles.price}>{`${tour.price.value}€`}</Text>
-          )}
-        </View>
-
-        <Pressable style={styles.bookButton}>
-          <Text style={styles.bookButtonText}>Reservar ahora</Text>
-        </Pressable>
-      </View>
-    </ScrollView>
-=======
-=======
->>>>>>> 7f1382538ad45e2c7f880fe858193e24035322ad
 
           <View style={styles.infoContainer}>
             <View style={styles.infoItem}>
@@ -300,7 +192,6 @@ export const TourDetailsScreen = ({route}: Props) => {
             onPress={() =>
               navigation.navigate('Map', {
                 stops: tour.stops,
-                meetingPoint: tour.meetingPoint,
               })
             }
             style={{
@@ -358,10 +249,6 @@ export const TourDetailsScreen = ({route}: Props) => {
         nonAvailableDates={nonAvailableDates}
       />
     </SafeAreaView>
-<<<<<<< HEAD
->>>>>>> develop
-=======
->>>>>>> 7f1382538ad45e2c7f880fe858193e24035322ad
   );
 };
 
@@ -441,17 +328,6 @@ const styles = StyleSheet.create({
     color: '#34495E',
     marginBottom: '4%',
   },
-<<<<<<< HEAD
-<<<<<<< HEAD
-  availability: {
-    fontSize: 16,
-    color: '#34495E',
-    marginBottom: 16,
-  },
-=======
->>>>>>> develop
-=======
->>>>>>> 7f1382538ad45e2c7f880fe858193e24035322ad
   priceContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -503,11 +379,6 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
   },
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-=======
->>>>>>> 7f1382538ad45e2c7f880fe858193e24035322ad
   safeArea: {
     flex: 1,
     backgroundColor: '#FFFFFF',
@@ -518,8 +389,4 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderTopColor: '#E0E0E0',
   },
-<<<<<<< HEAD
->>>>>>> develop
-=======
->>>>>>> 7f1382538ad45e2c7f880fe858193e24035322ad
 });

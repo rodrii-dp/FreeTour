@@ -1,6 +1,6 @@
 import React, {useEffect, useRef, useState, useCallback} from 'react';
 import {RouteProp, useRoute, useFocusEffect} from '@react-navigation/native';
-import {HomeStackParamList} from '../../navigation/HomeStackNavigator.tsx';
+import {HomeStackParamList} from '../../navigator/HomeStackNavigator.tsx';
 import MapView, {Marker, Polyline, PROVIDER_GOOGLE} from 'react-native-maps';
 import {StyleSheet, ScrollView, Text, View, Dimensions} from 'react-native';
 
@@ -10,7 +10,7 @@ const {width, height} = Dimensions.get('window');
 
 export const MapScreen = () => {
   const route = useRoute<MapRouteProp>();
-  const {stops, meetingPoint} = route.params;
+  const {stops} = route.params;
 
   const mapRef = useRef<MapView>(null);
   const [mapReady, setMapReady] = useState(false);
@@ -101,11 +101,6 @@ export const MapScreen = () => {
     );
   };
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-=======
->>>>>>> 7f1382538ad45e2c7f880fe858193e24035322ad
   if (!stops || stops.length === 0) {
     return (
       <View style={styles.container}>
@@ -116,10 +111,6 @@ export const MapScreen = () => {
     );
   }
 
-<<<<<<< HEAD
->>>>>>> develop
-=======
->>>>>>> 7f1382538ad45e2c7f880fe858193e24035322ad
   return (
     <View style={styles.container}>
       <MapView
@@ -135,9 +126,6 @@ export const MapScreen = () => {
 
       <ScrollView style={styles.stopsContainer}>
         <Text style={styles.title}>Itinerario del tour</Text>
-        <Text style={styles.meetingPoint}>
-          Punto de encuentro &rarr; {meetingPoint}
-        </Text>
 
         {stops.map((stop, index) => (
           <View key={`stop-${index}`} style={styles.stopItem}>
@@ -219,21 +207,12 @@ const styles = StyleSheet.create({
     color: '#2C3E50',
     marginBottom: 4,
   },
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-=======
->>>>>>> 7f1382538ad45e2c7f880fe858193e24035322ad
   meetingPoint: {
     fontSize: 16,
     fontWeight: 'bold',
     color: '#2C3E50',
     marginBottom: 8,
   },
-<<<<<<< HEAD
->>>>>>> develop
-=======
->>>>>>> 7f1382538ad45e2c7f880fe858193e24035322ad
   stopAddress: {
     fontSize: 14,
     color: '#7F8C8D',
