@@ -26,7 +26,12 @@ export const ProviderDetailsScreen = () => {
     const fetchProvider = async () => {
       try {
         const response = await apiClient.get(`/providers/${providerId}`);
-        setProvider(response.data);
+        // Si la respuesta no tiene datos válidos, setear null
+        if (!response.data || !response.data._id) {
+          setProvider(null);
+        } else {
+          setProvider(response.data);
+        }
       } catch (error) {
         setProvider(null);
       } finally {

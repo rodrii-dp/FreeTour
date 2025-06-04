@@ -28,8 +28,6 @@ interface Props {
   route: RouteProp<HomeStackParamList, 'TourDetails'>;
 }
 
-type TourDetailsRouteProp = RouteProp<HomeStackParamList, 'TourDetails'>;
-
 const DEFAULT_IMAGE = require('../../assets/no_image.png');
 
 export const TourDetailsScreen = ({route}: Props) => {
