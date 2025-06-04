@@ -50,7 +50,9 @@ export const TourReviewsScreen = () => {
       }
       try {
         const bookings = await bookingService.getBookingsByUserId(user._id);
-        const hasBooking = bookings.some((b: any) => b.tourId === tourId);
+        console.log('Reservas', bookings);
+        const hasBooking = bookings.some((b: any) => b.tourId._id === tourId);
+        console.log('Tiene reserva:', hasBooking);
         setCanReview(hasBooking);
       } catch {
         setCanReview(false);
@@ -72,14 +74,17 @@ export const TourReviewsScreen = () => {
     }
     setSubmitting(true);
     try {
-      // Aquí deberías obtener el userId real del usuario autenticado
-      const userId = 'userId-demo';
+      if (!user || !user._id) {
+        setError('Debes iniciar sesión para dejar una reseña.');
+        setSubmitting(false);
+        return;
+      }
       const newReview = {
         title: title.trim(),
         comment: comment.trim(),
         rating: ratingNum,
         date: new Date().toISOString(),
-        userId,
+        userId: user._id,
         tourId,
       };
       await tourService.createReview(newReview);
@@ -119,13 +124,7 @@ export const TourReviewsScreen = () => {
         <View style={styles.centered}>
           <Text>Debes iniciar sesión para dejar una reseña.</Text>
         </View>
-      ) : !canReview ? (
-        <View style={styles.centered}>
-          <Text>
-            Solo puedes dejar una reseña si tienes una reserva para este tour.
-          </Text>
-        </View>
-      ) : (
+      ) : canReview ? (
         <View style={styles.formContainer}>
           <Text style={styles.formTitle}>Añadir reseña</Text>
           <TextInput
@@ -154,6 +153,12 @@ export const TourReviewsScreen = () => {
             onPress={handleAddReview}
             disabled={submitting}
           />
+        </View>
+      ) : (
+        <View style={styles.centered}>
+          <Text>
+            Solo puedes dejar una reseña si tienes una reserva para este tour.
+          </Text>
         </View>
       )}
       {loading ? (
