@@ -178,7 +178,12 @@ export const TourDetailsScreen = ({route}: Props) => {
           </Pressable>
           <View style={styles.ratingContainer}>
             <StarRating rating={tour.rating} />
-            <Text style={styles.reviews}> {tour.reviews.length} reseñas</Text>
+            <Pressable
+              onPress={() =>
+                navigation.navigate('TourReviews', {tourId: tour._id})
+              }>
+              <Text style={styles.reviews}> {tour.reviews.length} reseñas</Text>
+            </Pressable>
           </View>
 
           <View style={styles.infoContainer}>

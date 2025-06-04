@@ -55,4 +55,28 @@ export const tourService = {
     const response = await apiClient.delete(`/tours/${id}`);
     return response.data;
   },
+
+  getReviewsByTour: async (tourId: string) => {
+    const response = await apiClient.get(`/reviews/tour/${tourId}`);
+    return response.data;
+  },
+
+  createReview: async (review: any) => {
+    const response = await apiClient.post('/reviews', review);
+    return response.data;
+  },
 };
+
+// Mapea _id a id en las reviews de un tour
+export function mapReviews(
+  reviews: any[],
+): import('../../domain/entities/tour').Review[] {
+  return reviews.map(r => ({
+    id: r._id || r.id,
+    title: r.title,
+    userId: r.userId,
+    date: r.date,
+    rating: r.rating,
+    comment: r.comment,
+  }));
+}

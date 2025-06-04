@@ -94,8 +94,18 @@ export class ReviewController {
   constructor(private readonly reviewService: ReviewService) {}
 
   @Post()
-  create(@Body() review: Partial<Review>) {
-    return this.reviewService.create(review);
+  async create(@Body() review: Partial<Review>) {
+    const createdReview = await this.reviewService.create(review);
+    const tourService = (this as any).tourService;
+    const reviewId = (createdReview as any)._id;
+    if (tourService && createdReview && createdReview.tourId) {
+      await tourService.tourModel.findByIdAndUpdate(
+        createdReview.tourId,
+        { $addToSet: { reviews: reviewId } },
+        { new: true }
+      );
+    }
+    return createdReview;
   }
 
   @Get()
