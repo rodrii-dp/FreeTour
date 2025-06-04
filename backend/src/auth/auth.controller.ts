@@ -36,4 +36,10 @@ export class AuthController {
   async login(@Body() body: any) {
     return this.authService.login(body);
   }
+
+  @Post('refresh')
+  async refresh(@Body('refresh_token') refreshToken: string) {
+    if (!refreshToken) throw new BadRequestException('Refresh token no proporcionado');
+    return this.authService.refreshToken(refreshToken);
+  }
 }
