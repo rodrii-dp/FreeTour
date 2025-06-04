@@ -124,6 +124,19 @@ export const HomeScreen = () => {
         );
 
         setCategoriesWithTours(filteredCategories); // Only categories with tours
+        // Seleccionar la primera categoría automáticamente si existe
+        if (filteredCategories.length > 0) {
+          setSelectedCategory(filteredCategories[0]._id);
+          // Cargar tours de la primera categoría
+          const categoryToursResponse = await tourService.getTours({
+            category: filteredCategories[0].name.toLowerCase(),
+            limit: '10',
+          });
+          const toursData = Array.isArray(categoryToursResponse)
+            ? categoryToursResponse
+            : categoryToursResponse.data || [];
+          setCategoryTours(toursData);
+        }
       } catch (error) {
         console.error('Error fetching categories:', error);
       }

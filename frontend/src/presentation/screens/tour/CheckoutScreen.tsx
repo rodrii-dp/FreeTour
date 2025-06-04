@@ -36,9 +36,37 @@ export const CheckoutScreen = ({route}: Props) => {
     {type: 'Bebé', ageRange: 'Hasta los 3 años', count: 0},
   ]);
 
-  const [selectedTime, setSelectedTime] = useState(
-    tour.nonAvailableDates[0]?.hours[0] || '',
+  // Declarar primero allPossibleHours
+  const allPossibleHours = [
+    '10:00',
+    '11:00',
+    '12:00',
+    '13:00',
+    '14:00',
+    '15:00',
+    '16:00',
+    '17:00',
+    '18:00',
+    '19:00',
+    '20:00',
+  ];
+
+  // Calcular las horas no disponibles para el día seleccionado
+  const nonAvailable =
+    tour.nonAvailableDates.find(date => date.date === selectedDate)?.hours ||
+    [];
+  // Calcular las horas realmente disponibles
+  const availableTimes = allPossibleHours.filter(
+    hour => !nonAvailable.includes(hour),
   );
+
+  // selectedTime debe ser la primera hora disponible real para ese día
+  const [selectedTime, setSelectedTime] = useState(availableTimes[0] || '');
+
+  // Si el usuario cambia de fecha (selectedDate), actualizar la hora seleccionada automáticamente
+  React.useEffect(() => {
+    setSelectedTime(availableTimes[0] || '');
+  }, [selectedDate, availableTimes]);
 
   const {user} = useUser();
 
@@ -87,38 +115,17 @@ export const CheckoutScreen = ({route}: Props) => {
     }, 0);
   };
 
-  const allPossibleHours = [
-    '10:00',
-    '11:00',
-    '12:00',
-    '13:00',
-    '14:00',
-    '15:00',
-    '16:00',
-    '17:00',
-    '18:00',
-    '19:00',
-    '20:00',
-  ];
-
-  const nonAvailable =
-    tour.nonAvailableDates.find(date => date.date === selectedDate)?.hours ||
-    [];
-
-  const availableTimes = allPossibleHours.filter(
-    hour => !nonAvailable.includes(hour),
-  );
-
   const handleCheckout = async () => {
     if (!user) {
       Alert.alert('Debes iniciar sesión para reservar');
       return;
     }
-    // LOGS PARA DEPURAR DATOS DE LA RESERVA
+    // Si no hay hora seleccionada, usar la primera disponible
+    const hourToSend = selectedTime || availableTimes[0] || '';
     console.log('Checkout - userId:', user._id);
     console.log('Checkout - tourId:', tour._id);
     console.log('Checkout - date:', selectedDate);
-    console.log('Checkout - hour:', selectedTime);
+    console.log('Checkout - hour:', hourToSend);
     console.log(
       'Checkout - people:',
       participants.reduce((sum, p) => sum + p.count, 0),
@@ -128,14 +135,16 @@ export const CheckoutScreen = ({route}: Props) => {
         userId: user._id,
         tourId: tour._id,
         date: selectedDate,
-        hour: selectedTime,
+        hour: hourToSend,
         people: participants.reduce((sum, p) => sum + p.count, 0),
       });
       Alert.alert('Reserva realizada con éxito');
       // navigation.navigate('Checkout');
-    } catch (e) {
+    } catch (e: any) {
+      const errorMessage =
+        e?.response?.data?.message || e?.message || 'Intenta de nuevo';
       console.log('Error al reservar:', e, e?.response?.data);
-      Alert.alert('Error al reservar', e?.message || 'Intenta de nuevo');
+      Alert.alert('Error al reservar', errorMessage);
     }
   };
 
