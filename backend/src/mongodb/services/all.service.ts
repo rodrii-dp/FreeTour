@@ -218,7 +218,7 @@ export class TourService {
       query['price.discount'] = { $exists: true, $ne: null };
     }
 
-    const limit = filters.limit ? parseInt(filters.limit, 10) : 20;
+    const limit = filters.limit ? parseInt(filters.limit, 10) : 100;
     return this.tourModel.find(query).limit(limit).exec();
   }
 

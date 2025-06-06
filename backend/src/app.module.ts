@@ -7,7 +7,7 @@ import { AuthModule } from './auth/auth.module';
 @Module({
   imports: [
     MongooseModule.forRoot(
-      'mongodb+srv://oscarhaotianceb:20041125oscar@cluster0.ag9u1.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0',
+      `mongodb+srv://${process.env.DATABASE_USER}:${process.env.DATABASE_PASSWORD}@cluster0.ag9u1.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`,
     ), // meter en un .env
     GeneralModule,
     AuthModule
