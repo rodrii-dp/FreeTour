@@ -63,10 +63,13 @@ export const CheckoutScreen = ({route}: Props) => {
   // selectedTime debe ser la primera hora disponible real para ese día
   const [selectedTime, setSelectedTime] = useState(availableTimes[0] || '');
 
-  // Si el usuario cambia de fecha (selectedDate), actualizar la hora seleccionada automáticamente
+  // Si el usuario cambia de fecha (selectedDate) o las horas disponibles cambian, actualizar la hora seleccionada automáticamente
   React.useEffect(() => {
-    setSelectedTime(availableTimes[0] || '');
-  }, [selectedDate, availableTimes]);
+    // Si la hora seleccionada ya no está disponible, selecciona la primera disponible
+    if (!availableTimes.includes(selectedTime)) {
+      setSelectedTime(availableTimes[0] || '');
+    }
+  }, [selectedDate, availableTimes, selectedTime]);
 
   const {user} = useUser();
 
