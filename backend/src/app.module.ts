@@ -3,11 +3,12 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { GeneralModule } from './mongodb/all.module';
 import { DatabaseService } from './mongodb/services/database.service';
 import { AuthModule } from './auth/auth.module';
+import * as process from "node:process";
 
 @Module({
   imports: [
     MongooseModule.forRoot(
-      `mongodb+srv://oscarhaotianceb:20041125oscar@cluster0.ag9u1.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`,
+      `mongodb+srv://${process.env.MONGODB_USER}:${process.env.MONDOGB_PASS}@cluster0.ag9u1.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`,
     ), // meter en un .env
     GeneralModule,
     AuthModule
