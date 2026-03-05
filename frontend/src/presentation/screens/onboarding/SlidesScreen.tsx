@@ -45,43 +45,75 @@ const items: Slide[] = [
 export const SlidesScreen = () => {
   const flatListRef = useRef<FlatList>(null);
   const navigation = useNavigation<NavigationProp<RootStackParams>>();
+  const {width} = useWindowDimensions();
 
-  const {activeIndex: currentSlideIndex, onScroll} = useScroll();
+  const {activeIndex: currentSlideIndex, setActiveIndex, onScroll} = useScroll();
+
+  const isLastSlide = currentSlideIndex === items.length - 1;
+
+  const goToNextSlide = () => {
+    if (isLastSlide) {
+      navigation.navigate('Signin');
+    } else {
+      const nextIndex = currentSlideIndex + 1;
+      flatListRef.current?.scrollToIndex({index: nextIndex, animated: true});
+      setActiveIndex(nextIndex);
+    }
+  };
+
+  const skipOnboarding = () => {
+    navigation.navigate('Signin');
+  };
 
   return (
     <View style={styles.container}>
+      {/* Skip button – hidden on last slide */}
+      <View style={styles.skipRow}>
+        {!isLastSlide && (
+          <Pressable onPress={skipOnboarding} style={styles.skipButton}>
+            <Text style={styles.skipText}>Saltar</Text>
+          </Pressable>
+        )}
+      </View>
+
+      {/* Slides */}
       <View style={styles.slidesContainer}>
         <FlatList
           ref={flatListRef}
           data={items}
-          renderItem={({item}) => (
-            <SlideItem item={item} currentSlideIndex={currentSlideIndex} />
-          )}
+          renderItem={({item}) => <SlideItem item={item} width={width} />}
           keyExtractor={item => item.title}
           horizontal
           pagingEnabled
           onScroll={onScroll}
           showsHorizontalScrollIndicator={false}
+          scrollEventThrottle={16}
+          getItemLayout={(_, index) => ({
+            length: width,
+            offset: width * index,
+            index,
+          })}
         />
       </View>
 
+      {/* Pagination dots – outside the FlatList so they don't flicker */}
+      <View style={styles.dotsContainer}>
+        <PaginationDots
+          totalDots={items.length}
+          activeIndex={currentSlideIndex}
+        />
+      </View>
+
+      {/* Action buttons */}
       <View style={styles.buttonsContainer}>
         <CustomButton
-          text="Iniciar sesión"
-          onPress={() => navigation.navigate('Signin')}
+          text={isLastSlide ? 'Empezar' : 'Siguiente'}
+          onPress={goToNextSlide}
         />
         <Pressable
-          style={{
-            alignSelf: 'center',
-          }}
+          style={styles.secondaryLink}
           onPress={() => navigation.navigate('Signup')}>
-          <Text
-            style={{
-              ...globalStyles.link,
-              textAlign: 'center',
-            }}>
-            Crear cuenta
-          </Text>
+          <Text style={globalStyles.link}>Crear cuenta</Text>
         </Pressable>
       </View>
     </View>
@@ -90,57 +122,27 @@ export const SlidesScreen = () => {
 
 interface SlideItemProps {
   item: Slide;
-  currentSlideIndex: number;
+  width: number;
 }
 
-const SlideItem = ({item, currentSlideIndex}: SlideItemProps) => {
-  const {width} = useWindowDimensions();
+const SlideItem = ({item, width}: SlideItemProps) => {
   const {title, desc, SvgComponent} = item;
 
   return (
-    <View
-      style={{
-        flex: 1,
-        width,
-        justifyContent: 'center',
-      }}>
+    <View style={[styles.slideItem, {width}]}>
       <SvgComponent
         width={width * 0.7}
         height={width * 0.7}
-        style={{
-          alignSelf: 'center',
-        }}
+        style={styles.slideImage}
       />
-
       <Text
         style={[
           globalStyles.title,
-          {
-            marginBottom: 7,
-            fontWeight: 600,
-            textAlign: 'center',
-          },
+          styles.slideTitle,
         ]}>
         {title}
       </Text>
-      <Text
-        style={{
-          color: '#afb0b3',
-          fontSize: 18,
-          textAlign: 'center',
-          marginHorizontal: 15,
-        }}>
-        {desc}
-      </Text>
-
-      {items.length > 1 && (
-        <View style={styles.dotsContainer}>
-          <PaginationDots
-            totalDots={items.length}
-            activeIndex={currentSlideIndex}
-          />
-        </View>
-      )}
+      <Text style={styles.slideDesc}>{desc}</Text>
     </View>
   );
 };
@@ -150,14 +152,53 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: 'white',
   },
+  skipRow: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    paddingHorizontal: 20,
+    paddingTop: 56,
+    minHeight: 80,
+  },
+  skipButton: {
+    padding: 8,
+  },
+  skipText: {
+    color: '#FF5A5F',
+    fontSize: 16,
+    fontWeight: '600',
+  },
   slidesContainer: {
     flex: 1,
   },
+  dotsContainer: {
+    paddingVertical: 20,
+    alignItems: 'center',
+  },
   buttonsContainer: {
     paddingHorizontal: 24,
-    paddingBottom: 24,
+    paddingBottom: 32,
+    gap: 12,
   },
-  dotsContainer: {
-    marginTop: 40,
+  secondaryLink: {
+    alignSelf: 'center',
+  },
+  slideItem: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 24,
+  },
+  slideImage: {
+    alignSelf: 'center',
+  },
+  slideTitle: {
+    marginBottom: 7,
+    fontWeight: '600',
+    textAlign: 'center',
+  },
+  slideDesc: {
+    color: '#afb0b3',
+    fontSize: 18,
+    textAlign: 'center',
   },
 });

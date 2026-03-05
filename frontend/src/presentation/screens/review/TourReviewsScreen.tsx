@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {
   View,
   Text,
@@ -6,7 +6,8 @@ import {
   ActivityIndicator,
   FlatList,
   TextInput,
-  Button,
+  TouchableOpacity,
+  Pressable,
 } from 'react-native';
 import {RouteProp, useRoute} from '@react-navigation/native';
 import {HomeStackParamList} from '../../navigator/HomeStackNavigator';
@@ -14,6 +15,8 @@ import {tourService, mapReviews} from '../../../infrastructure/api/tourService';
 import {Review} from '../../../domain/entities/tour';
 import {useUser} from '../../context/UserContext';
 import {bookingService} from '../../../infrastructure/api/bookingService';
+import {StarRating} from '../../components/common/StarRating';
+import Icon from 'react-native-vector-icons/Ionicons';
 
 export const TourReviewsScreen = () => {
   const route = useRoute<RouteProp<HomeStackParamList, 'TourReviews'>>();
@@ -22,25 +25,27 @@ export const TourReviewsScreen = () => {
   const [loading, setLoading] = useState(true);
   const [title, setTitle] = useState('');
   const [comment, setComment] = useState('');
-  const [rating, setRating] = useState('');
+  const [rating, setRating] = useState(0);
   const [error, setError] = useState('');
   const [submitting, setSubmitting] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
   const {user} = useUser();
   const [canReview, setCanReview] = useState(false);
 
-  useEffect(() => {
-    const fetchReviews = async () => {
-      try {
-        const response = await tourService.getReviewsByTour(tourId);
-        setReviews(mapReviews(response));
-      } catch (e) {
-        setReviews([]);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchReviews();
+  const fetchReviews = useCallback(async () => {
+    try {
+      const response = await tourService.getReviewsByTour(tourId);
+      setReviews(mapReviews(response));
+    } catch (e) {
+      setReviews([]);
+    } finally {
+      setLoading(false);
+    }
   }, [tourId]);
+
+  useEffect(() => {
+    fetchReviews();
+  }, [fetchReviews]);
 
   useEffect(() => {
     const checkBooking = async () => {
@@ -51,7 +56,6 @@ export const TourReviewsScreen = () => {
       try {
         const bookings = await bookingService.getBookingsByUserId(user._id);
         const hasBooking = bookings.some((b: any) => {
-          // b.tourId puede ser string o un objeto
           if (typeof b.tourId === 'string') {
             return b.tourId === tourId;
           } else if (b.tourId && b.tourId._id) {
@@ -69,13 +73,8 @@ export const TourReviewsScreen = () => {
 
   const handleAddReview = async () => {
     setError('');
-    if (!title.trim() || !comment.trim() || !rating.trim()) {
+    if (!title.trim() || !comment.trim() || rating === 0) {
       setError('Todos los campos son obligatorios.');
-      return;
-    }
-    const ratingNum = Number(rating);
-    if (isNaN(ratingNum) || ratingNum < 1 || ratingNum > 5) {
-      setError('La puntuación debe ser un número entre 1 y 5.');
       return;
     }
     setSubmitting(true);
@@ -88,7 +87,7 @@ export const TourReviewsScreen = () => {
       const newReview = {
         title: title.trim(),
         comment: comment.trim(),
-        rating: ratingNum,
+        rating,
         date: new Date().toISOString(),
         userId: user._id,
         tourId,
@@ -96,17 +95,105 @@ export const TourReviewsScreen = () => {
       await tourService.createReview(newReview);
       setTitle('');
       setComment('');
-      setRating('');
+      setRating(0);
       setError('');
-      // Recargar reseñas
-      const response = await tourService.getReviewsByTour(tourId);
-      setReviews(mapReviews(response));
+      setSubmitted(true);
+      // Reload reviews
+      setLoading(true);
+      await fetchReviews();
     } catch (e) {
-      setError('Error al enviar la reseña.');
+      setError('Error al enviar la reseña. Inténtalo de nuevo.');
     } finally {
       setSubmitting(false);
     }
   };
+
+  // Header rendered above the review list inside the FlatList
+  const renderHeader = () => (
+    <View>
+      {/* ── Review form / status section ── */}
+      {!user || !user._id ? (
+        <View style={styles.infoBox}>
+          <Icon name="person-outline" size={20} color="#FF5A5F" />
+          <Text style={styles.infoText}>
+            Inicia sesión para dejar una reseña.
+          </Text>
+        </View>
+      ) : !canReview ? (
+        <View style={styles.infoBox}>
+          <Icon name="information-circle-outline" size={20} color="#FF5A5F" />
+          <Text style={styles.infoText}>
+            Reserva este tour para poder reseñarlo.
+          </Text>
+        </View>
+      ) : submitted ? (
+        <View style={styles.successBox}>
+          <Icon name="checkmark-circle-outline" size={22} color="#27AE60" />
+          <Text style={styles.successText}>
+            ¡Gracias! Tu reseña ha sido enviada.
+          </Text>
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel="Añadir otra reseña"
+            onPress={() => setSubmitted(false)}>
+            <Text style={styles.addAnotherLink}>Añadir otra reseña</Text>
+          </Pressable>
+        </View>
+      ) : (
+        <View style={styles.formContainer}>
+          <Text style={styles.formTitle}>Añadir reseña</Text>
+          <TextInput
+            placeholder="Título"
+            value={title}
+            onChangeText={setTitle}
+            style={styles.input}
+            placeholderTextColor="#aaa"
+          />
+          <TextInput
+            placeholder="Comentario"
+            value={comment}
+            onChangeText={setComment}
+            style={[styles.input, styles.textArea]}
+            multiline
+            numberOfLines={3}
+            placeholderTextColor="#aaa"
+          />
+          <Text style={styles.ratingLabel}>Puntuación</Text>
+          <View style={styles.starInputRow}>
+            {[1, 2, 3, 4, 5].map(star => (
+              <TouchableOpacity key={star} onPress={() => setRating(star)}>
+                <Icon
+                  name={star <= rating ? 'star' : 'star-outline'}
+                  size={32}
+                  color={star <= rating ? '#FFC107' : '#BDC3C7'}
+                  style={styles.starIcon}
+                />
+              </TouchableOpacity>
+            ))}
+          </View>
+          {error ? <Text style={styles.error}>{error}</Text> : null}
+          <Pressable
+            style={[
+              styles.submitButton,
+              submitting && styles.submitButtonDisabled,
+            ]}
+            onPress={handleAddReview}
+            disabled={submitting}>
+            <Text style={styles.submitButtonText}>
+              {submitting ? 'Enviando...' : 'Enviar reseña'}
+            </Text>
+          </Pressable>
+        </View>
+      )}
+
+      {/* ── Section title ── */}
+      <Text style={styles.sectionTitle}>
+        {reviews.length > 0
+          ? `${reviews.length} reseña${reviews.length !== 1 ? 's' : ''}`
+          : 'Reseñas'}
+      </Text>
+    </View>
+  );
 
   if (loading) {
     return (
@@ -117,128 +204,214 @@ export const TourReviewsScreen = () => {
   }
 
   return (
-    <View style={{flex: 1}}>
-      {/* Formulario o mensajes de validación arriba */}
-      {!user || !user._id ? (
-        <View style={styles.centered}>
-          <Text>Debes iniciar sesión para dejar una reseña.</Text>
+    <FlatList
+      data={reviews}
+      keyExtractor={item => item.id}
+      contentContainerStyle={styles.listContent}
+      ListHeaderComponent={renderHeader}
+      ListEmptyComponent={
+        <View style={styles.emptyContainer}>
+          <Icon name="chatbubble-outline" size={48} color="#E0E0E0" />
+          <Text style={styles.emptyText}>Aún no hay reseñas.</Text>
+          <Text style={styles.emptySubtext}>
+            ¡Sé el primero en compartir tu experiencia!
+          </Text>
         </View>
-      ) : canReview ? (
-        <View style={styles.formContainer}>
-          <Text style={styles.formTitle}>Añadir reseña</Text>
-          <TextInput
-            placeholder="Título"
-            value={title}
-            onChangeText={setTitle}
-            style={styles.input}
-          />
-          <TextInput
-            placeholder="Comentario"
-            value={comment}
-            onChangeText={setComment}
-            style={styles.input}
-            multiline
-          />
-          <TextInput
-            placeholder="Puntuación (1-5)"
-            value={rating}
-            onChangeText={setRating}
-            style={styles.input}
-            keyboardType="numeric"
-          />
-          {error ? <Text style={styles.error}>{error}</Text> : null}
-          <Button
-            title={submitting ? 'Enviando...' : 'Enviar reseña'}
-            onPress={handleAddReview}
-            disabled={submitting}
-          />
+      }
+      renderItem={({item}) => (
+        <View style={styles.reviewCard}>
+          <View style={styles.reviewHeader}>
+            <Text style={styles.reviewTitle}>{item.title}</Text>
+            <StarRating rating={item.rating} size={16} />
+          </View>
+          <Text style={styles.comment}>{item.comment}</Text>
+          <Text style={styles.date}>
+            {item.date && !isNaN(new Date(item.date).getTime())
+              ? new Date(item.date).toLocaleDateString('es-ES', {
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric',
+                })
+              : ''}
+          </Text>
         </View>
-      ) : null}
-
-      {/* Lista de reseñas o mensaje */}
-      {loading ? (
-        <View style={styles.centered}>
-          <ActivityIndicator size="large" color="#FF5A5F" />
-        </View>
-      ) : reviews.length === 0 ? (
-        <View style={styles.centered}>
-          <Text>No hay reseñas para este tour.</Text>
-        </View>
-      ) : (
-        <FlatList
-          data={reviews}
-          keyExtractor={item => item.id}
-          contentContainerStyle={styles.container}
-          renderItem={({item}) => (
-            <View style={styles.reviewCard}>
-              <Text style={styles.title}>{item.title}</Text>
-              <Text style={styles.rating}>Puntuación: {item.rating}/5</Text>
-              <Text style={styles.comment}>{item.comment}</Text>
-              <Text style={styles.date}>
-                {new Date(item.date).toLocaleDateString()}
-              </Text>
-            </View>
-          )}
-        />
       )}
-    </View>
+    />
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    padding: 16,
-  },
   centered: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
   },
-  reviewCard: {
-    backgroundColor: '#fff',
-    borderRadius: 8,
+  listContent: {
     padding: 16,
-    marginBottom: 12,
-    elevation: 2,
+    backgroundColor: '#F9F9F9',
   },
-  title: {
-    fontWeight: 'bold',
-    fontSize: 16,
-    marginBottom: 4,
+  // ── Info / success banners ──
+  infoBox: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#FFF0F0',
+    borderRadius: 10,
+    padding: 14,
+    marginBottom: 16,
+    gap: 10,
   },
-  rating: {
+  infoText: {
+    flex: 1,
+    fontSize: 14,
+    color: '#555',
+    lineHeight: 20,
+  },
+  successBox: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#EAFAF1',
+    borderRadius: 10,
+    padding: 14,
+    marginBottom: 16,
+    gap: 10,
+    flexWrap: 'wrap',
+  },
+  successText: {
+    flex: 1,
+    fontSize: 14,
+    color: '#27AE60',
+    fontWeight: '600',
+  },
+  addAnotherLink: {
+    fontSize: 14,
     color: '#FF5A5F',
-    marginBottom: 4,
+    fontWeight: '600',
+    textDecorationLine: 'underline',
   },
-  comment: {
-    marginBottom: 4,
-  },
-  date: {
-    fontSize: 12,
-    color: '#888',
-    textAlign: 'right',
-  },
+  // ── Form ──
   formContainer: {
-    padding: 16,
     backgroundColor: '#fff',
-    borderBottomWidth: 1,
-    borderBottomColor: '#eee',
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 16,
+    shadowColor: '#000',
+    shadowOffset: {width: 0, height: 1},
+    shadowOpacity: 0.06,
+    shadowRadius: 4,
+    elevation: 2,
   },
   formTitle: {
     fontWeight: 'bold',
-    fontSize: 16,
-    marginBottom: 8,
+    fontSize: 18,
+    marginBottom: 12,
+    color: '#2C3E50',
   },
   input: {
     borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 6,
-    padding: 8,
-    marginBottom: 8,
+    borderColor: '#ddd',
+    borderRadius: 8,
+    padding: 12,
+    marginBottom: 12,
     backgroundColor: '#fafafa',
+    fontSize: 15,
+    color: '#333',
+  },
+  textArea: {
+    height: 80,
+    textAlignVertical: 'top',
+  },
+  ratingLabel: {
+    fontSize: 15,
+    fontWeight: '500',
+    color: '#444',
+    marginBottom: 8,
+  },
+  starInputRow: {
+    flexDirection: 'row',
+    marginBottom: 12,
+  },
+  starIcon: {
+    marginRight: 4,
   },
   error: {
-    color: 'red',
+    color: '#E74C3C',
     marginBottom: 8,
+    fontSize: 14,
+  },
+  submitButton: {
+    backgroundColor: '#FF5A5F',
+    borderRadius: 50,
+    paddingVertical: 14,
+    alignItems: 'center',
+    marginTop: 4,
+  },
+  submitButtonDisabled: {
+    opacity: 0.6,
+  },
+  submitButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  // ── Section title ──
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#2C3E50',
+    marginBottom: 12,
+  },
+  // ── Empty state ──
+  emptyContainer: {
+    alignItems: 'center',
+    paddingVertical: 40,
+  },
+  emptyText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#7F8C8D',
+    marginTop: 12,
+  },
+  emptySubtext: {
+    fontSize: 14,
+    color: '#95A5A6',
+    marginTop: 6,
+    textAlign: 'center',
+  },
+  // ── Review card ──
+  reviewCard: {
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    padding: 16,
+    marginBottom: 12,
+    shadowColor: '#000',
+    shadowOffset: {width: 0, height: 1},
+    shadowOpacity: 0.08,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  reviewHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 6,
+  },
+  reviewTitle: {
+    fontWeight: 'bold',
+    fontSize: 16,
+    color: '#2C3E50',
+    flex: 1,
+    marginRight: 8,
+  },
+  comment: {
+    marginTop: 4,
+    marginBottom: 8,
+    color: '#34495E',
+    lineHeight: 20,
+    fontSize: 14,
+  },
+  date: {
+    fontSize: 12,
+    color: '#95A5A6',
+    textAlign: 'right',
   },
 });

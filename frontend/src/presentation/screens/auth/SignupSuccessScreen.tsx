@@ -1,10 +1,11 @@
 import React from 'react';
-import {View, Pressable, Dimensions} from 'react-native';
+import {View, Dimensions} from 'react-native';
 import {globalStyles} from '../../../config/theme/theme.ts';
 import {BackArrowButton} from '../../components/common/BackArrowButton.tsx';
 import {type NavigationProp, useNavigation} from '@react-navigation/native';
 import type {RootStackParams} from '../../navigator/Navigator.tsx';
 import {Text} from 'react-native-paper';
+import {CustomButton} from '../../components/common/CustomButton.tsx';
 
 // @ts-ignore
 import Congratulations from '../../assets/congratulations.svg';
@@ -33,7 +34,7 @@ export const SignupSuccessScreen = () => {
         <Text
           style={{
             ...globalStyles.title,
-            marginVertical: height * 0.01,
+            marginVertical: height * 0.02,
             textAlign: 'center',
             fontSize: Math.min(width * 0.07, 28),
           }}>
@@ -42,10 +43,10 @@ export const SignupSuccessScreen = () => {
         <Text
           style={{
             color: '#4c5667',
-            fontSize: fontSize,
+            fontSize,
             textAlign: 'center',
             paddingHorizontal: width * 0.05,
-            marginBottom: height * 0.01,
+            marginBottom: height * 0.015,
           }}>
           Te hemos enviado un email de verificación, por favor revisa tu buzón y
           sigue las instrucciones para verificar tu cuenta.
@@ -53,7 +54,7 @@ export const SignupSuccessScreen = () => {
         <Text
           style={{
             color: '#4c5667',
-            fontSize: fontSize,
+            fontSize,
             textAlign: 'center',
             paddingHorizontal: width * 0.05,
           }}>
@@ -61,21 +62,12 @@ export const SignupSuccessScreen = () => {
         </Text>
       </View>
 
-      <Pressable
-        style={{
-          alignSelf: 'center',
-          marginBottom: height * 0.05,
-        }}
-        onPress={() => navigation.navigate('Signin')}>
-        <Text
-          style={{
-            ...globalStyles.link,
-            fontSize: fontSize,
-            textAlign: 'center',
-          }}>
-          Iniciar sesión aquí
-        </Text>
-      </Pressable>
+      <CustomButton
+        text="Ir a iniciar sesión"
+        textStyle={globalStyles.buttonText}
+        style={{marginBottom: height * 0.05}}
+        onPress={() => navigation.navigate('Signin')}
+      />
     </View>
   );
 };

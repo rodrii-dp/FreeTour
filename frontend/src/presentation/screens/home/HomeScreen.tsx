@@ -26,7 +26,6 @@ export const HomeScreen = () => {
   const [categoryTours, setCategoryTours] = useState<Tour[]>([]);
   const [loadingCategoryTours, setLoadingCategoryTours] = useState(false);
   const [heroTours, setHeroTours] = useState<Tour[]>([]);
-  const [culturalTours, setCulturalTours] = useState<Tour[]>([]);
   const [featuredCategoryTours, setFeaturedCategoryTours] = useState<Tour[]>(
     [],
   );
@@ -378,7 +377,8 @@ const styles = StyleSheet.create({
   },
   categoriesContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexWrap: 'wrap',
+    gap: 8,
   },
   lastSection: {
     marginBottom: 80,

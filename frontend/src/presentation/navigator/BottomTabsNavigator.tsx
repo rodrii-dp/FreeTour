@@ -19,6 +19,7 @@ export const BottomTabsNavigator = () => {
       <Tab.Screen
         name="Explore"
         options={{
+          tabBarLabel: 'Explorar',
           tabBarIcon: ({color}) => (
             <GenericIcon name="compass-outline" color={color} />
           ),
@@ -28,6 +29,7 @@ export const BottomTabsNavigator = () => {
       <Tab.Screen
         name="Favorites"
         options={{
+          tabBarLabel: 'Favoritos',
           tabBarIcon: ({color}) => (
             <GenericIcon name="heart-outline" color={color} />
           ),
@@ -37,6 +39,7 @@ export const BottomTabsNavigator = () => {
       <Tab.Screen
         name="Reservations"
         options={{
+          tabBarLabel: 'Reservas',
           tabBarIcon: ({color}) => (
             <GenericIcon name="ticket-outline" color={color} />
           ),
@@ -46,6 +49,7 @@ export const BottomTabsNavigator = () => {
       <Tab.Screen
         name="Settings"
         options={{
+          tabBarLabel: 'Ajustes',
           tabBarIcon: ({color}) => (
             <GenericIcon name="settings-outline" color={color} />
           ),

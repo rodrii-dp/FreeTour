@@ -41,7 +41,11 @@ apiClient.interceptors.response.use(
         }
 
         // Solicitar un nuevo access_token
-        const {data} = await axios.post('http://10.0.2.2:3000/auth/refresh', {
+        const refreshUrl = (apiClient.defaults.baseURL || '').replace(
+          /\/?$/,
+          '/',
+        ) + 'auth/refresh';
+        const {data} = await axios.post(refreshUrl, {
           refresh_token: refreshToken,
         });
 

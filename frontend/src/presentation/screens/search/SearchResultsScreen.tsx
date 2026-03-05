@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {
   View,
   ScrollView,
@@ -17,28 +17,28 @@ import {
 import {Tour} from '../../../domain/entities/tour';
 import {tourService} from '../../../infrastructure/api/tourService';
 import {TourCard} from '../home/TourCard';
-import {HomeStackParamList} from '../../navigation/HomeStackNavigator';
+import {HomeStackParamList} from '../../navigator/HomeStackNavigator';
+import {useDebounce} from '../../hooks/useDebounce';
 
 type SearchResultsRouteProp = RouteProp<HomeStackParamList, 'SearchResults'>;
 
 export const SearchResultsScreen = () => {
-  const [searchQuery, setSearchQuery] = useState('');
-  const [tours, setTours] = useState<Tour[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [hasSearched, setHasSearched] = useState(false);
-
   const route = useRoute<SearchResultsRouteProp>();
   const navigation = useNavigation<NavigationProp<HomeStackParamList>>();
   const initialQuery = route.params?.query || '';
 
-  useEffect(() => {
-    if (initialQuery) {
-      setSearchQuery(initialQuery);
-      performSearch(initialQuery);
-    }
-  }, [initialQuery]);
+  const [searchQuery, setSearchQuery] = useState(initialQuery);
+  const [tours, setTours] = useState<Tour[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [hasSearched, setHasSearched] = useState(false);
 
-  const performSearch = async (query: string) => {
+  // Debounced version of the query — triggers auto-search after 500 ms of inactivity
+  const debouncedQuery = useDebounce(searchQuery, 500);
+
+  // Track whether this is the very first render so we don't reset the initial query
+  const isFirstRender = useRef(true);
+
+  const performSearch = useCallback(async (query: string) => {
     if (!query.trim()) {
       setTours([]);
       setHasSearched(false);
@@ -54,7 +54,6 @@ export const SearchResultsScreen = () => {
         limit: '20',
       });
 
-      // Asegurarse de que results es un array
       const toursArray = Array.isArray(results) ? results : results.data || [];
       setTours(toursArray);
     } catch (error) {
@@ -63,11 +62,26 @@ export const SearchResultsScreen = () => {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, []);
 
-  const handleSearchSubmit = () => {
-    performSearch(searchQuery);
-  };
+  // Fire search whenever the debounced query changes (including on first render
+  // when initialQuery is pre-populated).
+  useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      if (debouncedQuery) {
+        performSearch(debouncedQuery);
+      }
+      return;
+    }
+    if (debouncedQuery) {
+      performSearch(debouncedQuery);
+    } else {
+      // Query was cleared — reset results
+      setTours([]);
+      setHasSearched(false);
+    }
+  }, [debouncedQuery, performSearch]);
 
   const handleTourPress = (tour: Tour) => {
     navigation.navigate('TourDetails', {tour});
@@ -76,6 +90,10 @@ export const SearchResultsScreen = () => {
   const handleBackPress = () => {
     navigation.goBack();
   };
+
+  // Typing indicator: true while the user has typed something but the debounce
+  // hasn't fired yet (i.e. the live query differs from the debounced one).
+  const isTyping = searchQuery !== debouncedQuery;
 
   return (
     <SafeAreaView style={styles.container}>
@@ -92,7 +110,7 @@ export const SearchResultsScreen = () => {
             placeholder="Buscar tours..."
             onChangeText={setSearchQuery}
             value={searchQuery}
-            onSubmitEditing={handleSearchSubmit}
+            onSubmitEditing={() => performSearch(searchQuery)}
             style={styles.searchBar}
             inputStyle={styles.searchInput}
             iconColor="#666"
@@ -102,8 +120,8 @@ export const SearchResultsScreen = () => {
         </View>
       </View>
 
-      <ScrollView style={styles.content}>
-        {isLoading ? (
+      <ScrollView style={styles.content} keyboardShouldPersistTaps="handled">
+        {isLoading || isTyping ? (
           <View style={styles.loadingContainer}>
             <ActivityIndicator size="large" color="#FF5A5F" />
             <Text style={styles.loadingText}>Buscando tours...</Text>
@@ -120,7 +138,7 @@ export const SearchResultsScreen = () => {
             {tours.length > 0 ? (
               <View style={styles.resultsContainer}>
                 {tours.map(tour => (
-                  <View key={tour.id} style={styles.tourCardContainer}>
+                  <View key={tour._id} style={styles.tourCardContainer}>
                     <TourCard tour={tour} onPress={handleTourPress} />
                   </View>
                 ))}

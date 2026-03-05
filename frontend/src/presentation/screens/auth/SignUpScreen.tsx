@@ -4,12 +4,12 @@ import {
   Pressable,
   ScrollView,
   SafeAreaView,
+  ActivityIndicator,
   Dimensions,
 } from 'react-native';
 import {globalStyles} from '../../../config/theme/theme.ts';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {RootStackParams} from '../../navigator/Navigator.tsx';
-import {GenericIcon} from '../../icons/GenericIcon.tsx';
 import {Message} from '../../components/common/Message.tsx';
 import {Input} from '../../components/common/Input.tsx';
 import {SeparatorWithText} from '../../components/common/SeparatorWithText.tsx';
@@ -17,35 +17,58 @@ import {useFormValidation} from '../../hooks/useFormValidation.tsx';
 import {useFocus} from '../../hooks/useFocus.tsx';
 import {Text} from 'react-native-paper';
 import {CustomButton} from '../../components/common/CustomButton.tsx';
+import {BackArrowButton} from '../../components/common/BackArrowButton.tsx';
 import {
   register,
   RegisterData,
 } from '../../../infrastructure/api/authService.ts';
 
-const {width, height} = Dimensions.get('window');
+const {height} = Dimensions.get('window');
+
+type RegisterFields = RegisterData & {confirmPassword: string};
 
 export const SignUpScreen = () => {
   const {fields, error, handleInputChange, validateForm} =
-    useFormValidation<RegisterData>({
+    useFormValidation<RegisterFields>({
       name: '',
       email: '',
       password: '',
+      confirmPassword: '',
     });
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [registerError, setRegisterError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
   const {focusedInput, handleFocus, handleBlur} = useFocus<
-    'name' | 'email' | 'password'
+    'name' | 'email' | 'password' | 'confirmPassword'
   >();
 
   const navigation = useNavigation<NavigationProp<RootStackParams>>();
 
   const handleSignUp = async () => {
-    if (validateForm()) {
-      try {
-        await register(fields);
-        navigation.navigate('SignupSuccess');
-      } catch (error) {
-        console.error(error);
-      }
+    if (!validateForm()) {
+      return;
+    }
+    if (fields.password !== fields.confirmPassword) {
+      setRegisterError('Las contraseñas no coinciden');
+      return;
+    }
+    setRegisterError(null);
+    setIsLoading(true);
+    try {
+      await register({
+        name: fields.name,
+        email: fields.email,
+        password: fields.password,
+      });
+      navigation.navigate('SignupSuccess');
+    } catch (err: any) {
+      console.error(err);
+      setRegisterError(
+        err?.response?.data?.message || 'Error al crear la cuenta. Inténtalo de nuevo.',
+      );
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -53,17 +76,25 @@ export const SignUpScreen = () => {
     <SafeAreaView style={{flex: 1, backgroundColor: '#fff'}}>
       <ScrollView
         contentContainerStyle={{
-          flex: 1,
           padding: 20,
           backgroundColor: '#ffffff',
           marginTop: height * 0.02,
+          paddingBottom: 40,
         }}
-        showsVerticalScrollIndicator={false}>
+        showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled">
+
+        <BackArrowButton
+          onPress={() => navigation.navigate('Slides')}
+          style={{marginBottom: 30}}
+        />
+
         <Text
           variant="headlineLarge"
-          style={{marginBottom: 40, fontWeight: '800'}}>
+          style={{marginBottom: 32, fontWeight: '800'}}>
           Crear cuenta
         </Text>
+
         <Input
           label="Nombre"
           placeholder="John Doe"
@@ -72,6 +103,7 @@ export const SignUpScreen = () => {
           isFocused={focusedInput === 'name'}
           onFocus={() => handleFocus('name')}
           onBlur={handleBlur}
+          autoCapitalize="words"
         />
         <Input
           label="Correo electrónico"
@@ -82,10 +114,12 @@ export const SignUpScreen = () => {
           onFocus={() => handleFocus('email')}
           onBlur={handleBlur}
           keyboardType="email-address"
+          autoCapitalize="none"
+          autoCorrect={false}
         />
         <Input
           label="Contraseña"
-          placeholder="Password"
+          placeholder="Mínimo 8 caracteres"
           value={fields.password}
           onChangeText={value => handleInputChange('password', value)}
           isFocused={focusedInput === 'password'}
@@ -95,55 +129,53 @@ export const SignUpScreen = () => {
           showPassword={showPassword}
           togglePasswordVisibility={() => setShowPassword(!showPassword)}
         />
+        <Input
+          label="Confirmar contraseña"
+          placeholder="Repite tu contraseña"
+          value={fields.confirmPassword}
+          onChangeText={value => handleInputChange('confirmPassword', value)}
+          isFocused={focusedInput === 'confirmPassword'}
+          onFocus={() => handleFocus('confirmPassword')}
+          onBlur={handleBlur}
+          isPassword
+          showPassword={showConfirmPassword}
+          togglePasswordVisibility={() =>
+            setShowConfirmPassword(!showConfirmPassword)
+          }
+        />
 
         <Text
           variant="bodyLarge"
           style={{
             color: '#4c5667',
-            marginTop: 5,
+            marginTop: 4,
             marginBottom: 20,
             textAlign: 'center',
           }}>
           Al continuar, aceptas nuestros{' '}
           <Text
             variant="bodyLarge"
-            style={{color: '#FF5A5F', textAlign: 'center', fontWeight: 'bold'}}>
+            style={{color: '#FF5A5F', fontWeight: 'bold'}}>
             términos y condiciones
           </Text>
         </Text>
 
+        {error && <Message error={error} />}
+        {registerError && <Message error={registerError} />}
+
         <CustomButton
-          text="Registrarse"
+          text={isLoading ? '' : 'Registrarse'}
           textStyle={globalStyles.buttonText}
-          style={{marginBottom: 30}}
-          onPress={handleSignUp}
-        />
+          style={{marginBottom: 20}}
+          onPress={handleSignUp}>
+          {isLoading && <ActivityIndicator color="#fff" size="small" />}
+        </CustomButton>
 
         <SeparatorWithText text="o" />
 
-        {/*<Pressable
-          style={[globalStyles.googleButton, {marginTop: 30}]}
-          onPress={() => console.log('Pressed')}>
-          <View style={globalStyles.googleButtonContent}>
-            <GenericIcon name="logo-google" style={{marginRight: 15}} />
-            <Text variant="bodyLarge" style={{color: '#444'}}>
-              Continuar con Google
-            </Text>
-          </View>
-        </Pressable>*/}
-
-        {/* Spaced footer that should always be visible */}
-        <View
-          style={[
-            globalStyles.footer,
-            {
-              marginTop: 'auto',
-              marginBottom: 20,
-              paddingBottom: 10,
-            },
-          ]}>
+        <View style={[globalStyles.footer, {marginTop: 4}]}>
           <Text variant="bodyLarge" style={{color: '#818181'}}>
-            ¿Ya tienes una cuenta?{' '}
+            ¿Ya tienes cuenta?{' '}
           </Text>
           <Pressable onPress={() => navigation.navigate('Signin')}>
             <Text
@@ -157,8 +189,6 @@ export const SignUpScreen = () => {
             </Text>
           </Pressable>
         </View>
-
-        {error && <Message error={error} />}
       </ScrollView>
     </SafeAreaView>
   );
