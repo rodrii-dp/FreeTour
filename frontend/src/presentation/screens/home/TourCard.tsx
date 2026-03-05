@@ -6,7 +6,7 @@ import {
   ImageBackground,
   ImageSourcePropType,
   StyleSheet,
-  Dimensions,
+  useWindowDimensions,
 } from 'react-native';
 import {Tour} from '../../../domain/entities/tour';
 
@@ -18,11 +18,9 @@ interface Props {
   onPress?: (experience: Tour) => void;
 }
 
-export const TourCard = ({
-  tour,
-  width = Dimensions.get('window').width * 0.7,
-  onPress,
-}: Props) => {
+export const TourCard = ({tour, width, onPress}: Props) => {
+  const {width: windowWidth} = useWindowDimensions();
+  const cardWidth = width ?? windowWidth * 0.7;
   const getImageSource = (): ImageSourcePropType => {
     if (tour.images.length > 0) {
       return {uri: tour.images[0].imageUrl};
@@ -32,7 +30,7 @@ export const TourCard = ({
 
   return (
     <TouchableOpacity
-      style={[styles.card, {width}]}
+      style={[styles.card, {width: cardWidth}]}
       onPress={() => onPress && onPress(tour)}
       activeOpacity={0.8}>
       <ImageBackground

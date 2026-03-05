@@ -17,7 +17,7 @@ import {
 import {Tour} from '../../../domain/entities/tour';
 import {tourService} from '../../../infrastructure/api/tourService';
 import {TourCard} from '../home/TourCard';
-import {HomeStackParamList} from '../../navigation/HomeStackNavigator';
+import {HomeStackParamList} from '../../navigator/HomeStackNavigator';
 
 type SearchResultsRouteProp = RouteProp<HomeStackParamList, 'SearchResults'>;
 
@@ -120,7 +120,7 @@ export const SearchResultsScreen = () => {
             {tours.length > 0 ? (
               <View style={styles.resultsContainer}>
                 {tours.map(tour => (
-                  <View key={tour.id} style={styles.tourCardContainer}>
+                  <View key={tour._id} style={styles.tourCardContainer}>
                     <TourCard tour={tour} onPress={handleTourPress} />
                   </View>
                 ))}

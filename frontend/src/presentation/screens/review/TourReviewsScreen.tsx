@@ -6,7 +6,8 @@ import {
   ActivityIndicator,
   FlatList,
   TextInput,
-  Button,
+  TouchableOpacity,
+  Pressable,
 } from 'react-native';
 import {RouteProp, useRoute} from '@react-navigation/native';
 import {HomeStackParamList} from '../../navigator/HomeStackNavigator';
@@ -14,6 +15,8 @@ import {tourService, mapReviews} from '../../../infrastructure/api/tourService';
 import {Review} from '../../../domain/entities/tour';
 import {useUser} from '../../context/UserContext';
 import {bookingService} from '../../../infrastructure/api/bookingService';
+import {StarRating} from '../../components/common/StarRating';
+import Icon from 'react-native-vector-icons/Ionicons';
 
 export const TourReviewsScreen = () => {
   const route = useRoute<RouteProp<HomeStackParamList, 'TourReviews'>>();
@@ -22,7 +25,7 @@ export const TourReviewsScreen = () => {
   const [loading, setLoading] = useState(true);
   const [title, setTitle] = useState('');
   const [comment, setComment] = useState('');
-  const [rating, setRating] = useState('');
+  const [rating, setRating] = useState(0);
   const [error, setError] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const {user} = useUser();
@@ -69,13 +72,8 @@ export const TourReviewsScreen = () => {
 
   const handleAddReview = async () => {
     setError('');
-    if (!title.trim() || !comment.trim() || !rating.trim()) {
+    if (!title.trim() || !comment.trim() || rating === 0) {
       setError('Todos los campos son obligatorios.');
-      return;
-    }
-    const ratingNum = Number(rating);
-    if (isNaN(ratingNum) || ratingNum < 1 || ratingNum > 5) {
-      setError('La puntuación debe ser un número entre 1 y 5.');
       return;
     }
     setSubmitting(true);
@@ -88,7 +86,7 @@ export const TourReviewsScreen = () => {
       const newReview = {
         title: title.trim(),
         comment: comment.trim(),
-        rating: ratingNum,
+        rating,
         date: new Date().toISOString(),
         userId: user._id,
         tourId,
@@ -96,7 +94,7 @@ export const TourReviewsScreen = () => {
       await tourService.createReview(newReview);
       setTitle('');
       setComment('');
-      setRating('');
+      setRating(0);
       setError('');
       // Recargar reseñas
       const response = await tourService.getReviewsByTour(tourId);
@@ -131,27 +129,39 @@ export const TourReviewsScreen = () => {
             value={title}
             onChangeText={setTitle}
             style={styles.input}
+            placeholderTextColor="#aaa"
           />
           <TextInput
             placeholder="Comentario"
             value={comment}
             onChangeText={setComment}
-            style={styles.input}
+            style={[styles.input, styles.textArea]}
             multiline
+            numberOfLines={3}
+            placeholderTextColor="#aaa"
           />
-          <TextInput
-            placeholder="Puntuación (1-5)"
-            value={rating}
-            onChangeText={setRating}
-            style={styles.input}
-            keyboardType="numeric"
-          />
+          <Text style={styles.ratingLabel}>Puntuación</Text>
+          <View style={styles.starInputRow}>
+            {[1, 2, 3, 4, 5].map(star => (
+              <TouchableOpacity key={star} onPress={() => setRating(star)}>
+                <Icon
+                  name={star <= rating ? 'star' : 'star-outline'}
+                  size={32}
+                  color={star <= rating ? '#FFC107' : '#BDC3C7'}
+                  style={styles.starIcon}
+                />
+              </TouchableOpacity>
+            ))}
+          </View>
           {error ? <Text style={styles.error}>{error}</Text> : null}
-          <Button
-            title={submitting ? 'Enviando...' : 'Enviar reseña'}
+          <Pressable
+            style={[styles.submitButton, submitting && styles.submitButtonDisabled]}
             onPress={handleAddReview}
-            disabled={submitting}
-          />
+            disabled={submitting}>
+            <Text style={styles.submitButtonText}>
+              {submitting ? 'Enviando...' : 'Enviar reseña'}
+            </Text>
+          </Pressable>
         </View>
       ) : null}
 
@@ -172,7 +182,7 @@ export const TourReviewsScreen = () => {
           renderItem={({item}) => (
             <View style={styles.reviewCard}>
               <Text style={styles.title}>{item.title}</Text>
-              <Text style={styles.rating}>Puntuación: {item.rating}/5</Text>
+              <StarRating rating={item.rating} size={16} />
               <Text style={styles.comment}>{item.comment}</Text>
               <Text style={styles.date}>
                 {new Date(item.date).toLocaleDateString()}
@@ -196,26 +206,30 @@ const styles = StyleSheet.create({
   },
   reviewCard: {
     backgroundColor: '#fff',
-    borderRadius: 8,
+    borderRadius: 10,
     padding: 16,
     marginBottom: 12,
+    shadowColor: '#000',
+    shadowOffset: {width: 0, height: 1},
+    shadowOpacity: 0.08,
+    shadowRadius: 4,
     elevation: 2,
   },
   title: {
     fontWeight: 'bold',
     fontSize: 16,
-    marginBottom: 4,
-  },
-  rating: {
-    color: '#FF5A5F',
-    marginBottom: 4,
+    marginBottom: 6,
+    color: '#2C3E50',
   },
   comment: {
-    marginBottom: 4,
+    marginTop: 6,
+    marginBottom: 6,
+    color: '#34495E',
+    lineHeight: 20,
   },
   date: {
     fontSize: 12,
-    color: '#888',
+    color: '#95A5A6',
     textAlign: 'right',
   },
   formContainer: {
@@ -226,19 +240,55 @@ const styles = StyleSheet.create({
   },
   formTitle: {
     fontWeight: 'bold',
-    fontSize: 16,
-    marginBottom: 8,
+    fontSize: 18,
+    marginBottom: 12,
+    color: '#2C3E50',
   },
   input: {
     borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 6,
-    padding: 8,
-    marginBottom: 8,
+    borderColor: '#ddd',
+    borderRadius: 8,
+    padding: 12,
+    marginBottom: 12,
     backgroundColor: '#fafafa',
+    fontSize: 15,
+    color: '#333',
+  },
+  textArea: {
+    height: 80,
+    textAlignVertical: 'top',
+  },
+  ratingLabel: {
+    fontSize: 15,
+    fontWeight: '500',
+    color: '#444',
+    marginBottom: 8,
+  },
+  starInputRow: {
+    flexDirection: 'row',
+    marginBottom: 12,
+  },
+  starIcon: {
+    marginRight: 4,
   },
   error: {
-    color: 'red',
+    color: '#E74C3C',
     marginBottom: 8,
+    fontSize: 14,
+  },
+  submitButton: {
+    backgroundColor: '#FF5A5F',
+    borderRadius: 50,
+    paddingVertical: 14,
+    alignItems: 'center',
+    marginTop: 4,
+  },
+  submitButtonDisabled: {
+    opacity: 0.6,
+  },
+  submitButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '600',
   },
 });

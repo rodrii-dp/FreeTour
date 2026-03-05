@@ -20,6 +20,7 @@ import {
 import {HomeStackParamList} from '../../navigator/HomeStackNavigator.tsx';
 import {BottomTabNavigationProp} from '@react-navigation/bottom-tabs';
 import {StackNavigationProp} from '@react-navigation/stack';
+import {SafeAreaView} from 'react-native-safe-area-context';
 
 // Tipo para las reservas
 interface Booking {
@@ -142,38 +143,44 @@ export const BookingsScreen = () => {
 
   if (loading) {
     return (
-      <View style={styles.loadingContainer}>
+      <SafeAreaView style={styles.loadingContainer}>
         <ActivityIndicator size="large" color="#FF5A5F" />
         <Text style={styles.loadingText}>Cargando reservas...</Text>
-      </View>
+      </SafeAreaView>
     );
   }
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.headerTitle}>Mis Reservas</Text>
-      {bookings.length > 0 ? (
-        <FlatList
-          data={bookings}
-          keyExtractor={item => item._id}
-          renderItem={renderBookingItem}
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={styles.listContent}
-        />
-      ) : (
-        <View style={styles.emptyContainer}>
-          <Icon name="calendar-blank" size={64} color="#E0E0E0" />
-          <Text style={styles.emptyText}>No tienes reservas aún.</Text>
-          <Text style={styles.emptySubtext}>
-            Explora tours y reserva tu próxima aventura.
-          </Text>
-        </View>
-      )}
-    </View>
+    <SafeAreaView style={styles.safeArea}>
+      <View style={styles.container}>
+        <Text style={styles.headerTitle}>Mis Reservas</Text>
+        {bookings.length > 0 ? (
+          <FlatList
+            data={bookings}
+            keyExtractor={item => item._id}
+            renderItem={renderBookingItem}
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={styles.listContent}
+          />
+        ) : (
+          <View style={styles.emptyContainer}>
+            <Icon name="calendar-blank" size={64} color="#E0E0E0" />
+            <Text style={styles.emptyText}>No tienes reservas aún.</Text>
+            <Text style={styles.emptySubtext}>
+              Explora tours y reserva tu próxima aventura.
+            </Text>
+          </View>
+        )}
+      </View>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: '#FFFFFF',
+  },
   container: {
     flex: 1,
     padding: 16,

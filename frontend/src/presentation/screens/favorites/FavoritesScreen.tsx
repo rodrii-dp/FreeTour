@@ -10,6 +10,8 @@ import {
 import {HomeStackParamList} from '../../navigator/HomeStackNavigator';
 import {BottomTabNavigationProp} from '@react-navigation/bottom-tabs';
 import {StackNavigationProp} from '@react-navigation/stack';
+import Icon from 'react-native-vector-icons/Ionicons';
+import {SafeAreaView} from 'react-native-safe-area-context';
 
 type NavigationProps = CompositeNavigationProp<
   BottomTabNavigationProp<any, 'Explore'>,
@@ -44,37 +46,67 @@ export const FavoritesScreen = () => {
             ? item.provider.name
             : 'Información del proveedor no disponible'}
         </Text>
+        <View style={styles.locationRow}>
+          <Icon name="location-outline" size={14} color="#7F8C8D" />
+          <Text style={styles.location}>{item.location?.name || ''}</Text>
+        </View>
       </View>
+      <Icon name="chevron-forward-outline" size={20} color="#BDBDBD" />
     </Pressable>
   );
 
   return (
-    <View style={styles.container}>
-      {favoriteTours.length > 0 ? (
-        <FlatList
-          data={favoriteTours}
-          keyExtractor={item => item._id}
-          renderItem={renderFavoriteItem}
-        />
-      ) : (
-        <Text style={styles.emptyText}>No tienes favoritos aún.</Text>
-      )}
-    </View>
+    <SafeAreaView style={styles.safeArea}>
+      <View style={styles.container}>
+        <Text style={styles.headerTitle}>Mis Favoritos</Text>
+        {favoriteTours.length > 0 ? (
+          <FlatList
+            data={favoriteTours}
+            keyExtractor={item => item._id}
+            renderItem={renderFavoriteItem}
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={styles.listContent}
+          />
+        ) : (
+          <View style={styles.emptyContainer}>
+            <Icon name="heart-outline" size={64} color="#E0E0E0" />
+            <Text style={styles.emptyText}>No tienes favoritos aún.</Text>
+            <Text style={styles.emptySubtext}>
+              Explora tours y guarda tus preferidos para acceder rápido.
+            </Text>
+          </View>
+        )}
+      </View>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: '#FFFFFF',
+  },
   container: {
     flex: 1,
     padding: 16,
     backgroundColor: '#FFFFFF',
   },
+  headerTitle: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 16,
+    color: '#2C3E50',
+  },
+  listContent: {
+    paddingBottom: 20,
+  },
   itemContainer: {
     flexDirection: 'row',
+    alignItems: 'center',
     marginBottom: 16,
     borderBottomWidth: 1,
     borderBottomColor: '#E0E0E0',
-    paddingBottom: 8,
+    paddingBottom: 16,
   },
   image: {
     width: 80,
@@ -90,15 +122,38 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     color: '#2C3E50',
+    marginBottom: 4,
   },
   provider: {
     fontSize: 14,
     color: '#7F8C8D',
+    marginBottom: 4,
+  },
+  locationRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  location: {
+    fontSize: 13,
+    color: '#7F8C8D',
+    marginLeft: 2,
+  },
+  emptyContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 32,
   },
   emptyText: {
-    fontSize: 16,
+    fontSize: 18,
+    fontWeight: 'bold',
     color: '#7F8C8D',
+    marginTop: 16,
+  },
+  emptySubtext: {
+    fontSize: 14,
+    color: '#95A5A6',
     textAlign: 'center',
-    marginTop: 32,
+    marginTop: 8,
   },
 });

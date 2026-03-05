@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import {
   View,
   Text,
@@ -45,7 +45,7 @@ export const HeroSlider = ({
   tours = [],
 }: HeroSliderProps) => {
   const [activeIndex, setActiveIndex] = useState(0);
-  const scrollX = new Animated.Value(0);
+  const scrollX = useRef(new Animated.Value(0)).current;
   // Especifica el tipo correcto para la navegación
   const navigation = useNavigation<NavigationProp<HomeStackParamList>>();
 
