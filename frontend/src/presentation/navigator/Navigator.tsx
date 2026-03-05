@@ -51,10 +51,10 @@ export const Navigator = () => {
   }
 
   return (
-    <Stack.Navigator screenOptions={{headerShown: false}}>
-      {isAppFirstLaunched && (
-        <Stack.Screen name="Slides" component={SlidesScreen} />
-      )}
+    <Stack.Navigator
+      initialRouteName={isAppFirstLaunched ? 'Slides' : 'Signin'}
+      screenOptions={{headerShown: false}}>
+      <Stack.Screen name="Slides" component={SlidesScreen} />
       <Stack.Screen name="Signup" component={SignUpScreen} />
       <Stack.Screen name="Signin" component={SignInScreen} />
       <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
