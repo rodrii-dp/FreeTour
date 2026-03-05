@@ -2,7 +2,14 @@ import React, {useEffect, useRef, useState, useCallback} from 'react';
 import {RouteProp, useRoute, useFocusEffect} from '@react-navigation/native';
 import {HomeStackParamList} from '../../navigator/HomeStackNavigator.tsx';
 import MapView, {Marker, Polyline, PROVIDER_GOOGLE} from 'react-native-maps';
-import {StyleSheet, ScrollView, Text, View, Dimensions} from 'react-native';
+import {
+  StyleSheet,
+  ScrollView,
+  Text,
+  View,
+  Dimensions,
+  Platform,
+} from 'react-native';
 
 type MapRouteProp = RouteProp<HomeStackParamList, 'Map'>;
 
@@ -116,7 +123,7 @@ export const MapScreen = () => {
       <MapView
         key={key}
         ref={mapRef}
-        provider={PROVIDER_GOOGLE}
+        provider={Platform.OS === 'android' ? PROVIDER_GOOGLE : undefined}
         style={styles.map}
         initialRegion={initialRegion}
         onMapReady={handleMapReady}>
