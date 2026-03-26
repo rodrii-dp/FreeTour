@@ -17,7 +17,7 @@
     "@react-navigation/bottom-tabs": "^7.2.0",
     "@react-navigation/native": "^7.0.14",
     "@react-navigation/stack": "^7.1.1",
-    "axios": "^1.9.0",
+    "axios": "^1.13.6",
     "react": "18.3.1",
     "react-native": "0.76.1",
     "react-native-calendars": "^1.1309.1",
@@ -54,6 +54,14 @@
     "prettier": "2.8.8",
     "react-test-renderer": "18.3.1",
     "typescript": "5.0.4"
+  },
+  "overrides": {
+    "@react-native-community/cli-platform-android": {
+      "fast-xml-parser": "^5.5.7"
+    },
+    "@react-native-community/cli-platform-apple": {
+      "fast-xml-parser": "^5.5.7"
+    }
   },
   "engines": {
     "node": ">=18"
